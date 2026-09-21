@@ -4,37 +4,23 @@ Datapack secundario modular que **no modifica** Simply OneBlock. Reemplaza a los
 
 ## Lo que ya verifiqué en tus archivos
 
-- Simply OneBlock lleva el progreso en el marcador `ib_minedcount` (jugador falso `fake_player`) y cierra cada fase en: 55, 260, 550, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000 y 9001 en adelante (After Phase).
+- Simply OneBlock lleva el progreso en el marcador `ib_minedcount` (jugador falso `fake_player`) y cierra cada fase en: 55, 260, 550, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000 y 9001 en adelante (After Phase). Corrijo que otra IA ([replit.com](http://replit.com)) editará una copia de simply_oneblock para extender los bloques a 15000 antes de llegar a After Phase. Entonces. las creaciones estaran independientes al contador pero debes saber que el contador se modificará a 15000 pero puede modificarse hasta a 20000
 - `so-core` ya lee ese contador y calcula si estás en After Phase. Lo reutilizo como base.
-- `so-traders` / `oneblock_traders` invocan aldeanos con ofertas fijas por hito. Esa lógica de precios y catálogos se recicla, pero sin aldeanos.
-- `ob_system` es solo referencia; no copio nada de él.
+- `so-traders` / `oneblock_traders` invocan aldeanos con ofertas fijas por hito, el usado ahora mismo es oneblock_adventure_traders de Claude, oneblock_traders (mi version) es solo una reserva vieja. Esa lógica de precios y catálogos se recicla, pero sin aldeanos.
+- `ob_system` es solo referencia; no copio nada de él, solo sirve para ver sintaxis y sistemas que usa por si tenemos errores. 
 
 ## Cómo se abrirá la tienda
 
 Un datapack no puede crear un comando propio llamado `/shop`. La forma estándar y que funciona para jugadores sin permisos de operador es:
 
-- **`/trigger shop`** — abre el menú. Funciona igual para todos, sin ser operador.
+- `**/trigger shop**` — abre el menú. Funciona igual para todos, sin ser operador.
 - En tu servidor Purpur puedes además crear un alias real `/shop` en `commands.yml` que ejecute `trigger shop`, así los jugadores escriben literalmente `/shop`. Te dejo la línea exacta lista para pegar.
 
 El menú aparece en el chat: categorías clicables, y dentro de cada categoría los artículos con precio. Al hacer clic se compra directamente; el pack comprueba que tengas el material, lo cobra y entrega el objeto. Si te falta algo, avisa cuánto falta.
 
 ## Estructura del catálogo
 
-Nueve categorías, cada una bloqueada hasta cierto avance:
-
-| Categoría | Se desbloquea |
-|---|---|
-| Llanura (comida, semillas, madera) | inicio |
-| Cueva (minerales, antorchas, herramientas) | 550 |
-| Nether (cuarzo, oro, blaze) | 2500 |
-| Océano (prismarina, coral, comida marina) | 3000 |
-| Jungla (cacao, bambú, pociones) | 3500 |
-| Deep Dark (sculk, ecos, brújula de recuperación) | 7000 |
-| End (choruses, perlas, shulker) | 9000 |
-| Mazmorras (llaves, botellas ominosas) | 8250 |
-| Ciclo / After Phase (objetos raros y rotativos) | 9001 |
-
-Las categorías bloqueadas se ven en gris con el requisito, para que el jugador sepa qué viene.
+En la tienda solo se venderá: bloques decorativos, bloques de colores, bloques dificiles de conseguir, herramientas caras o de material, libros encantados, huevos/generadores de mobs, llaves o "contratos" de invasiones, eventos, etc
 
 ## Economía
 
@@ -63,7 +49,7 @@ Todo cuelga de `so_core` para leer el progreso; si `so-core` no está, el pack l
 ## Rendimiento (para tus 2 GB)
 
 - Sin escaneos de bloques ni de entidades por tick; solo una lectura de marcador cada 20 ticks.
-- Sin entidades permanentes: la tienda no invoca nada.
+- Sin entidades permanentes: la tienda no invoca nada, solo huevos/generadores o contratos.
 - Compras resueltas con `clear` + `give`, coste fijo.
 
 ## Entrega
