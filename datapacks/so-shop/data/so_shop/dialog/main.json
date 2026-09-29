@@ -1,0 +1,123 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Tienda OneBlock",
+    "color": "gold",
+    "bold": true
+  },
+  "external_title": {
+    "text": "Tienda"
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Elige una sección. Las bloqueadas te dirán cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Bloques decorativos",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 1"
+      }
+    },
+    {
+      "label": {
+        "text": "Bloques de color",
+        "color": "aqua"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 2"
+      }
+    },
+    {
+      "label": {
+        "text": "Materiales raros",
+        "color": "gold"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 3"
+      }
+    },
+    {
+      "label": {
+        "text": "Herramientas",
+        "color": "yellow"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 4"
+      }
+    },
+    {
+      "label": {
+        "text": "Libros encantados",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 5"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevos generadores",
+        "color": "red"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 6"
+      }
+    },
+    {
+      "label": {
+        "text": "Llaves y contratos",
+        "color": "dark_aqua"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 7"
+      }
+    },
+    {
+      "label": {
+        "text": "Vender excedentes",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 8"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "Menú en el chat"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:run_command",
+      "command": "/trigger shop set 2"
+    }
+  }
+}

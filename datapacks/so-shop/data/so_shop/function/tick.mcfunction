@@ -1,5 +1,7 @@
 execute if score #enabled so_shop matches 1 run function so_shop:lib/progress
-execute if score #enabled so_shop matches 1 as @a[scores={shop=1..}] at @s run function so_shop:menu/main
+# shop=1 (/trigger shop) abre la ventana; shop=2 (/trigger shop set 2) abre el menú clásico en el chat
+execute if score #enabled so_shop matches 1 as @a[scores={shop=1}] at @s run function so_shop:lib/open_dialog
+execute if score #enabled so_shop matches 1 as @a[scores={shop=2..}] at @s run function so_shop:menu/main
 scoreboard players reset @a shop
 scoreboard players enable @a shop
 execute if score #enabled so_shop matches 1 as @a[scores={shop_menu=1..}] at @s run function so_shop:lib/open_cat

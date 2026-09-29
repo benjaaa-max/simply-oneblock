@@ -1,4 +1,4 @@
-execute if score @s shop_menu matches 1 if score #u1 so_shop matches 1 run function so_shop:menu/cat_deco
+execute if score @s shop_menu matches 1 if score #u1 so_shop matches 1 run dialog show @s so_shop:cat_deco
 execute if score @s shop_menu matches 1 if score #u1 so_shop matches 0 run function so_shop:lib/locked
 execute if score @s shop_menu matches 2 if score #u2 so_shop matches 1 run function so_shop:menu/cat_color
 execute if score @s shop_menu matches 2 if score #u2 so_shop matches 0 run function so_shop:lib/locked
