@@ -1,0 +1,50 @@
+{
+  "type": "minecraft:confirmation",
+  "title": {
+    "text": "Confirmar compra",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:decorated_pot",
+        "count": 4
+      },
+      "description": {
+        "contents": {
+          "text": "Maceta decorada x4",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio: 5 esmeraldas",
+        "color": "green"
+      }
+    }
+  ],
+  "can_close_with_escape": true,
+  "pause": false,
+  "yes": {
+    "label": {
+      "text": "Comprar",
+      "color": "green"
+    },
+    "action": {
+      "type": "minecraft:run_command",
+      "command": "/trigger shop_buy set 103"
+    }
+  },
+  "no": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_deco"
+    }
+  }
+}

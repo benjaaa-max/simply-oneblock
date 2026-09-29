@@ -1,0 +1,144 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Bloques decorativos",
+    "color": "green",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver el precio y confirmar la compra.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Farol x8"
+      },
+      "tooltip": {
+        "text": "6 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_101"
+      }
+    },
+    {
+      "label": {
+        "text": "Andamio x32"
+      },
+      "tooltip": {
+        "text": "4 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_102"
+      }
+    },
+    {
+      "label": {
+        "text": "Maceta decorada x4"
+      },
+      "tooltip": {
+        "text": "5 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_103"
+      }
+    },
+    {
+      "label": {
+        "text": "Bloque de panal x8"
+      },
+      "tooltip": {
+        "text": "6 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_104"
+      }
+    },
+    {
+      "label": {
+        "text": "Cadena x32"
+      },
+      "tooltip": {
+        "text": "5 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_105"
+      }
+    },
+    {
+      "label": {
+        "text": "Campana"
+      },
+      "tooltip": {
+        "text": "12 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_106"
+      }
+    },
+    {
+      "label": {
+        "text": "Cuadro x8"
+      },
+      "tooltip": {
+        "text": "4 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_107"
+      }
+    },
+    {
+      "label": {
+        "text": "Marco brillante x8"
+      },
+      "tooltip": {
+        "text": "5 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_108"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}
