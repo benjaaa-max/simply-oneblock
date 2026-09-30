@@ -1,16 +1,16 @@
 execute if score @s shop_menu matches 1 if score #u1 so_shop matches 1 run dialog show @s so_shop:cat_deco
 execute if score @s shop_menu matches 1 if score #u1 so_shop matches 0 run function so_shop:lib/locked
-execute if score @s shop_menu matches 2 if score #u2 so_shop matches 1 run function so_shop:menu/cat_color
+execute if score @s shop_menu matches 2 if score #u2 so_shop matches 1 run dialog show @s so_shop:cat_color
 execute if score @s shop_menu matches 2 if score #u2 so_shop matches 0 run function so_shop:lib/locked
-execute if score @s shop_menu matches 3 if score #u3 so_shop matches 1 run function so_shop:menu/cat_raros
+execute if score @s shop_menu matches 3 if score #u3 so_shop matches 1 run dialog show @s so_shop:cat_raros
 execute if score @s shop_menu matches 3 if score #u3 so_shop matches 0 run function so_shop:lib/locked
-execute if score @s shop_menu matches 4 if score #u4 so_shop matches 1 run function so_shop:menu/cat_tools
+execute if score @s shop_menu matches 4 if score #u4 so_shop matches 1 run dialog show @s so_shop:cat_tools
 execute if score @s shop_menu matches 4 if score #u4 so_shop matches 0 run function so_shop:lib/locked
-execute if score @s shop_menu matches 5 if score #u5 so_shop matches 1 run function so_shop:menu/cat_books
+execute if score @s shop_menu matches 5 if score #u5 so_shop matches 1 run dialog show @s so_shop:cat_books
 execute if score @s shop_menu matches 5 if score #u5 so_shop matches 0 run function so_shop:lib/locked
-execute if score @s shop_menu matches 6 if score #u6 so_shop matches 1 run function so_shop:menu/cat_eggs
+execute if score @s shop_menu matches 6 if score #u6 so_shop matches 1 run dialog show @s so_shop:cat_eggs
 execute if score @s shop_menu matches 6 if score #u6 so_shop matches 0 run function so_shop:lib/locked
-execute if score @s shop_menu matches 7 if score #u7 so_shop matches 1 run function so_shop:menu/cat_keys
+execute if score @s shop_menu matches 7 if score #u7 so_shop matches 1 run dialog show @s so_shop:cat_keys
 execute if score @s shop_menu matches 7 if score #u7 so_shop matches 0 run function so_shop:lib/locked
-execute if score @s shop_menu matches 8 if score #u8 so_shop matches 1 run function so_shop:menu/cat_sell
+execute if score @s shop_menu matches 8 if score #u8 so_shop matches 1 run dialog show @s so_shop:cat_sell
 execute if score @s shop_menu matches 8 if score #u8 so_shop matches 0 run function so_shop:lib/locked

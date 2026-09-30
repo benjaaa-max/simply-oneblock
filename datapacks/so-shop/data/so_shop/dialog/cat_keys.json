@@ -1,0 +1,116 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Llaves y contratos",
+    "color": "dark_aqua",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver el detalle y confirmar.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Llave de prueba"
+      },
+      "tooltip": {
+        "text": "16 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_701"
+      }
+    },
+    {
+      "label": {
+        "text": "Llave ominosa"
+      },
+      "tooltip": {
+        "text": "32 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_702"
+      }
+    },
+    {
+      "label": {
+        "text": "Botella ominosa"
+      },
+      "tooltip": {
+        "text": "20 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_703"
+      }
+    },
+    {
+      "label": {
+        "text": "Llave de Mazmorra"
+      },
+      "tooltip": {
+        "text": "24 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_704"
+      }
+    },
+    {
+      "label": {
+        "text": "Contrato de Invasión"
+      },
+      "tooltip": {
+        "text": "28 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_705"
+      }
+    },
+    {
+      "label": {
+        "text": "Boleto de Arena"
+      },
+      "tooltip": {
+        "text": "18 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_706"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Vender excedentes",
+    "color": "white",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca lo que quieras vender. Hay un límite diario de ventas (se reinicia cada día).",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Vender 128 tierra"
+      },
+      "tooltip": {
+        "text": "4 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_801"
+      }
+    },
+    {
+      "label": {
+        "text": "Vender 128 piedra"
+      },
+      "tooltip": {
+        "text": "6 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_802"
+      }
+    },
+    {
+      "label": {
+        "text": "Vender 128 netherrack"
+      },
+      "tooltip": {
+        "text": "5 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_803"
+      }
+    },
+    {
+      "label": {
+        "text": "Vender 64 kelp seco"
+      },
+      "tooltip": {
+        "text": "4 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_804"
+      }
+    },
+    {
+      "label": {
+        "text": "Vender 64 troncos"
+      },
+      "tooltip": {
+        "text": "8 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_805"
+      }
+    },
+    {
+      "label": {
+        "text": "Vender 64 arena"
+      },
+      "tooltip": {
+        "text": "5 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_806"
+      }
+    },
+    {
+      "label": {
+        "text": "Vender 32 hierro"
+      },
+      "tooltip": {
+        "text": "12 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_807"
+      }
+    },
+    {
+      "label": {
+        "text": "Vender 32 oro"
+      },
+      "tooltip": {
+        "text": "14 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_808"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}
