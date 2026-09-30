@@ -79,3 +79,8 @@
     conteo (`so_core` o `ib_minedcount`) y avisa en rojo si por algún
     motivo no se está leyendo nada, en vez de mostrar un campo vacío sin
     explicación.
+
+## 0.3 (piloto ventanas)
+- `/trigger shop` abre una ventana con botones (dialog). `/trigger shop set 2` abre el menú clásico del chat.
+- Sección Decorativos en ventana con confirmación e ícono del objeto antes de comprar. El resto de secciones siguen en chat.
+- Ventanas en `data/so_shop/dialog/`, generadas con `tools/build_so_shop_dialogs.py`.
