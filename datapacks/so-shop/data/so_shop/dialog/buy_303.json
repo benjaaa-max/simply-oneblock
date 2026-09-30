@@ -1,0 +1,50 @@
+{
+  "type": "minecraft:confirmation",
+  "title": {
+    "text": "Confirmar compra",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:sculk",
+        "count": 32
+      },
+      "description": {
+        "contents": {
+          "text": "Sculk x32",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio: 14 esmeraldas",
+        "color": "green"
+      }
+    }
+  ],
+  "can_close_with_escape": true,
+  "pause": false,
+  "yes": {
+    "label": {
+      "text": "Comprar",
+      "color": "green"
+    },
+    "action": {
+      "type": "minecraft:run_command",
+      "command": "/trigger shop_buy set 303"
+    }
+  },
+  "no": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_raros"
+    }
+  }
+}

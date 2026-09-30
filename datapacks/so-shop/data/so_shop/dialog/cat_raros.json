@@ -1,0 +1,172 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Materiales raros",
+    "color": "gold",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver el detalle y confirmar.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Bloque de cuarzo x32"
+      },
+      "tooltip": {
+        "text": "12 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_301"
+      }
+    },
+    {
+      "label": {
+        "text": "Fragmento de prismarina x32"
+      },
+      "tooltip": {
+        "text": "10 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_302"
+      }
+    },
+    {
+      "label": {
+        "text": "Sculk x32"
+      },
+      "tooltip": {
+        "text": "14 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_303"
+      }
+    },
+    {
+      "label": {
+        "text": "Fragmento de eco x2"
+      },
+      "tooltip": {
+        "text": "20 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_304"
+      }
+    },
+    {
+      "label": {
+        "text": "Corazón del mar"
+      },
+      "tooltip": {
+        "text": "28 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_305"
+      }
+    },
+    {
+      "label": {
+        "text": "Bloque de amatista x16"
+      },
+      "tooltip": {
+        "text": "9 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_306"
+      }
+    },
+    {
+      "label": {
+        "text": "Netherite scrap x2"
+      },
+      "tooltip": {
+        "text": "40 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_307"
+      }
+    },
+    {
+      "label": {
+        "text": "Lodestone"
+      },
+      "tooltip": {
+        "text": "24 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_308"
+      }
+    },
+    {
+      "label": {
+        "text": "Fruta chorus x32"
+      },
+      "tooltip": {
+        "text": "10 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_309"
+      }
+    },
+    {
+      "label": {
+        "text": "Caparazón de shulker x2"
+      },
+      "tooltip": {
+        "text": "45 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_310"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

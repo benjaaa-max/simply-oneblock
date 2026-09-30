@@ -1,0 +1,144 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Libros encantados",
+    "color": "light_purple",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver el detalle y confirmar.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Libro: Reparación"
+      },
+      "tooltip": {
+        "text": "34 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_501"
+      }
+    },
+    {
+      "label": {
+        "text": "Libro: Fortuna III"
+      },
+      "tooltip": {
+        "text": "30 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_502"
+      }
+    },
+    {
+      "label": {
+        "text": "Libro: Toque de seda"
+      },
+      "tooltip": {
+        "text": "28 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_503"
+      }
+    },
+    {
+      "label": {
+        "text": "Libro: Eficiencia IV"
+      },
+      "tooltip": {
+        "text": "24 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_504"
+      }
+    },
+    {
+      "label": {
+        "text": "Libro: Irrompibilidad III"
+      },
+      "tooltip": {
+        "text": "22 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_505"
+      }
+    },
+    {
+      "label": {
+        "text": "Libro: Protección IV"
+      },
+      "tooltip": {
+        "text": "26 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_506"
+      }
+    },
+    {
+      "label": {
+        "text": "Libro: Botín III"
+      },
+      "tooltip": {
+        "text": "26 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_507"
+      }
+    },
+    {
+      "label": {
+        "text": "Libro: Caída de pluma IV"
+      },
+      "tooltip": {
+        "text": "18 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_508"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

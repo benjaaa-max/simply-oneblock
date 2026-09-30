@@ -1,0 +1,144 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Huevos generadores",
+    "color": "red",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver el detalle y confirmar.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Huevo: Oveja"
+      },
+      "tooltip": {
+        "text": "12 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_601"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo: Vaca"
+      },
+      "tooltip": {
+        "text": "12 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_602"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo: Gallina"
+      },
+      "tooltip": {
+        "text": "10 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_603"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo: Cerdo"
+      },
+      "tooltip": {
+        "text": "12 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_604"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo: Abeja"
+      },
+      "tooltip": {
+        "text": "18 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_605"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo: Allay"
+      },
+      "tooltip": {
+        "text": "40 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_606"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo: Axolote"
+      },
+      "tooltip": {
+        "text": "22 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_607"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo: Sniffer"
+      },
+      "tooltip": {
+        "text": "45 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_608"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

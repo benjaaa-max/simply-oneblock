@@ -1,0 +1,144 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Herramientas",
+    "color": "yellow",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver el detalle y confirmar.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Pico de hierro (Eficiencia III)"
+      },
+      "tooltip": {
+        "text": "14 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_401"
+      }
+    },
+    {
+      "label": {
+        "text": "Pico de diamante"
+      },
+      "tooltip": {
+        "text": "26 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_402"
+      }
+    },
+    {
+      "label": {
+        "text": "Hacha de diamante"
+      },
+      "tooltip": {
+        "text": "24 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_403"
+      }
+    },
+    {
+      "label": {
+        "text": "Azada de diamante (Fortuna II)"
+      },
+      "tooltip": {
+        "text": "22 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_404"
+      }
+    },
+    {
+      "label": {
+        "text": "Tijeras (Toque de seda)"
+      },
+      "tooltip": {
+        "text": "16 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_405"
+      }
+    },
+    {
+      "label": {
+        "text": "Cubo de agua x2"
+      },
+      "tooltip": {
+        "text": "8 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_406"
+      }
+    },
+    {
+      "label": {
+        "text": "Yunque"
+      },
+      "tooltip": {
+        "text": "18 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_407"
+      }
+    },
+    {
+      "label": {
+        "text": "Brújula de recuperación"
+      },
+      "tooltip": {
+        "text": "30 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:buy_408"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

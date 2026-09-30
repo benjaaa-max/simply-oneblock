@@ -9,7 +9,7 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "Toca un artículo para ver el precio y confirmar la compra.",
+        "text": "Toca un artículo para ver el detalle y confirmar.",
         "color": "gray"
       }
     }
@@ -62,7 +62,7 @@
     },
     {
       "label": {
-        "text": "Bloque de panal x8"
+        "text": "Bloque de ámbar x8"
       },
       "tooltip": {
         "text": "6 esmeraldas",
@@ -118,7 +118,7 @@
     },
     {
       "label": {
-        "text": "Marco brillante x8"
+        "text": "Marco de ítem brillante x8"
       },
       "tooltip": {
         "text": "5 esmeraldas",

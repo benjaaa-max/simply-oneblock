@@ -1,0 +1,50 @@
+{
+  "type": "minecraft:confirmation",
+  "title": {
+    "text": "Confirmar venta",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:dried_kelp",
+        "count": 64
+      },
+      "description": {
+        "contents": {
+          "text": "Vender 64 kelp seco",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Recibes: 4 esmeraldas",
+        "color": "green"
+      }
+    }
+  ],
+  "can_close_with_escape": true,
+  "pause": false,
+  "yes": {
+    "label": {
+      "text": "Vender",
+      "color": "green"
+    },
+    "action": {
+      "type": "minecraft:run_command",
+      "command": "/trigger shop_buy set 804"
+    }
+  },
+  "no": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_sell"
+    }
+  }
+}
