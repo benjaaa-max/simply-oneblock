@@ -15,3 +15,5 @@ Mercaderes: advancements `so_quests:trade/*` con los tags `oba_trader` / `oba_t_
 Editar numeros/premios: `tools/build_so_quests.py` y regenerar.
 Admin: `/function so_quests:admin/help`. Desinstalar: `/function so_quests:uninstall`.
 Importante: reemplaza a so_quests v1 (mismo nombre interno). Quita la v1 antes de instalar.
+
+La lista de objetivos que la ventana no explica esta en `README-OBJETIVOS.md`.
