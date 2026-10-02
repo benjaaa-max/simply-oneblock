@@ -25,7 +25,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 50\nRecompensa: 8 emerald"
+        "text": "Objetivo: 50\nRecompensa: 8 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -39,7 +39,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 50\nRecompensa: 8 emerald"
+        "text": "Objetivo: 50\nRecompensa: 8 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -53,7 +53,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 30\nRecompensa: 6 emerald"
+        "text": "Objetivo: 30\nRecompensa: 6 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -67,7 +67,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 25\nRecompensa: 8 emerald"
+        "text": "Objetivo: 25\nRecompensa: 8 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -81,7 +81,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 15\nRecompensa: 12 emerald"
+        "text": "Objetivo: 15\nRecompensa: 12 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -95,7 +95,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 10\nRecompensa: 12 emerald"
+        "text": "Objetivo: 10\nRecompensa: 12 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -109,7 +109,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 10\nRecompensa: 16 emerald"
+        "text": "Objetivo: 10\nRecompensa: 16 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -123,7 +123,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 20\nRecompensa: 6 emerald"
+        "text": "Objetivo: 20\nRecompensa: 6 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -137,7 +137,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 300\nRecompensa: 16 emerald"
+        "text": "Objetivo: 300\nRecompensa: 16 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -151,7 +151,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 10000 bloques\nRecompensa: 6 emerald"
+        "text": "Objetivo: 10000 bloques\nRecompensa: 6 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -165,7 +165,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 2000 bloques\nRecompensa: 6 emerald"
+        "text": "Objetivo: 2000 bloques\nRecompensa: 6 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -179,7 +179,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 20\nRecompensa: 6 emerald"
+        "text": "Objetivo: 20\nRecompensa: 6 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -193,7 +193,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 30\nRecompensa: 6 emerald"
+        "text": "Objetivo: 30\nRecompensa: 6 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -207,7 +207,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 25\nRecompensa: 10 emerald"
+        "text": "Objetivo: 25\nRecompensa: 10 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",
@@ -221,7 +221,7 @@
       },
       "width": 150,
       "tooltip": {
-        "text": "Objetivo: 500 bloques\nRecompensa: 4 emerald"
+        "text": "Objetivo: 500 bloques\nRecompensa: 4 esmeraldas"
       },
       "action": {
         "type": "minecraft:run_command",

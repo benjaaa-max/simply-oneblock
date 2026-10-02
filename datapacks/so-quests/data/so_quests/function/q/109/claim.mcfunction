@@ -3,5 +3,5 @@ execute unless function so_quests:lib/space run return run tellraw @s [{"text": 
 scoreboard players set @s sqs_109 2
 give @s minecraft:emerald 64
 give @s minecraft:totem_of_undying 1
-tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Reclamaste ", "color": "green"}, {"text": "Maestría OneBlock", "color": "white"}, {"text": " → 64 emerald, 1 totem of undying", "color": "gray"}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Reclamaste ", "color": "green"}, {"text": "Maestría OneBlock", "color": "white"}, {"text": " → 64 esmeraldas, 1 tótem de la inmortalidad", "color": "gray"}]
 playsound minecraft:entity.player.levelup master @s ~ ~ ~ 0.6 1.2
