@@ -1,0 +1,57 @@
+{
+  "type": "minecraft:confirmation",
+  "title": {
+    "text": "Reclamar recompensa",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:bone",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Saqueador de tumbas",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Comerciar con el mercader",
+        "color": "gray"
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Recompensa: 18 emerald",
+        "color": "green"
+      }
+    }
+  ],
+  "can_close_with_escape": true,
+  "pause": false,
+  "yes": {
+    "label": {
+      "text": "Reclamar",
+      "color": "green"
+    },
+    "action": {
+      "type": "minecraft:run_command",
+      "command": "/trigger quest_claim set 116"
+    }
+  },
+  "no": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_quests:cat_1"
+    }
+  }
+}

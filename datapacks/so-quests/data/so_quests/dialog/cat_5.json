@@ -1,0 +1,535 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Metas de la Isla",
+    "color": "light_purple",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Verde en el chat = lista para reclamar. Pasa el ratón para ver el objetivo.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Colocar 3000 de tierra",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 3000\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 501"
+      }
+    },
+    {
+      "label": {
+        "text": "Colocar 3000 de adoquín",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 3000\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 502"
+      }
+    },
+    {
+      "label": {
+        "text": "Colocar 2000 tablones de roble",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 2000\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 503"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 5000 de piedra",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 5000\nRecompensa: 12 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 504"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 1000 menas de carbón",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 1000\nRecompensa: 10 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 505"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 500 menas de hierro",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 500\nRecompensa: 12 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 506"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 800 menas de cobre",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 800\nRecompensa: 10 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 507"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 300 menas de oro",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 300\nRecompensa: 12 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 508"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 500 menas de redstone",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 500\nRecompensa: 10 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 509"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 300 menas de lapislázuli",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 300\nRecompensa: 10 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 510"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 150 menas de diamante",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 150\nRecompensa: 20 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 511"
+      }
+    },
+    {
+      "label": {
+        "text": "Romper 300 troncos de roble",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 300\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 512"
+      }
+    },
+    {
+      "label": {
+        "text": "Romper 300 troncos de abeto",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 300\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 513"
+      }
+    },
+    {
+      "label": {
+        "text": "Romper 300 troncos de abedul",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 300\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 514"
+      }
+    },
+    {
+      "label": {
+        "text": "Romper 300 troncos de jungla",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 300\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 515"
+      }
+    },
+    {
+      "label": {
+        "text": "Romper 300 troncos de acacia",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 300\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 516"
+      }
+    },
+    {
+      "label": {
+        "text": "Romper 300 troncos de roble oscuro",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 300\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 517"
+      }
+    },
+    {
+      "label": {
+        "text": "Romper 200 troncos de cerezo",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 200\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 518"
+      }
+    },
+    {
+      "label": {
+        "text": "Romper 200 troncos de mangle",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 200\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 519"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 3000 de netherrack",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 3000\nRecompensa: 10 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 520"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 1000 de arena",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 1000\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 521"
+      }
+    },
+    {
+      "label": {
+        "text": "Minar 500 de piedra del End",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 500\nRecompensa: 12 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 522"
+      }
+    },
+    {
+      "label": {
+        "text": "Fabricar 100 bloques de diamante",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 100\nRecompensa: 32 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 523"
+      }
+    },
+    {
+      "label": {
+        "text": "Fabricar 200 bloques de hierro",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 200\nRecompensa: 16 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 524"
+      }
+    },
+    {
+      "label": {
+        "text": "Fabricar 100 bloques de oro",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 100\nRecompensa: 16 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 525"
+      }
+    },
+    {
+      "label": {
+        "text": "Fabricar 2000 antorchas",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 2000\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 526"
+      }
+    },
+    {
+      "label": {
+        "text": "Hornear 500 panes",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 500\nRecompensa: 10 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 527"
+      }
+    },
+    {
+      "label": {
+        "text": "Derrotar 500 zombis",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 500\nRecompensa: 12 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 528"
+      }
+    },
+    {
+      "label": {
+        "text": "Derrotar 500 esqueletos",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 500\nRecompensa: 12 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 529"
+      }
+    },
+    {
+      "label": {
+        "text": "Derrotar 300 creepers",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 300\nRecompensa: 12 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 530"
+      }
+    },
+    {
+      "label": {
+        "text": "Derrotar 200 endermen",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 200\nRecompensa: 16 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 531"
+      }
+    },
+    {
+      "label": {
+        "text": "Derrotar 3000 monstruos",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 3000\nRecompensa: 20 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 532"
+      }
+    },
+    {
+      "label": {
+        "text": "Correr 50.000 bloques",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 50000\nRecompensa: 12 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 533"
+      }
+    },
+    {
+      "label": {
+        "text": "Volar 20.000 bloques",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 20000\nRecompensa: 16 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 534"
+      }
+    },
+    {
+      "label": {
+        "text": "Nadar 10.000 bloques",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 10000\nRecompensa: 12 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 535"
+      }
+    },
+    {
+      "label": {
+        "text": "Navegar 10.000 bloques",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Meta compartida: 10000\nRecompensa: 10 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 536"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_quests:main"
+    }
+  }
+}

@@ -1,0 +1,283 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Recolección y fabricación",
+    "color": "green",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Verde en el chat = lista para reclamar. Pasa el ratón para ver el objetivo.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Cantero",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 500\nRecompensa: 6 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 201"
+      }
+    },
+    {
+      "label": {
+        "text": "Carbonero",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 100\nRecompensa: 6 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 202"
+      }
+    },
+    {
+      "label": {
+        "text": "Herrero en ciernes",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 64\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 203"
+      }
+    },
+    {
+      "label": {
+        "text": "Cobre a montones",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 64\nRecompensa: 6 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 204"
+      }
+    },
+    {
+      "label": {
+        "text": "Fiebre del oro",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 32\nRecompensa: 10 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 205"
+      }
+    },
+    {
+      "label": {
+        "text": "Brillo azul",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 16\nRecompensa: 16 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 206"
+      }
+    },
+    {
+      "label": {
+        "text": "Esmeraldas en bruto",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 5\nRecompensa: 12 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 207"
+      }
+    },
+    {
+      "label": {
+        "text": "Leñador",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 128\nRecompensa: 6 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 208"
+      }
+    },
+    {
+      "label": {
+        "text": "Restos antiguos",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 4\nRecompensa: 24 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 209"
+      }
+    },
+    {
+      "label": {
+        "text": "Que se haga la luz",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 128\nRecompensa: 4 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 210"
+      }
+    },
+    {
+      "label": {
+        "text": "Pico de hierro",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 1\nRecompensa: 4 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 211"
+      }
+    },
+    {
+      "label": {
+        "text": "Pico de diamante",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 1\nRecompensa: 10 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 212"
+      }
+    },
+    {
+      "label": {
+        "text": "Panadero",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 32\nRecompensa: 6 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 213"
+      }
+    },
+    {
+      "label": {
+        "text": "Biblioteca",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 8\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 214"
+      }
+    },
+    {
+      "label": {
+        "text": "Yunque propio",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 1\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 215"
+      }
+    },
+    {
+      "label": {
+        "text": "Granjero",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 64\nRecompensa: 4 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 216"
+      }
+    },
+    {
+      "label": {
+        "text": "Abono",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 64\nRecompensa: 4 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 217"
+      }
+    },
+    {
+      "label": {
+        "text": "Manzana dorada",
+        "color": "green"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 1\nRecompensa: 8 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 218"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_quests:main"
+    }
+  }
+}

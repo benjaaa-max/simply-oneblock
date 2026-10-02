@@ -1,0 +1,73 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Diarias",
+    "color": "yellow",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Verde en el chat = lista para reclamar. Pasa el ratón para ver el objetivo.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Patrulla diaria",
+        "color": "yellow"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 20\nRecompensa: 4 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 601"
+      }
+    },
+    {
+      "label": {
+        "text": "Cantera diaria",
+        "color": "yellow"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 128\nRecompensa: 4 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 602"
+      }
+    },
+    {
+      "label": {
+        "text": "Entrega: 32 adoquines",
+        "color": "yellow"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Entregar 32 cobblestone (se quitan al reclamar)\nRecompensa: 5 emerald"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 603"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_quests:main"
+    }
+  }
+}

@@ -1,0 +1,3 @@
+execute if score #done_527 sq_group matches 1 unless score @s sqs_527 matches 2 run return run dialog show @s so_quests:claim_527
+execute if score @s sqs_527 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Hornear 500 panes: ya reclamaste tu parte.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 5"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Hornear 500 panes: ", "color": "white"}, {"score": {"name": "#g_527", "objective": "sq_group"}, "color": "yellow"}, {"text": " / 500", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 5"}}]

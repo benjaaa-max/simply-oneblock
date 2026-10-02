@@ -1,0 +1,13 @@
+{
+  "pack": {
+    "description": "Simply OneBlock Expansion - Quests v2 (/trigger quests)",
+    "min_format": [
+      107,
+      1
+    ],
+    "max_format": [
+      107,
+      1
+    ]
+  }
+}

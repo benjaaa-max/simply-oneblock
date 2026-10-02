@@ -1,0 +1,3 @@
+execute if score @s sqs_413 matches 1 run return run dialog show @s so_quests:claim_413
+execute if score @s sqs_413 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Doctor zombi: completada.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 4"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Doctor zombi: ", "color": "white"}, {"text": "pendiente", "color": "yellow"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 4"}}]
