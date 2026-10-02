@@ -1,0 +1,3 @@
+execute if score @s sqs_310 matches 1 run return run dialog show @s so_quests:claim_310
+execute if score @s sqs_310 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Caminante: completada.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 3"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Caminante: ", "color": "white"}, {"score": {"name": "@s", "objective": "sqv_310"}, "color": "yellow"}, {"text": " / 10000", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 3"}}]

@@ -1,0 +1,3 @@
+execute if score @s sqs_601 matches 1 run return run dialog show @s so_quests:claim_601
+execute if score @s sqs_601 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Patrulla diaria: completada.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 6"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Patrulla diaria: ", "color": "white"}, {"score": {"name": "@s", "objective": "sqp_601"}, "color": "yellow"}, {"text": " / 20", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 6"}}]

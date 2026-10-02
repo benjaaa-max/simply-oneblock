@@ -1,0 +1,269 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Fases y progreso",
+    "color": "gold",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Verde en el chat = lista para reclamar. Pasa el ratón para ver el objetivo.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Primeros pasos",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Llegar a 100 bloques minados del OneBlock\nRecompensa: 4 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 101"
+      }
+    },
+    {
+      "label": {
+        "text": "Bajo tierra",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Llegar a 500 bloques minados del OneBlock\nRecompensa: 8 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 102"
+      }
+    },
+    {
+      "label": {
+        "text": "Mil golpes",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Llegar a 1000 bloques minados del OneBlock\nRecompensa: 12 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 103"
+      }
+    },
+    {
+      "label": {
+        "text": "Isla en marcha",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Llegar a 2500 bloques minados del OneBlock\nRecompensa: 16 esmeraldas, 8 frascos de experiencia"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 104"
+      }
+    },
+    {
+      "label": {
+        "text": "Cinco mil",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Llegar a 5000 bloques minados del OneBlock\nRecompensa: 24 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 105"
+      }
+    },
+    {
+      "label": {
+        "text": "Veterano del bloque",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Llegar a 7500 bloques minados del OneBlock\nRecompensa: 32 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 106"
+      }
+    },
+    {
+      "label": {
+        "text": "Diez mil",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Llegar a 10000 bloques minados del OneBlock\nRecompensa: 40 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 107"
+      }
+    },
+    {
+      "label": {
+        "text": "Leyenda de la isla",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Llegar a 12500 bloques minados del OneBlock\nRecompensa: 48 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 108"
+      }
+    },
+    {
+      "label": {
+        "text": "Maestría OneBlock",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Llegar a 15000 bloques minados del OneBlock\nRecompensa: 64 esmeraldas, 1 tótem de la inmortalidad"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 109"
+      }
+    },
+    {
+      "label": {
+        "text": "Primera visita a la tienda",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 1\nRecompensa: 2 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 110"
+      }
+    },
+    {
+      "label": {
+        "text": "Cliente fiel",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Objetivo: 10\nRecompensa: 10 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 111"
+      }
+    },
+    {
+      "label": {
+        "text": "Primer trueque",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Comerciar con el mercader\nRecompensa: 4 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 112"
+      }
+    },
+    {
+      "label": {
+        "text": "Trato en la llanura",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Comerciar con el mercader\nRecompensa: 6 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 113"
+      }
+    },
+    {
+      "label": {
+        "text": "El buzo del abismo",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Comerciar con el mercader\nRecompensa: 10 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 114"
+      }
+    },
+    {
+      "label": {
+        "text": "Pacto en el Inframundo",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Comerciar con el mercader\nRecompensa: 14 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 115"
+      }
+    },
+    {
+      "label": {
+        "text": "Saqueador de tumbas",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Comerciar con el mercader\nRecompensa: 18 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 116"
+      }
+    },
+    {
+      "label": {
+        "text": "Trato con el maestro",
+        "color": "gold"
+      },
+      "width": 150,
+      "tooltip": {
+        "text": "Comerciar con el mercader\nRecompensa: 32 esmeraldas"
+      },
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_view set 117"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_quests:main"
+    }
+  }
+}

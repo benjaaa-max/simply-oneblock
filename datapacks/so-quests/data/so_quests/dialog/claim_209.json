@@ -1,0 +1,57 @@
+{
+  "type": "minecraft:confirmation",
+  "title": {
+    "text": "Reclamar recompensa",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:ancient_debris",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Restos antiguos",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Objetivo: 4",
+        "color": "gray"
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Recompensa: 24 esmeraldas",
+        "color": "green"
+      }
+    }
+  ],
+  "can_close_with_escape": true,
+  "pause": false,
+  "yes": {
+    "label": {
+      "text": "Reclamar",
+      "color": "green"
+    },
+    "action": {
+      "type": "minecraft:run_command",
+      "command": "/trigger quest_claim set 209"
+    }
+  },
+  "no": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_quests:cat_2"
+    }
+  }
+}

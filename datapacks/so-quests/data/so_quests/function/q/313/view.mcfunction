@@ -1,0 +1,3 @@
+execute if score @s sqs_313 matches 1 run return run dialog show @s so_quests:claim_313
+execute if score @s sqs_313 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Criador: completada.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 3"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Criador: ", "color": "white"}, {"score": {"name": "@s", "objective": "sqp_313"}, "color": "yellow"}, {"text": " / 30", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 3"}}]

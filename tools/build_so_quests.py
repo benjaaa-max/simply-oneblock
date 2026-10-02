@@ -182,8 +182,9 @@ def F(name, lines): W(f"data/{NS}/function/{name}.mcfunction", "\n".join(lines) 
 def T(*parts): return json.dumps(list(parts), ensure_ascii=False)
 PFX = {"text": "[Misiones] ", "color": "gold"}
 
+ES = {"emerald": "esmeraldas", "experience_bottle": "frascos de experiencia", "totem_of_undying": "tótem de la inmortalidad"}
 def rew_text(r):
-    return ", ".join(f"{n} {it.replace('_', ' ')}" for it, n in r)
+    return ", ".join(f"{n} {ES.get(it, it.replace('_', ' '))}" for it, n in r)
 
 # Todas las misiones en formato comun: id, cat, nombre, icono, cond, rew, kind
 ALL = []
@@ -343,6 +344,9 @@ F("lib/new_day", [*reset_day, f"tellraw @a {T(PFX, {'text': 'Nuevo día: las mis
 F("lib/view", ["$function so_quests:q/$(id)/view"])
 F("lib/claim", ["$function so_quests:q/$(id)/claim"])
 F("lib/open_cat", ["$dialog show @s so_quests:cat_$(id)"])
+F("lib/h_open_cat", ["execute store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_menu", "function so_quests:lib/open_cat with storage so_quests:tmp"])
+F("lib/h_view", ["execute store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_view", "function so_quests:lib/view with storage so_quests:tmp"])
+F("lib/h_claim", ["execute store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_claim", "function so_quests:lib/claim with storage so_quests:tmp"])
 F("tick", [
     "execute unless score #enabled sq matches 1 run return 0",
     "execute as @a[tag=!sq_init] run function so_quests:lib/init_player",
@@ -354,14 +358,11 @@ F("tick", [
     "execute if score #day sq matches 24000.. run scoreboard players set #day sq 0",
     "execute as @a[scores={quests=1..}] at @s run dialog show @s so_quests:main",
     "scoreboard players reset @a quests", "scoreboard players enable @a quests",
-    "execute as @a[scores={quest_menu=1..6}] store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_menu",
-    "execute as @a[scores={quest_menu=1..6}] run function so_quests:lib/open_cat with storage so_quests:tmp",
+    "execute as @a[scores={quest_menu=1..6}] at @s run function so_quests:lib/h_open_cat",
     "scoreboard players reset @a quest_menu", "scoreboard players enable @a quest_menu",
-    "execute as @a[scores={quest_view=1..}] at @s store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_view",
-    "execute as @a[scores={quest_view=1..}] at @s run function so_quests:lib/view with storage so_quests:tmp",
+    "execute as @a[scores={quest_view=1..}] at @s run function so_quests:lib/h_view",
     "scoreboard players reset @a quest_view", "scoreboard players enable @a quest_view",
-    "execute as @a[scores={quest_claim=1..}] at @s store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_claim",
-    "execute as @a[scores={quest_claim=1..}] at @s run function so_quests:lib/claim with storage so_quests:tmp",
+    "execute as @a[scores={quest_claim=1..}] at @s run function so_quests:lib/h_claim",
     "scoreboard players reset @a quest_claim", "scoreboard players enable @a quest_claim"])
 F("admin/help", [f"tellraw @s {T(PFX, {'text': 'Admin: enable, disable, status, new_day, reset_me, set_group {id:501,value:100}, uninstall', 'color': 'gray'})}"])
 F("admin/enable", ["scoreboard players set #enabled sq 1", f"tellraw @s {T(PFX, {'text': 'Activado', 'color': 'green'})}"])

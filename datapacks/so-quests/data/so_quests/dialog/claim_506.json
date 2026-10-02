@@ -1,0 +1,57 @@
+{
+  "type": "minecraft:confirmation",
+  "title": {
+    "text": "Reclamar recompensa",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:iron_ore",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Minar 500 menas de hierro",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Meta compartida: 500",
+        "color": "gray"
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Recompensa: 12 esmeraldas",
+        "color": "green"
+      }
+    }
+  ],
+  "can_close_with_escape": true,
+  "pause": false,
+  "yes": {
+    "label": {
+      "text": "Reclamar",
+      "color": "green"
+    },
+    "action": {
+      "type": "minecraft:run_command",
+      "command": "/trigger quest_claim set 506"
+    }
+  },
+  "no": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_quests:cat_5"
+    }
+  }
+}

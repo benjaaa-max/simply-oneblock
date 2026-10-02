@@ -1,0 +1,3 @@
+execute if score @s sqs_305 matches 1 run return run dialog show @s so_quests:claim_305
+execute if score @s sqs_305 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Mirada perdida: completada.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 3"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Mirada perdida: ", "color": "white"}, {"score": {"name": "@s", "objective": "sqp_305"}, "color": "yellow"}, {"text": " / 15", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 3"}}]

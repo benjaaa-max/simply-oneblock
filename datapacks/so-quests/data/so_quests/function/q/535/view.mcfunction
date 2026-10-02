@@ -1,0 +1,3 @@
+execute if score #done_535 sq_group matches 1 unless score @s sqs_535 matches 2 run return run dialog show @s so_quests:claim_535
+execute if score @s sqs_535 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Nadar 10.000 bloques: ya reclamaste tu parte.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 5"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Nadar 10.000 bloques: ", "color": "white"}, {"score": {"name": "#g_535", "objective": "sq_group"}, "color": "yellow"}, {"text": " / 10000", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 5"}}]

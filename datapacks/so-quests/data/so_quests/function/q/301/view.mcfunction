@@ -1,0 +1,3 @@
+execute if score @s sqs_301 matches 1 run return run dialog show @s so_quests:claim_301
+execute if score @s sqs_301 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Cazador de zombis: completada.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 3"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Cazador de zombis: ", "color": "white"}, {"score": {"name": "@s", "objective": "sqp_301"}, "color": "yellow"}, {"text": " / 50", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 3"}}]

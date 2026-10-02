@@ -1,0 +1,91 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Misiones OneBlock",
+    "color": "gold",
+    "bold": true
+  },
+  "external_title": {
+    "text": "Misiones"
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca una misión para ver tu progreso o reclamarla.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Fases y progreso",
+        "color": "gold"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_menu set 1"
+      }
+    },
+    {
+      "label": {
+        "text": "Recolección y fabricación",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_menu set 2"
+      }
+    },
+    {
+      "label": {
+        "text": "Combate y exploración",
+        "color": "red"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_menu set 3"
+      }
+    },
+    {
+      "label": {
+        "text": "Logros de Minecraft",
+        "color": "aqua"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_menu set 4"
+      }
+    },
+    {
+      "label": {
+        "text": "Metas de la Isla",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_menu set 5"
+      }
+    },
+    {
+      "label": {
+        "text": "Diarias",
+        "color": "yellow"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger quest_menu set 6"
+      }
+    }
+  ]
+}

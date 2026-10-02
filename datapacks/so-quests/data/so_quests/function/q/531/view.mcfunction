@@ -1,0 +1,3 @@
+execute if score #done_531 sq_group matches 1 unless score @s sqs_531 matches 2 run return run dialog show @s so_quests:claim_531
+execute if score @s sqs_531 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Derrotar 200 endermen: ya reclamaste tu parte.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 5"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Derrotar 200 endermen: ", "color": "white"}, {"score": {"name": "#g_531", "objective": "sq_group"}, "color": "yellow"}, {"text": " / 200", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 5"}}]

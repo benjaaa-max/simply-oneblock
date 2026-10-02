@@ -1,0 +1,3 @@
+execute if score #done_534 sq_group matches 1 unless score @s sqs_534 matches 2 run return run dialog show @s so_quests:claim_534
+execute if score @s sqs_534 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Volar 20.000 bloques: ya reclamaste tu parte.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 5"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Volar 20.000 bloques: ", "color": "white"}, {"score": {"name": "#g_534", "objective": "sq_group"}, "color": "yellow"}, {"text": " / 20000", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 5"}}]

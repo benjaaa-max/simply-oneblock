@@ -1,0 +1,3 @@
+execute if score @s sqs_109 matches 1 run return run dialog show @s so_quests:claim_109
+execute if score @s sqs_109 matches 2 run return run tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Maestría OneBlock: completada.", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 1"}}]
+tellraw @s [{"text": "[Misiones] ", "color": "gold"}, {"text": "Maestría OneBlock: ", "color": "white"}, {"score": {"name": "#blocks", "objective": "sq"}, "color": "yellow"}, {"text": " / 15000 bloques", "color": "gray"}, {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": "/trigger quest_menu set 1"}}]
