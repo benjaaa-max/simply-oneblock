@@ -98,7 +98,7 @@ def key(kid, w_):
 
 
 def empty(w_): return {"type": "minecraft:empty", "weight": w_}
-def pool(entries, rolls=1): return {"rolls": rolls, "entries": entries}
+def pool(entries, rolls=1): return {"rolls": rolls, "entries": [e for e in entries if e.get("weight", 1) > 0]}
 def table(*pools): return {"type": "minecraft:vault", "pools": list(pools)}
 
 
@@ -123,14 +123,14 @@ LOOT["builder"] = table(pool([
     it("oxidized_cut_copper", 2, 16, 32), it("waxed_copper_block", 2, 8, 24), it("calcite", 3, 32, 64),
     it("tuff_bricks", 3, 32, 64), it("mud_bricks", 3, 32, 64), it("glass", 4, 32, 64),
     it("prismarine_bricks", 2, 16, 32), it("purpur_block", 1, 16, 32), it("end_rod", 2, 8, 16),
-]], rolls=3), pool([it("emerald", 1, 2, 6), key("builder", 1), empty(5)]))
+], rolls=3), pool([it("emerald", 1, 2, 6), key("builder", 1), empty(5)]))
 
 LOOT["miner"] = table(pool([
     it("raw_iron", 6, 8, 24), it("raw_copper", 5, 16, 32), it("raw_gold", 4, 6, 16), it("coal", 5, 16, 32),
     it("lapis_lazuli", 4, 8, 24), it("redstone", 4, 16, 32), it("amethyst_shard", 3, 8, 16),
     it("diamond", 2, 1, 4), it("emerald", 2, 2, 6), it("iron_pickaxe", 2),
     book(2, ["efficiency", "fortune", "unbreaking"]),
-]], rolls=3), pool([key("miner", 1), key("mystic", 1), empty(10)]))
+], rolls=3), pool([key("miner", 1), key("mystic", 1), empty(10)]))
 
 LOOT["nature"] = table(pool([
     it("cherry_sapling", 3, 2, 4), it("mangrove_propagule", 3, 2, 4), it("dark_oak_sapling", 3, 4, 8),
@@ -139,7 +139,7 @@ LOOT["nature"] = table(pool([
     it("melon_seeds", 3, 2, 6), it("pumpkin_seeds", 3, 2, 6), it("cocoa_beans", 3, 2, 6),
     it("honeycomb", 3, 4, 8), it("bone_meal", 4, 16, 32), it("cow_spawn_egg", 1), it("sheep_spawn_egg", 1),
     it("chicken_spawn_egg", 1), it("bee_spawn_egg", 1), it("pig_spawn_egg", 1),
-]], rolls=3), pool([key("nature", 1), empty(7)]))
+], rolls=3), pool([key("nature", 1), empty(7)]))
 
 LOOT["combat"] = table(pool([
     potion(4, "healing"), potion(3, "strength"), potion(3, "swiftness"), potion(2, "fire_resistance"),
@@ -147,14 +147,14 @@ LOOT["combat"] = table(pool([
     it("golden_apple", 3, 1, 3), it("iron_chestplate", 2), it("iron_sword", 2), it("shield", 2),
     it("crossbow", 1), it("spectral_arrow", 3, 8, 16),
     book(3, ["sharpness", "protection", "power", "smite", "projectile_protection"]),
-]], rolls=3), pool([key("combat", 1), key("legend", 1), empty(14)]))
+], rolls=3), pool([key("combat", 1), key("legend", 1), empty(14)]))
 
 LOOT["mystic"] = table(pool([
     it("blaze_rod", 5, 2, 6), it("ghast_tear", 3, 1, 3), it("ender_pearl", 4, 2, 6), it("magma_cream", 3, 2, 6),
     it("glowstone", 3, 8, 16), it("quartz", 4, 16, 32), it("shulker_shell", 2, 1, 2), it("ancient_debris", 1),
     it("crying_obsidian", 2, 4, 8), it("experience_bottle", 4, 8, 16), it("nether_wart", 3, 8, 16),
     book(3),
-]], rolls=3), pool([key("mystic", 1), key("legend", 1), empty(10)]))
+], rolls=3), pool([key("mystic", 1), key("legend", 1), empty(10)]))
 
 LOOT["legend"] = table(
     pool([it("totem_of_undying", 3), it("enchanted_golden_apple", 2), it("diamond", 5, 3, 8),
