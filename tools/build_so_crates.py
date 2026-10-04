@@ -98,7 +98,7 @@ def key(kid, w_):
 
 
 def empty(w_): return {"type": "minecraft:empty", "weight": w_}
-def pool(entries, rolls=1): return {"rolls": rolls, "entries": entries}
+def pool(entries, rolls=1): return {"rolls": rolls, "entries": [e for e in entries if e.get("weight", 1) > 0]}
 def table(*pools): return {"type": "minecraft:vault", "pools": list(pools)}
 
 
