@@ -7,6 +7,7 @@ from pathlib import Path
 import json
 import math
 import re
+from collections import defaultdict
 
 ROOT = Path(__file__).resolve().parent.parent / 'datapacks/so-shop'
 FN = ROOT / 'data/so_shop/function'
@@ -42,8 +43,23 @@ def price(base, times):
     return math.ceil(base * times * MULTIPLIERS[times])
 
 
+def dialog(name, obj):
+    path = ROOT / f'data/so_shop/dialog/{name}.json'
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(obj, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+
+def show(name):
+    return {'type': 'minecraft:show_dialog', 'dialog': f'so_shop:{name}'}
+
+
+def command(text):
+    return {'type': 'minecraft:run_command', 'command': text}
+
+
 # Existing article data comes from the actual corrected pack, not the old baseline generator.
 existing = []
+names = {}
 for path in sorted((FN / 'item').glob('*_ok.mcfunction')):
     if not path.stem[:-3].isdigit():
         continue
@@ -56,6 +72,8 @@ for path in sorted((FN / 'item').glob('*_ok.mcfunction')):
     if not clear or not give:
         raise ValueError(f'No puedo reconocer precio/entrega: {path}')
     existing.append((iid, iid // 100, int(clear[1]), give[1], int(give[2])))
+    detail = ROOT / f'data/so_shop/dialog/buy_{iid}.json'
+    names[iid] = json.loads(detail.read_text(encoding='utf-8'))['body'][0].get('description', {}).get('contents', {}).get('text', f'Artículo {iid}')
 assert len(existing) >= 60, f'Faltan artículos en la tienda: {len(existing)}'
 
 for iid, name, item, cost, unlock in KEYS:
@@ -75,6 +93,7 @@ for iid, name, item, cost, unlock in KEYS:
                  'playsound minecraft:entity.villager.yes master @s ~ ~ ~ 1 1',
                  'scoreboard players add @s so_shop_buys 1'])
     existing.append((iid, 9, cost, cmd_item, 1))
+    names[iid] = name
 
 # Subsección de llaves dentro de la categoría original; no se cambia el umbral de las demás.
 menu = FN / 'menu/cat_oneblock.mcfunction'
@@ -157,4 +176,75 @@ entry = 'tellraw @s [{"text":"  ▸ Llaves OneBlock","color":"gold","bold":true,
 if entry not in text:
     text = text.replace('tellraw @s [{"text":"Pago en esmeraldas.', entry + 'tellraw @s [{"text":"Pago en esmeraldas.')
     main_menu.write_text(text, encoding='utf-8')
+
+# Ventanas nativas: cantidades visibles en el mismo detalle. Las ventas mantienen su confirmación.
+groups = defaultdict(list)
+for iid, catid, cost, item, count in existing:
+    groups[catid].append((iid, cost))
+    path = ROOT / f'data/so_shop/dialog/buy_{iid}.json'
+    back = 'cat_oneblock' if catid == 9 else ['','cat_deco','cat_color','cat_raros','cat_tools','cat_books','cat_eggs','cat_keys'][catid]
+    if catid == 9:
+        data = {
+            'type': 'minecraft:multi_action',
+            'title': {'text':'Comprar llave OneBlock','color':'gold'},
+            'body': [
+                {'type':'minecraft:item','item':{'id': item.split('[', 1)[0], 'count':1},
+                 'description':{'contents':{'text':names[iid], 'color':'white'}}},
+                {'type':'minecraft:plain_message','contents':{'text':f'Precio: {cost} esmeraldas','color':'green'}},
+            ],
+        }
+    else:
+        data = json.loads(path.read_text(encoding='utf-8'))
+        data['type'] = 'minecraft:multi_action'
+        data.pop('yes', None)
+        data.pop('no', None)
+        data.pop('exit_action', None)
+    data['columns'] = 2
+    data['can_close_with_escape'] = True
+    data['pause'] = False
+    data['actions'] = [
+        {'label':{'text':f'x1 · {cost} E'}, 'width':150, 'action':command(f'/trigger shop_buy set {iid}')},
+        *[{'label':{'text':f'x{times} · {price(cost,times)} E'},
+           'tooltip':{'text':f'Ahorrás {cost * times - price(cost,times)} esmeraldas','color':'green'},
+           'width':150,'action':command(f'/trigger shop_buy set {iid * 10 + times}')}
+          for times in MULTIPLIERS],
+    ]
+    data['exit_action'] = {'label':{'text':'« Volver'}, 'width':150, 'action':show(back)}
+    dialog(f'buy_{iid}', data)
+
+dialog('cat_oneblock', {
+    'type':'minecraft:multi_action',
+    'title':{'text':'Llaves OneBlock','color':'gold','bold':True},
+    'body':[{'type':'minecraft:plain_message','contents':{'text':'Las llaves se desbloquean según el progreso del OneBlock. También abren sus puertas originales.','color':'gray'}}],
+    'columns':2,'can_close_with_escape':True,'pause':False,
+    'actions':[
+        {'label':{'text':name},'tooltip':{'text':f'{cost} esmeraldas · {unlock} bloques','color':'green'},
+         'width':150,'action':command(f'/trigger shop_menu set {900 + iid - 711}')}
+        for iid, name, _, cost, unlock in KEYS
+    ],
+    'exit_action':{'label':{'text':'« Volver'},'width':150,'action':show('main')},
+})
+
+# Pasar por trigger impide saltarse un desbloqueo desde la ventana.
+extra_menu = FN / 'lib/open_cat.mcfunction'
+content = extra_menu.read_text(encoding='utf-8')
+for iid, name, _, _, unlock in KEYS:
+    menu_id = 900 + iid - 711
+    line = f'execute if score @s shop_menu matches {menu_id} if score #blocks so_shop matches {unlock}.. run dialog show @s so_shop:buy_{iid}\n'
+    if line not in content:
+        content += line
+        content += f'execute if score @s shop_menu matches {menu_id} unless score #blocks so_shop matches {unlock}.. run function so_shop:lib/locked\n'
+extra_menu.write_text(content, encoding='utf-8')
+
+cat_dialog = ROOT / 'data/so_shop/dialog/cat_keys.json'
+data = json.loads(cat_dialog.read_text(encoding='utf-8'))
+link_action = {'label':{'text':'Llaves OneBlock','color':'gold'}, 'width':150, 'action':show('cat_oneblock')}
+data['actions'] = [a for a in data['actions'] if a.get('label',{}).get('text') != 'Llaves OneBlock'] + [link_action]
+dialog('cat_keys', data)
+
+main_dialog = ROOT / 'data/so_shop/dialog/main.json'
+data = json.loads(main_dialog.read_text(encoding='utf-8'))
+link_action = {'label':{'text':'Llaves OneBlock','color':'gold'}, 'width':150, 'action':show('cat_oneblock')}
+data['actions'] = [a for a in data['actions'] if a.get('label',{}).get('text') != 'Llaves OneBlock'] + [link_action]
+dialog('main', data)
 print(f'Extensión lista: {len(KEYS)} llaves, {len(existing) * len(MULTIPLIERS)} lotes')
