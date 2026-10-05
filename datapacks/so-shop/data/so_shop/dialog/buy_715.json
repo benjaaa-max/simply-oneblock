@@ -1,0 +1,110 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Comprar llave OneBlock",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:trial_key",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Pyramid Key",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio: 10 esmeraldas",
+        "color": "green"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 10 E"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 715"
+      }
+    },
+    {
+      "label": {
+        "text": "x2 · 19 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 7152"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 28 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 2 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 7153"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 36 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 4 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 7154"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 66 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 14 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 7158"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_oneblock"
+    }
+  }
+}

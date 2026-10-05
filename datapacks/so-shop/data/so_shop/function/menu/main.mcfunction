@@ -19,5 +19,6 @@ execute if score #u7 so_shop matches 0 run tellraw @s [{"text":"  ✖ ","color":
 execute if score #u8 so_shop matches 1 run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Vender excedentes","color":"white","bold":true,"click_event":{"action":"run_command","command":"/trigger shop_menu set 8"},"hover_event":{"action":"show_text","value":{"text":"Abrir Vender excedentes","color":"white"}}}]
 execute if score #u8 so_shop matches 0 run tellraw @s [{"text":"  ✖ ","color":"dark_gray"},{"text":"Vender excedentes","color":"dark_gray","strikethrough":true},{"text":"  (se abre a ","color":"dark_gray"},{"score":{"name":"#t8","objective":"so_shop"},"color":"dark_gray"},{"text":" bloques)","color":"dark_gray"}]
 tellraw @s {"text":""}
+tellraw @s [{"text":"  ▸ Llaves OneBlock","color":"gold","bold":true,"click_event":{"action":"run_command","command":"/trigger shop_menu set 9"}}]
 tellraw @s [{"text":"Pago en esmeraldas. Haz clic en un artículo para comprarlo.","color":"dark_gray","italic":true}]
 playsound minecraft:item.book.page_turn master @s ~ ~ ~ 0.6 1.4

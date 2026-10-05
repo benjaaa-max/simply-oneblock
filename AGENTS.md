@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Preserve the corrected `datapacks/so-shop` as the source of truth; run `tools/extend_so_shop.py` on it to regenerate key and bulk-buy additions, because the older base shop generator predates the verified dialog/cooldown fixes.
+- Keep Simply OneBlock keys as vanilla trial keys with the exact plain `minecraft:custom_name` strings shared with `so_crates`; their original chamber doors and crate vaults depend on exact matching.
