@@ -8,7 +8,7 @@ Base original de Lovable AI, revisado, corregido y ampliado por Claude
 
 ## Instalación
 
-1. Copia `so-shop-v0.1.zip` (o esta carpeta) en `world/datapacks/`.
+1. Copia el ZIP actualizado (o esta carpeta) en `world/datapacks/`. **Retira el ZIP anterior**: dos versiones del mismo namespace se pisan entre sí.
 2. En el servidor: `/minecraft:reload` o reinicia.
 3. Verás en el chat: `[SO Shop] Tienda cargada.`
 
@@ -22,8 +22,12 @@ llegue a 9000, 15000 o 20000 — los desbloqueos son valores configurables.
 /trigger shop
 ```
 
-Abre el menú en el chat. Cada categoría y cada artículo es clicable.
-Al hacer clic se cobra el pago y se entrega el objeto al instante.
+Abre la tienda en ventanas. Cada categoría y cada artículo es clicable.
+En el detalle de cada artículo puedes elegir **x1, x2, x3, x4 o x8**;
+el botón indica el precio y al señalarlo muestra el ahorro. Las compras por mayor
+verifican las esmeraldas y el espacio libre antes de cobrar. Si no hay espacio,
+no se cobra nada. `/trigger shop set 2` abre el menú antiguo en el chat,
+que conserva la compra x1.
 No hace falta ser operador.
 
 Tras cada compra o venta hay un breve cooldown (1 segundo) antes de poder
@@ -54,7 +58,14 @@ Reinicia el servidor. A partir de ahí `/shop` funciona para todos.
 | 7 | Llaves y contratos | 8250 |
 | 8 | Vender excedentes | 0 |
 
-Las secciones bloqueadas se muestran en gris con su requisito.
+Las secciones bloqueadas se muestran en gris con su requisito. **Llaves OneBlock**
+es un apartado adicional disponible desde el menú principal y desde «Llaves y
+contratos»: incluye las 12 llaves de Simply OneBlock (nombre exacto), que sirven
+para las puertas de sus cámaras y para jugar en OneBlock Crate. Se desbloquean
+individualmente al avanzar (434, 2500 o 7000 bloques); las cuatro primeras
+cuestan entre 5 y 7 esmeraldas. Las llaves avanzadas cuestan entre 10 y 30.
+Se pueden comprar repetidamente; la categoría original «Llaves y contratos»
+mantiene su propio desbloqueo a 8250.
 Moneda: **esmeralda**. La sección de venta convierte excedentes (tierra, piedra,
 netherrack, troncos, arena, hierro, oro, kelp) en esmeraldas, con un límite de
 **6 ventas por jugador y por día** para no romper la economía. El límite se
@@ -82,17 +93,20 @@ Números de sección: 1 decorativos, 2 colores, 3 raros, 4 herramientas,
 
 ## Editar precios y artículos
 
-Los `.mcfunction` están en `data/so_shop/function/item/` (uno por artículo, con
-su `_ok` correspondiente que se ejecuta si el jugador puede pagarlo) y
-`data/so_shop/function/menu/` (las 8 categorías). No viene con este ZIP el
-script generador original; edita los `.mcfunction` directamente y aplica con
-`/minecraft:reload`.
+Los `.mcfunction` están en `data/so_shop/function/item/` y los diálogos en
+`data/so_shop/dialog/`. Para editar precios de forma permanente, actualiza el
+catálogo y los diálogos correspondientes. En el proyecto fuente,
+`tools/extend_so_shop.py` aplica esta ampliación **sobre la tienda corregida**;
+no ejecutes `tools/build_so_shop.py` solo, porque su versión base es anterior
+a las ventanas y a las correcciones. Las ofertas se calculan al generar:
+x2 = 5 %, x3 = 8 %, x4 = 12 %, x8 = 18 % de rebaja (redondeo hacia arriba).
 
 ## Rendimiento
 
 - Sin escaneo de bloques ni de entidades.
 - No invoca ninguna entidad permanente.
-- Cada compra son dos comandos (`clear` + `give`) más el cooldown.
+- Cada compra individual utiliza `clear` + `give`; los lotes comprueban 36
+  casillas solo cuando alguien pulsa Comprar, nunca cada tick.
 - Seguro para un servidor de 2-3 GB (probado en el contexto de Aternos).
 
 ## Desinstalar
