@@ -1,6 +1,6 @@
-# 201 x3: 192 objetos, 12 esmeraldas (0 de ahorro)
+# 201 x3: 192 objetos, 11 esmeraldas (1 de ahorro)
 # Desbloqueo de categoría comprobado en lib/dispatch
-scoreboard players set #cost so_shop 12
+scoreboard players set #cost so_shop 11
 execute store result score #have so_shop run clear @s minecraft:emerald 0
 execute if score #have so_shop < #cost so_shop run return run function so_shop:lib/fail
 scoreboard players set #slots so_shop 0

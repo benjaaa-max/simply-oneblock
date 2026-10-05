@@ -1,6 +1,6 @@
-# 713 x2: 2 objetos, 12 esmeraldas (0 de ahorro)
+# 713 x2: 2 objetos, 11 esmeraldas (1 de ahorro)
 execute unless score #blocks so_shop matches 434.. run return run function so_shop:lib/locked
-scoreboard players set #cost so_shop 12
+scoreboard players set #cost so_shop 11
 execute store result score #have so_shop run clear @s minecraft:emerald 0
 execute if score #have so_shop < #cost so_shop run return run function so_shop:lib/fail
 scoreboard players set #slots so_shop 0
