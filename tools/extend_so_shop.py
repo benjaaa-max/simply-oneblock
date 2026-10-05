@@ -40,7 +40,7 @@ def write(path, lines):
 
 
 def price(base, times):
-    return math.ceil(base * times * MULTIPLIERS[times])
+    return min(base * times - 1, math.ceil(base * times * MULTIPLIERS[times]))
 
 
 def dialog(name, obj):
