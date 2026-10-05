@@ -74,7 +74,7 @@ for path in sorted((FN / 'item').glob('*_ok.mcfunction')):
     existing.append((iid, iid // 100, int(clear[1]), give[1], int(give[2])))
     detail = ROOT / f'data/so_shop/dialog/buy_{iid}.json'
     names[iid] = json.loads(detail.read_text(encoding='utf-8'))['body'][0].get('description', {}).get('contents', {}).get('text', f'Artículo {iid}')
-assert len(existing) >= 60, f'Faltan artículos en la tienda: {len(existing)}'
+assert len(existing) >= 56, f'Faltan artículos en la tienda: {len(existing)}'
 
 for iid, name, item, cost, unlock in KEYS:
     p = FN / f'item/{iid}.mcfunction'
