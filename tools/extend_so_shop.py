@@ -52,7 +52,7 @@ for path in sorted((FN / 'item').glob('*_ok.mcfunction')):
         continue
     text = path.read_text(encoding='utf-8')
     clear = re.search(r'^clear @s minecraft:emerald (\d+)$', text, re.M)
-    give = re.search(r'^give @s (\S+) (\d+)$', text, re.M)
+    give = re.search(r'^give @s (.+) (\d+)$', text, re.M)
     if not clear or not give:
         raise ValueError(f'No puedo reconocer precio/entrega: {path}')
     existing.append((iid, iid // 100, int(clear[1]), give[1], int(give[2])))
@@ -74,7 +74,7 @@ for iid, name, item, cost, unlock in KEYS:
                  'tellraw @s ' + json.dumps([{'text':'[SO Shop] ','color':'gold'}, {'text':f'Compraste {name} por {cost} esmeraldas.','color':'green'}], ensure_ascii=False, separators=(',', ':')),
                  'playsound minecraft:entity.villager.yes master @s ~ ~ ~ 1 1',
                  'scoreboard players add @s so_shop_buys 1'])
-    existing.append((iid, 7, cost, cmd_item, 1))
+    existing.append((iid, 9, cost, cmd_item, 1))
 
 # Subsección de llaves dentro de la categoría original; no se cambia el umbral de las demás.
 menu = FN / 'menu/cat_oneblock.mcfunction'
@@ -97,24 +97,26 @@ if link not in text:
 
 oc = FN / 'lib/open_cat.mcfunction'
 text = oc.read_text(encoding='utf-8')
-addition = ('execute if score @s shop_menu matches 9 if score #u7 so_shop matches 1 run dialog show @s so_shop:cat_oneblock\n'
-            'execute if score @s shop_menu matches 9 if score #u7 so_shop matches 0 run function so_shop:lib/locked\n')
+addition = 'execute if score @s shop_menu matches 9 run dialog show @s so_shop:cat_oneblock\n'
 if addition not in text:
     oc.write_text(text + addition, encoding='utf-8')
 
 dispatch = FN / 'lib/dispatch.mcfunction'
 text = dispatch.read_text(encoding='utf-8')
 for iid, *_ in KEYS:
-    line = f'execute if score @s shop_buy matches {iid} if score #u7 so_shop matches 1 run function so_shop:item/{iid}\n'
+    line = f'execute if score @s shop_buy matches {iid} run function so_shop:item/{iid}\n'
     if line not in text:
-        text += line + f'execute if score @s shop_buy matches {iid} if score #u7 so_shop matches 0 run function so_shop:lib/locked\n'
+        text += line
 # Lotes codificados como id*10 + multiplicador; siempre verifican el desbloqueo original.
 for iid, catid, cost, item, count in existing:
     for times in MULTIPLIERS:
         bid = iid * 10 + times
-        line = f'execute if score @s shop_buy matches {bid} if score #u{catid} so_shop matches 1 run function so_shop:item/bulk_{iid}_{times}\n'
+        prefix = f'execute if score @s shop_buy matches {bid}'
+        line = prefix + (f' if score #u{catid} so_shop matches 1' if catid != 9 else '') + f' run function so_shop:item/bulk_{iid}_{times}\n'
         if line not in text:
-            text += line + f'execute if score @s shop_buy matches {bid} if score #u{catid} so_shop matches 0 run function so_shop:lib/locked\n'
+            text += line
+            if catid != 9:
+                text += prefix + f' if score #u{catid} so_shop matches 0 run function so_shop:lib/locked\n'
         total = count * times
         charge = price(cost, times)
         stack_limit = 1 if item.split('[', 1)[0].split(':')[-1] in UNSTACKABLE else 64
@@ -147,4 +149,12 @@ dispatch.write_text(text, encoding='utf-8')
 write(FN / 'lib/no_space.mcfunction', [
     'tellraw @s {"text":"[SO Shop] No hay espacio suficiente en tu inventario para ese lote. Libera algunos espacios y vuelve a intentarlo.","color":"red"}',
     'playsound minecraft:entity.villager.no master @s ~ ~ ~ 1 1'])
+
+# Botón directo: la sección 7 mantiene su umbral; llaves OneBlock muestran bloqueos individuales.
+main_menu = FN / 'menu/main.mcfunction'
+text = main_menu.read_text(encoding='utf-8')
+entry = 'tellraw @s [{"text":"  ▸ Llaves OneBlock","color":"gold","bold":true,"click_event":{"action":"run_command","command":"/trigger shop_menu set 9"}}]\n'
+if entry not in text:
+    text = text.replace('tellraw @s [{"text":"Pago en esmeraldas.', entry + 'tellraw @s [{"text":"Pago en esmeraldas.')
+    main_menu.write_text(text, encoding='utf-8')
 print(f'Extensión lista: {len(KEYS)} llaves, {len(existing) * len(MULTIPLIERS)} lotes')
