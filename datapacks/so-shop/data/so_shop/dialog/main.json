@@ -108,6 +108,17 @@
         "type": "minecraft:run_command",
         "command": "/trigger shop_menu set 8"
       }
+    },
+    {
+      "label": {
+        "text": "Llaves OneBlock",
+        "color": "gold"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_oneblock"
+      }
     }
   ],
   "exit_action": {

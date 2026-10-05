@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:confirmation",
+  "type": "minecraft:multi_action",
   "title": {
     "text": "Confirmar compra",
     "color": "gold"
@@ -28,20 +28,80 @@
   ],
   "can_close_with_escape": true,
   "pause": false,
-  "yes": {
-    "label": {
-      "text": "Comprar",
-      "color": "green"
+  "columns": 2,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 5 E"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 108"
+      }
     },
-    "action": {
-      "type": "minecraft:run_command",
-      "command": "/trigger shop_buy set 108"
+    {
+      "label": {
+        "text": "x2 · 10 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 0 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 1082"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 14 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 1083"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 18 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 2 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 1084"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 33 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 7 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 1088"
+      }
     }
-  },
-  "no": {
+  ],
+  "exit_action": {
     "label": {
       "text": "« Volver"
     },
+    "width": 150,
     "action": {
       "type": "minecraft:show_dialog",
       "dialog": "so_shop:cat_deco"

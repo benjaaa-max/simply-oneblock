@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:confirmation",
+  "type": "minecraft:multi_action",
   "title": {
     "text": "Confirmar compra",
     "color": "gold"
@@ -28,20 +28,80 @@
   ],
   "can_close_with_escape": true,
   "pause": false,
-  "yes": {
-    "label": {
-      "text": "Comprar",
-      "color": "green"
+  "columns": 2,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 10 E"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 603"
+      }
     },
-    "action": {
-      "type": "minecraft:run_command",
-      "command": "/trigger shop_buy set 603"
+    {
+      "label": {
+        "text": "x2 · 19 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 6032"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 28 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 2 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 6033"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 36 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 4 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 6034"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 66 E"
+      },
+      "tooltip": {
+        "text": "Ahorrás 14 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 6038"
+      }
     }
-  },
-  "no": {
+  ],
+  "exit_action": {
     "label": {
       "text": "« Volver"
     },
+    "width": 150,
     "action": {
       "type": "minecraft:show_dialog",
       "dialog": "so_shop:cat_eggs"

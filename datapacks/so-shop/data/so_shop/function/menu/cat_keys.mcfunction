@@ -1,4 +1,5 @@
 tellraw @s {"text":""}
+tellraw @s [{"text":"  ▸ Llaves OneBlock","color":"gold","bold":true,"click_event":{"action":"run_command","command":"/trigger shop_menu set 9"}}]
 tellraw @s [{"text":"════ ","color":"dark_gray"},{"text":"LLAVES Y CONTRATOS","color":"dark_purple","bold":true},{"text":" ════","color":"dark_gray"}]
 tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Llave de prueba","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 701"},"hover_event":{"action":"show_text","value":{"text":"Clic para comprar","color":"green"}}},{"text":"  —  ","color":"dark_gray"},{"text":"16 esmeraldas","color":"green"}]
 tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Llave ominosa","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 702"},"hover_event":{"action":"show_text","value":{"text":"Clic para comprar","color":"green"}}},{"text":"  —  ","color":"dark_gray"},{"text":"32 esmeraldas","color":"green"}]
