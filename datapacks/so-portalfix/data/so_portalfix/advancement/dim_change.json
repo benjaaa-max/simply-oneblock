@@ -1,0 +1,4 @@
+{
+  "criteria": { "changed_dimension": { "trigger": "minecraft:changed_dimension" } },
+  "rewards": { "function": "so_portalfix:dim_change" }
+}
