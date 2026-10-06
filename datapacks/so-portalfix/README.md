@@ -42,4 +42,10 @@ Los jugadores de Bedrock ven el `end_gateway` como un bloque sólido y no pueden
 - Hay 3 segundos de espera tras cada viaje para no rebotar entre dimensiones.
 - Admins: `/function so_portalfix:admin/assist_off` (o `assist_on`) desactiva la entrada automática solo para quien lo ejecuta.
 
-Pendiente para v4: el retorno donde hoy solo funciona el comando.
+## v4 — Vuelta automática desde las dimensiones
+
+- **Sin comandos:** dentro de una dimensión de fase (1 a 19), basta con tocar el portal de regreso. El datapack te devuelve a la isla, al lado del portal (no encima), con sonido y partículas: parece que el portal te llevó.
+- **El portal de la isla se cierra solo**, igual que en Java singleplayer, así nadie rebota a la dimensión. Simply OneBlock avanza el contador una sola vez, como siempre.
+- **Fase 20:** el portal de casa (el que está sobre bedrock) también devuelve con el datapack; los demás portales del centro siguen funcionando como en v3. El portal permanente de la fase 20 nunca se borra.
+- `/trigger spf_escape set 1` ya no borra el portal si lo usas estando en el Overworld; solo lo cierra si vuelves desde una dimensión de fase.
+- Admins: `/function so_portalfix:admin/clear_portal` cierra el portal de la isla a la fuerza.
