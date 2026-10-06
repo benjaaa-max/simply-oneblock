@@ -1,0 +1,9 @@
+{
+  "pack": {
+    "description": {
+      "text": "Simply OneBlock - salida segura + entrada a portales para Bedrock (v3)"
+    },
+    "min_format": [107, 1],
+    "max_format": [107, 1]
+  }
+}

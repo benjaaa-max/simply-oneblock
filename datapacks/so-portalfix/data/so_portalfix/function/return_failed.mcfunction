@@ -1,0 +1,2 @@
+scoreboard players set @s spf_return 0
+tellraw @s [{"text":"[SO PortalFix] ","color":"gold"},{"text":"El servidor no confirmó el cambio al Overworld. Puedes volver a intentar con /trigger spf_escape set 1; hace falta revisar el software del servidor si vuelve a fallar.","color":"red"}]
