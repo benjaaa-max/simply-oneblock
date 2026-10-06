@@ -4,3 +4,4 @@ execute unless data storage so_portalfix:runtime initialized run function so_por
 scoreboard objectives add spf_enter trigger
 scoreboard objectives add spf_cd dummy
 scoreboard objectives add spf_found dummy
+scoreboard objectives add spf_tmp dummy
