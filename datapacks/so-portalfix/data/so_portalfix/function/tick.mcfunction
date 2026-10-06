@@ -20,4 +20,7 @@ execute as @a at @s if dimension minecraft:overworld if predicate simply_onebloc
 scoreboard players enable @a spf_enter
 scoreboard players remove @a[scores={spf_cd=1..}] spf_cd 1
 execute as @a[scores={spf_enter=1..}] at @s run function so_portalfix:request_enter
-execute as @a[tag=!spf_noassist] unless score @s spf_cd matches 1.. at @s run function so_portalfix:assist_near
+execute as @a[tag=!spf_noassist] unless score @s spf_cd matches 1.. at @s run function so_portalfix:assist_router
+
+# v4 - close the home portal after a datapack return.
+execute if score #pending spf_tmp matches 1.. run function so_portalfix:clear_home

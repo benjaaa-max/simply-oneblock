@@ -8,3 +8,4 @@ tellraw @a [{"text":"[SO PortalFix] ","color":"gold"},{"text":"Salida segura car
 scoreboard objectives add spf_enter trigger
 scoreboard objectives add spf_cd dummy
 scoreboard objectives add spf_found dummy
+scoreboard objectives add spf_tmp dummy
