@@ -203,4 +203,4 @@ scoreboard objectives add so_core dummy
 scoreboard objectives add ib_minedcount dummy
 execute unless score #enabled sq matches 0.. run scoreboard players set #enabled sq 1
 scoreboard players set #100 sq 100
-tellraw @a[tag=oneblock_admin] [{"text": "[Misiones] ", "color": "gold"}, {"text": "v2 cargado. /function so_quests:admin/help", "color": "gray"}]
+tellraw @a[tag=oneblock_admin] [{"text": "[Misiones] ", "color": "gold"}, {"text": "v3 cargado. /function so_quests:admin/help", "color": "gray"}]
