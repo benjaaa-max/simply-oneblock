@@ -1,0 +1,14 @@
+execute if score @s shop_menu matches 10501 run function so_shop:lib/o_item_10501
+execute if score @s shop_menu matches 10502 run function so_shop:lib/o_item_10502
+execute if score @s shop_menu matches 10503 run function so_shop:lib/o_item_10503
+execute if score @s shop_menu matches 10504 run function so_shop:lib/o_item_10504
+execute if score @s shop_menu matches 10505 run function so_shop:lib/o_item_10505
+execute if score @s shop_menu matches 10506 run function so_shop:lib/o_item_10506
+execute if score @s shop_menu matches 10507 run function so_shop:lib/o_item_10507
+execute if score @s shop_menu matches 10508 run function so_shop:lib/o_item_10508
+execute if score @s shop_menu matches 10509 run function so_shop:lib/o_item_10509
+execute if score @s shop_menu matches 10510 run function so_shop:lib/o_item_10510
+execute if score @s shop_menu matches 10511 run function so_shop:lib/o_item_10511
+execute if score @s shop_menu matches 10512 run function so_shop:lib/o_item_10512
+execute if score @s shop_menu matches 10513 run function so_shop:lib/o_item_10513
+execute if score @s shop_menu matches 10514 run function so_shop:lib/o_item_10514

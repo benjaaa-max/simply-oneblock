@@ -12,7 +12,7 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "Elige una sección. Las bloqueadas te dirán cuántos bloques faltan.",
+        "text": "Todas las secciones están abiertas; algunos artículos se desbloquean con el progreso del OneBlock.",
         "color": "gray"
       }
     }
@@ -23,46 +23,101 @@
   "actions": [
     {
       "label": {
-        "text": "Bloques decorativos",
+        "text": "Bloques de construcción",
         "color": "green"
       },
       "width": 150,
       "action": {
-        "type": "minecraft:run_command",
-        "command": "/trigger shop_menu set 1"
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_1"
       }
     },
     {
       "label": {
-        "text": "Bloques de color",
+        "text": "Minerales e ingredientes",
         "color": "aqua"
       },
       "width": 150,
       "action": {
-        "type": "minecraft:run_command",
-        "command": "/trigger shop_menu set 2"
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_2"
       }
     },
     {
       "label": {
-        "text": "Materiales raros",
-        "color": "gold"
-      },
-      "width": 150,
-      "action": {
-        "type": "minecraft:run_command",
-        "command": "/trigger shop_menu set 3"
-      }
-    },
-    {
-      "label": {
-        "text": "Herramientas",
+        "text": "Herramientas, armas y armaduras",
         "color": "yellow"
       },
       "width": 150,
       "action": {
-        "type": "minecraft:run_command",
-        "command": "/trigger shop_menu set 4"
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_3"
+      }
+    },
+    {
+      "label": {
+        "text": "Bloques funcionales",
+        "color": "gold"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_4"
+      }
+    },
+    {
+      "label": {
+        "text": "Mecanismos y redstone",
+        "color": "red"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_5"
+      }
+    },
+    {
+      "label": {
+        "text": "Naturaleza y granja",
+        "color": "dark_green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_6"
+      }
+    },
+    {
+      "label": {
+        "text": "Alimentos y pociones",
+        "color": "light_purple"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_7"
+      }
+    },
+    {
+      "label": {
+        "text": "Decoración y tintes",
+        "color": "dark_aqua"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_8"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevos generadores",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_9"
       }
     },
     {
@@ -72,30 +127,19 @@
       },
       "width": 150,
       "action": {
-        "type": "minecraft:run_command",
-        "command": "/trigger shop_menu set 5"
-      }
-    },
-    {
-      "label": {
-        "text": "Huevos generadores",
-        "color": "red"
-      },
-      "width": 150,
-      "action": {
-        "type": "minecraft:run_command",
-        "command": "/trigger shop_menu set 6"
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_10"
       }
     },
     {
       "label": {
         "text": "Llaves y contratos",
-        "color": "dark_aqua"
+        "color": "gold"
       },
       "width": 150,
       "action": {
-        "type": "minecraft:run_command",
-        "command": "/trigger shop_menu set 7"
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_11"
       }
     },
     {
@@ -105,19 +149,8 @@
       },
       "width": 150,
       "action": {
-        "type": "minecraft:run_command",
-        "command": "/trigger shop_menu set 8"
-      }
-    },
-    {
-      "label": {
-        "text": "Llaves OneBlock",
-        "color": "gold"
-      },
-      "width": 150,
-      "action": {
         "type": "minecraft:show_dialog",
-        "dialog": "so_shop:cat_oneblock"
+        "dialog": "so_shop:cat_12"
       }
     }
   ],

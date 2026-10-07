@@ -1,19 +1,19 @@
 {
-  "type": "minecraft:confirmation",
+  "type": "minecraft:multi_action",
   "title": {
-    "text": "Confirmar venta",
+    "text": "Pack de 16 tintes (x4 c/u)",
     "color": "gold"
   },
   "body": [
     {
       "type": "minecraft:item",
       "item": {
-        "id": "minecraft:dirt",
-        "count": 99
+        "id": "minecraft:white_dye",
+        "count": 4
       },
       "description": {
         "contents": {
-          "text": "Vender 128 tierra",
+          "text": "Pack de 16 tintes (x4 c/u)",
           "color": "white"
         }
       }
@@ -21,30 +21,95 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "Recibes: 4 esmeraldas",
+        "text": "Precio unitario: 6 esmeraldas. Los lotes tienen descuento.",
         "color": "green"
       }
     }
   ],
+  "columns": 2,
   "can_close_with_escape": true,
   "pause": false,
-  "yes": {
-    "label": {
-      "text": "Vender",
-      "color": "green"
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 6 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8011"
+      }
     },
-    "action": {
-      "type": "minecraft:run_command",
-      "command": "/trigger shop_buy set 801"
+    {
+      "label": {
+        "text": "x2 · 11 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8012"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 17 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8013"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 22 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 2 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8014"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 40 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 8 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8018"
+      }
     }
-  },
-  "no": {
+  ],
+  "exit_action": {
     "label": {
       "text": "« Volver"
     },
+    "width": 150,
     "action": {
       "type": "minecraft:show_dialog",
-      "dialog": "so_shop:cat_sell"
+      "dialog": "so_shop:cat_8"
     }
   }
 }

@@ -1,19 +1,19 @@
 {
   "type": "minecraft:multi_action",
   "title": {
-    "text": "Confirmar compra",
+    "text": "Lapislázuli x32",
     "color": "gold"
   },
   "body": [
     {
       "type": "minecraft:item",
       "item": {
-        "id": "minecraft:copper_grate",
+        "id": "minecraft:lapis_lazuli",
         "count": 32
       },
       "description": {
         "contents": {
-          "text": "Copper grate x32",
+          "text": "Lapislázuli x32",
           "color": "white"
         }
       }
@@ -21,28 +21,30 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "Precio: 7 esmeraldas",
+        "text": "Precio unitario: 4 esmeraldas. Los lotes tienen descuento.",
         "color": "green"
       }
     }
   ],
+  "columns": 2,
   "can_close_with_escape": true,
   "pause": false,
-  "columns": 2,
   "actions": [
     {
       "label": {
-        "text": "x1 · 7 E"
+        "text": "x1 · 4 E",
+        "color": "white"
       },
       "width": 150,
       "action": {
         "type": "minecraft:run_command",
-        "command": "/trigger shop_buy set 208"
+        "command": "/trigger shop_buy set 2081"
       }
     },
     {
       "label": {
-        "text": "x2 · 13 E"
+        "text": "x2 · 7 E",
+        "color": "green"
       },
       "tooltip": {
         "text": "Ahorrás 1 esmeraldas",
@@ -56,7 +58,8 @@
     },
     {
       "label": {
-        "text": "x3 · 20 E"
+        "text": "x3 · 11 E",
+        "color": "green"
       },
       "tooltip": {
         "text": "Ahorrás 1 esmeraldas",
@@ -70,10 +73,11 @@
     },
     {
       "label": {
-        "text": "x4 · 25 E"
+        "text": "x4 · 15 E",
+        "color": "green"
       },
       "tooltip": {
-        "text": "Ahorrás 3 esmeraldas",
+        "text": "Ahorrás 1 esmeraldas",
         "color": "green"
       },
       "width": 150,
@@ -84,10 +88,11 @@
     },
     {
       "label": {
-        "text": "x8 · 46 E"
+        "text": "x8 · 27 E",
+        "color": "green"
       },
       "tooltip": {
-        "text": "Ahorrás 10 esmeraldas",
+        "text": "Ahorrás 5 esmeraldas",
         "color": "green"
       },
       "width": 150,
@@ -104,7 +109,7 @@
     "width": 150,
     "action": {
       "type": "minecraft:show_dialog",
-      "dialog": "so_shop:cat_color"
+      "dialog": "so_shop:cat_2"
     }
   }
 }

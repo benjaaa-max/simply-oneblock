@@ -1,0 +1,115 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Espada de netherita (Filo V, Fuego II)",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:netherite_sword",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Espada de netherita (Filo V, Fuego II)",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio unitario: 50 esmeraldas. Los lotes tienen descuento.",
+        "color": "green"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 50 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3141"
+      }
+    },
+    {
+      "label": {
+        "text": "x2 · 95 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 5 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3142"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 138 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 12 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3143"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 176 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 24 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3144"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 328 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 72 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3148"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_3"
+    }
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Herramientas, armas y armaduras",
+    "color": "yellow",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Pico de hierro (Efic. III, Irromp. II)"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10301"
+      }
+    },
+    {
+      "label": {
+        "text": "Espada de hierro (Filo III)"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10302"
+      }
+    },
+    {
+      "label": {
+        "text": "Hacha de hierro (Efic. III)"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10303"
+      }
+    },
+    {
+      "label": {
+        "text": "Pala de hierro (Efic. III)"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10304"
+      }
+    },
+    {
+      "label": {
+        "text": "Pechera de hierro (Prot. II)"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10305"
+      }
+    },
+    {
+      "label": {
+        "text": "Pantalones de hierro (Prot. II)"
+      },
+      "tooltip": {
+        "text": "11 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10306"
+      }
+    },
+    {
+      "label": {
+        "text": "Pico de diamante (Efic. IV, Fortuna II)"
+      },
+      "tooltip": {
+        "text": "24 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10307"
+      }
+    },
+    {
+      "label": {
+        "text": "Espada de diamante (Filo IV, Botín II)"
+      },
+      "tooltip": {
+        "text": "22 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10308"
+      }
+    },
+    {
+      "label": {
+        "text": "Hacha de diamante (Efic. IV)"
+      },
+      "tooltip": {
+        "text": "20 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10309"
+      }
+    },
+    {
+      "label": {
+        "text": "Azada de diamante (Fortuna II)"
+      },
+      "tooltip": {
+        "text": "16 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10310"
+      }
+    },
+    {
+      "label": {
+        "text": "Pechera de diamante (Prot. III)"
+      },
+      "tooltip": {
+        "text": "28 E · se desbloquea a los 4.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10311"
+      }
+    },
+    {
+      "label": {
+        "text": "Botas de diamante (Prot. III, Pluma III)"
+      },
+      "tooltip": {
+        "text": "22 E · se desbloquea a los 4.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10312"
+      }
+    },
+    {
+      "label": {
+        "text": "Pico de netherita (Efic. V, Irromp. III)"
+      },
+      "tooltip": {
+        "text": "55 E · se desbloquea a los 8.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10313"
+      }
+    },
+    {
+      "label": {
+        "text": "Espada de netherita (Filo V, Fuego II)"
+      },
+      "tooltip": {
+        "text": "50 E · se desbloquea a los 8.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10314"
+      }
+    },
+    {
+      "label": {
+        "text": "Pechera de netherita (Prot. IV)"
+      },
+      "tooltip": {
+        "text": "55 E · se desbloquea a los 9.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10315"
+      }
+    },
+    {
+      "label": {
+        "text": "Tijeras (Toque de seda)"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10316"
+      }
+    },
+    {
+      "label": {
+        "text": "Armadura de caballo de hierro"
+      },
+      "tooltip": {
+        "text": "14 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10317"
+      }
+    },
+    {
+      "label": {
+        "text": "Armadura de caballo de diamante"
+      },
+      "tooltip": {
+        "text": "28 E · se desbloquea a los 4.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10318"
+      }
+    },
+    {
+      "label": {
+        "text": "Arnés para Happy Ghast"
+      },
+      "tooltip": {
+        "text": "20 E · se desbloquea a los 5.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10319"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

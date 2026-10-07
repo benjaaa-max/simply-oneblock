@@ -37,3 +37,4 @@ scoreboard players set #u8 so_shop 0
 tellraw @a [{"text":"[SO Shop] ","color":"gold"},{"text":"Tienda cargada. Usa ","color":"green"},{"text":"/trigger shop","color":"yellow"},{"text":" para abrirla.","color":"green"}]
 scoreboard objectives add so_shop_seen dummy
 scoreboard objectives add so_shop_buys dummy
+execute unless score #bypass so_shop matches -2147483648.. run scoreboard players set #bypass so_shop 0

@@ -1,0 +1,256 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Huevos generadores",
+    "color": "white",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Huevo de oveja"
+      },
+      "tooltip": {
+        "text": "8 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10901"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de vaca"
+      },
+      "tooltip": {
+        "text": "8 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10902"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de cerdo"
+      },
+      "tooltip": {
+        "text": "8 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10903"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de gallina"
+      },
+      "tooltip": {
+        "text": "6 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10904"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de caballo"
+      },
+      "tooltip": {
+        "text": "14 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10905"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de lobo"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10906"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de gato"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10907"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de abeja"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10908"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de gólem de cobre"
+      },
+      "tooltip": {
+        "text": "14 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10909"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de aldeano"
+      },
+      "tooltip": {
+        "text": "20 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10910"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de gólem de hierro"
+      },
+      "tooltip": {
+        "text": "20 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10911"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de allay"
+      },
+      "tooltip": {
+        "text": "20 E · se desbloquea a los 4.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10912"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de Happy Ghast"
+      },
+      "tooltip": {
+        "text": "20 E · se desbloquea a los 5.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10913"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de enderman"
+      },
+      "tooltip": {
+        "text": "18 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10914"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de blaze"
+      },
+      "tooltip": {
+        "text": "18 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10915"
+      }
+    },
+    {
+      "label": {
+        "text": "Huevo de esqueleto wither"
+      },
+      "tooltip": {
+        "text": "20 E · se desbloquea a los 7.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10916"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

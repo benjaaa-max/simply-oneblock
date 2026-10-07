@@ -1,0 +1,115 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Eficiencia V",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:enchanted_book",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Eficiencia V",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio unitario: 26 esmeraldas. Los lotes tienen descuento.",
+        "color": "green"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 26 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 10041"
+      }
+    },
+    {
+      "label": {
+        "text": "x2 · 50 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 2 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 10042"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 72 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 6 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 10043"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 92 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 12 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 10044"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 171 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 37 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 10048"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_10"
+    }
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Llaves y contratos",
+    "color": "gold",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "★ Llaves OneBlock",
+        "color": "gold",
+        "bold": true
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_shop:cat_13"
+      }
+    },
+    {
+      "label": {
+        "text": "Llave de prueba"
+      },
+      "tooltip": {
+        "text": "14 E · se desbloquea a los 5.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11101"
+      }
+    },
+    {
+      "label": {
+        "text": "Llave ominosa"
+      },
+      "tooltip": {
+        "text": "26 E · se desbloquea a los 7.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11102"
+      }
+    },
+    {
+      "label": {
+        "text": "Botella ominosa"
+      },
+      "tooltip": {
+        "text": "18 E · se desbloquea a los 6.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11103"
+      }
+    },
+    {
+      "label": {
+        "text": "Llave del Arquitecto"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11104"
+      }
+    },
+    {
+      "label": {
+        "text": "Llave Silvestre"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11105"
+      }
+    },
+    {
+      "label": {
+        "text": "Llave Subterránea"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11106"
+      }
+    },
+    {
+      "label": {
+        "text": "Llave de Batalla"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11107"
+      }
+    },
+    {
+      "label": {
+        "text": "Llave Abisal"
+      },
+      "tooltip": {
+        "text": "20 E · se desbloquea a los 5.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11108"
+      }
+    },
+    {
+      "label": {
+        "text": "Llave del Vacío"
+      },
+      "tooltip": {
+        "text": "26 E · se desbloquea a los 7.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11109"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

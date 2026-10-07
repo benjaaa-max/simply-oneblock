@@ -1,0 +1,186 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Libros encantados",
+    "color": "light_purple",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Reparación"
+      },
+      "tooltip": {
+        "text": "34 E · se desbloquea a los 4.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11001"
+      }
+    },
+    {
+      "label": {
+        "text": "Fortuna III"
+      },
+      "tooltip": {
+        "text": "28 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11002"
+      }
+    },
+    {
+      "label": {
+        "text": "Toque de seda"
+      },
+      "tooltip": {
+        "text": "26 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11003"
+      }
+    },
+    {
+      "label": {
+        "text": "Eficiencia V"
+      },
+      "tooltip": {
+        "text": "26 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11004"
+      }
+    },
+    {
+      "label": {
+        "text": "Irrompibilidad III"
+      },
+      "tooltip": {
+        "text": "20 E · se desbloquea a los 2.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11005"
+      }
+    },
+    {
+      "label": {
+        "text": "Filo V"
+      },
+      "tooltip": {
+        "text": "28 E · se desbloquea a los 4.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11006"
+      }
+    },
+    {
+      "label": {
+        "text": "Protección IV"
+      },
+      "tooltip": {
+        "text": "24 E · se desbloquea a los 3.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11007"
+      }
+    },
+    {
+      "label": {
+        "text": "Botín III"
+      },
+      "tooltip": {
+        "text": "24 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11008"
+      }
+    },
+    {
+      "label": {
+        "text": "Caída de pluma IV"
+      },
+      "tooltip": {
+        "text": "18 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11009"
+      }
+    },
+    {
+      "label": {
+        "text": "Poder V"
+      },
+      "tooltip": {
+        "text": "22 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11010"
+      }
+    },
+    {
+      "label": {
+        "text": "Infinidad"
+      },
+      "tooltip": {
+        "text": "20 E · se desbloquea a los 3.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 11011"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

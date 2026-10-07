@@ -1,0 +1,115 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Arrojadiza: Fuerza II x2",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:splash_potion",
+        "count": 2
+      },
+      "description": {
+        "contents": {
+          "text": "Arrojadiza: Fuerza II x2",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio unitario: 10 esmeraldas. Los lotes tienen descuento.",
+        "color": "green"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 10 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 7101"
+      }
+    },
+    {
+      "label": {
+        "text": "x2 · 19 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 7102"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 28 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 2 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 7103"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 36 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 4 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 7104"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 66 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 14 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 7108"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_7"
+    }
+  }
+}

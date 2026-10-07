@@ -1,0 +1,115 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Pico de netherita (Efic. V, Irromp. III)",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:netherite_pickaxe",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Pico de netherita (Efic. V, Irromp. III)",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio unitario: 55 esmeraldas. Los lotes tienen descuento.",
+        "color": "green"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 55 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3131"
+      }
+    },
+    {
+      "label": {
+        "text": "x2 · 105 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 5 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3132"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 152 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 13 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3133"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 194 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 26 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3134"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 361 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 79 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3138"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_3"
+    }
+  }
+}
