@@ -215,7 +215,11 @@ for q in ALL:
     give = [f"give @s minecraft:{it} {n}" for it, n in q["rew"]]
     done_msg = f"tellraw @s {T(PFX, {'text': 'Reclamaste ', 'color': 'green'}, {'text': q['name'], 'color': 'white'}, {'text': ' → ' + rew_text(q['rew']), 'color': 'gray'})}"
     snd = "playsound minecraft:entity.player.levelup master @s ~ ~ ~ 0.6 1.2"
-    full = f"execute unless function {NS}:lib/space run return run tellraw @s {T(PFX, {'text': 'Inventario lleno: libera un espacio y vuelve a reclamar.', 'color': 'red'})}"
+    full = [f"execute unless function {NS}:lib/space run tellraw @s {T(PFX, {'text': 'Inventario lleno: libera un espacio y vuelve a reclamar.', 'color': 'red'})}",
+            f"execute unless function {NS}:lib/space run dialog show @s so_quests:claim_{i}",
+            "execute unless function so_quests:lib/space run return fail"]
+    err = "playsound minecraft:entity.villager.no master @s ~ ~ ~ 0.5 1"
+    reopen = f"function so_quests:menu/cat_{q['cat']} with storage so_quests:menu"
     back = {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": f"/trigger quest_menu set {q['cat']}"}}
 
     if kind == "grp":
@@ -228,15 +232,17 @@ for q in ALL:
         check.append(f"execute unless score #done_{i} sq_group matches 1 if score {g} sq_group matches {q['target']}.. run {ready_cmd}")
         F(f"q/{i}/ready", ["scoreboard players set #done_" + str(i) + " sq_group 1",
                            f"tellraw @a {T(PFX, {'text': '¡Meta de la Isla completada! ', 'color': 'light_purple'}, {'text': q['name'], 'color': 'white'}, {'text': ' — todos pueden reclamar su parte con /trigger quests', 'color': 'gray'})}",
+                           'title @a actionbar {text:"¡Meta de la Isla completada!",color:"light_purple"}',
                            "execute as @a at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 0.7 1"])
         prog = [{"score": {"name": g, "objective": "sq_group"}, "color": "yellow"}, {"text": f" / {q['target']}", "color": "gray"}]
         F(f"q/{i}/view", [
             f"execute if score #done_{i} sq_group matches 1 unless score @s {s} matches 2 run return run dialog show @s {NS}:claim_{i}",
-            f"execute if score @s {s} matches 2 run return run tellraw @s {T(PFX, {'text': q['name'] + ': ya reclamaste tu parte.', 'color': 'gray'}, back)}",
-            f"tellraw @s {T(PFX, {'text': q['name'] + ': ', 'color': 'white'}, *prog, back)}"])
+            f"execute if score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ya reclamaste tu parte.', 'color': 'gray'}, back)}",
+            f"execute unless score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ', 'color': 'white'}, *prog, back)}",
+            err, reopen])
         F(f"q/{i}/claim", [f"execute unless score #done_{i} sq_group matches 1 run return fail",
-                           f"execute if score @s {s} matches 2 run return fail", full,
-                           f"scoreboard players set @s {s} 2", *give, done_msg, snd])
+                           f"execute if score @s {s} matches 2 run return fail", *full,
+                           f"scoreboard players set @s {s} 2", *give, done_msg, snd, reopen])
     else:
         c = q["cond"]; t = c[0]; prog = []
         sel = f"@a[scores={{{s}=0}}]" if kind == "ind" else f"@a[scores={{{s}=0}}]"
@@ -262,25 +268,30 @@ for q in ALL:
         if t != "deliver":
             F(f"q/{i}/ready", [f"scoreboard players set @s {s} 1",
                                f"tellraw @s {T(PFX, {'text': '¡Misión lista para reclamar! ', 'color': 'green'}, {'text': q['name'], 'color': 'white'}, {'text': ' [Abrir]', 'color': 'aqua', 'click_event': {'action': 'run_command', 'command': f'/trigger quest_view set {i}'}})}",
+                               'title @s actionbar {text:"¡Misión lista para reclamar!",color:"green"}',
                                "playsound minecraft:entity.experience_orb.pickup master @s ~ ~ ~ 0.7 1.6"])
             F(f"q/{i}/view", [
                 f"execute if score @s {s} matches 1 run return run dialog show @s {NS}:claim_{i}",
-                f"execute if score @s {s} matches 2 run return run tellraw @s {T(PFX, {'text': q['name'] + ': completada.', 'color': 'gray'}, back)}",
-                f"tellraw @s {T(PFX, {'text': q['name'] + ': ', 'color': 'white'}, *prog, back)}"])
-            F(f"q/{i}/claim", [f"execute unless score @s {s} matches 1 run return fail", full,
-                               f"scoreboard players set @s {s} 2", *give, done_msg, snd])
+                f"execute if score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': completada y reclamada.', 'color': 'gray'}, back)}",
+                f"execute unless score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ', 'color': 'white'}, *prog, back)}",
+                err, reopen])
+            F(f"q/{i}/claim", [f"execute unless score @s {s} matches 1 run return fail", *full,
+                               f"scoreboard players set @s {s} 2", *give, done_msg, snd, reopen])
         else:
             item, n = c[1], c[2]
             F(f"q/{i}/view", [
-                f"execute if score @s {s} matches 2 run return run tellraw @s {T(PFX, {'text': q['name'] + ': ya entregada hoy.', 'color': 'gray'}, back)}",
-                f"execute store result score @s sq_tmp run clear @s minecraft:{item} 0",
-                f"execute if score @s sq_tmp matches {n}.. run return run dialog show @s {NS}:claim_{i}",
-                f"tellraw @s {T(PFX, {'text': q['name'] + ': tienes ', 'color': 'white'}, {'score': {'name': '@s', 'objective': 'sq_tmp'}, 'color': 'yellow'}, {'text': f' / {n}', 'color': 'gray'}, back)}"])
+                f"execute if score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ya entregada hoy.', 'color': 'gray'}, back)}",
+                f"execute unless score @s {s} matches 2 run execute store result score @s sq_tmp run clear @s minecraft:{item} 0",
+                f"execute unless score @s {s} matches 2 run execute if score @s sq_tmp matches {n}.. run return run dialog show @s {NS}:claim_{i}",
+                f"execute if score @s {s} matches 0 run tellraw @s {T(PFX, {'text': q['name'] + ': tienes ', 'color': 'white'}, {'score': {'name': '@s', 'objective': 'sq_tmp'}, 'color': 'yellow'}, {'text': f' / {n}', 'color': 'gray'}, back)}",
+                err, reopen])
             F(f"q/{i}/claim", [f"execute if score @s {s} matches 2 run return fail",
-                               f"execute store result score @s sq_tmp run clear @s minecraft:{item} 0",
-                               f"execute unless score @s sq_tmp matches {n}.. run return run tellraw @s {T(PFX, {'text': 'Te faltan objetos para entregar.', 'color': 'red'})}",
-                               full, f"clear @s minecraft:{item} {n}",
-                               f"scoreboard players set @s {s} 2", *give, done_msg, snd])
+                                f"execute store result score @s sq_tmp run clear @s minecraft:{item} 0",
+                                f"execute unless score @s sq_tmp matches {n}.. run tellraw @s {T(PFX, {'text': 'Te faltan objetos para entregar.', 'color': 'red'})}",
+                                f"execute unless score @s sq_tmp matches {n}.. run dialog show @s so_quests:claim_{i}",
+                                f"execute unless score @s sq_tmp matches {n}.. run return fail",
+                                *full, f"clear @s minecraft:{item} {n}",
+                                f"scoreboard players set @s {s} 2", *give, done_msg, snd, reopen])
         if kind == "day": reset_day.append(f"scoreboard players set * {s} 0")
 
     # ventana de reclamo (confirmacion)
@@ -293,7 +304,7 @@ for q in ALL:
         "body": body, "can_close_with_escape": True, "pause": False,
         "yes": {"label": {"text": "Entregar y reclamar" if q.get("cond", ("",))[0] == "deliver" else "Reclamar", "color": "green"},
                 "action": {"type": "minecraft:run_command", "command": f"/trigger quest_claim set {i}"}},
-        "no": {"label": {"text": "« Volver"}, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:cat_{q['cat']}"}}})
+        "no": {"label": {"text": "« Volver"}, "action": {"type": "minecraft:run_command", "command": f"/trigger quest_menu set {q['cat']}"}}})
 
 # advancements de mercaderes (oneblock_adventure_traders)
 def trade_adv(name, tag):
