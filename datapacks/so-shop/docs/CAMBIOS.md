@@ -84,3 +84,12 @@
 - `/trigger shop` abre una ventana con botones (dialog). `/trigger shop set 2` abre el menú clásico del chat.
 - Sección Decorativos en ventana con confirmación e ícono del objeto antes de comprar. El resto de secciones siguen en chat.
 - Ventanas en `data/so_shop/dialog/`, generadas con `tools/build_so_shop_dialogs.py`.
+
+## v0.6 — Catálogo completo
+- 11 secciones + vender excedentes (188 artículos, incluidas las 12 llaves OneBlock y 6 llaves de crates).
+- Ya no se bloquean secciones enteras: cada artículo tiene su propio desbloqueo por bloques minados.
+- Todos los artículos tienen lotes x1/x2/x3/x4/x8 con descuento y chequeo de espacio.
+- Tras comprar, vender o fallar, la ventana se vuelve a abrir sola.
+- Ventas de excedentes duplicadas.
+- Se quitaron Llave de Mazmorra, Contrato de Invasión y Boleto de Arena (no tenían función).
+- Generador único: tools/build_so_shop_catalog.py.
