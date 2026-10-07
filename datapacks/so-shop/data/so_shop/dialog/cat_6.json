@@ -1,0 +1,312 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Naturaleza y granja",
+    "color": "dark_green",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Bloque de pasto x16"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10601"
+      }
+    },
+    {
+      "label": {
+        "text": "Podzol x16"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10602"
+      }
+    },
+    {
+      "label": {
+        "text": "Micelio x16"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10603"
+      }
+    },
+    {
+      "label": {
+        "text": "Bloque de musgo x16"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10604"
+      }
+    },
+    {
+      "label": {
+        "text": "Nylium carmesí x16"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10605"
+      }
+    },
+    {
+      "label": {
+        "text": "Nylium distorsionado x16"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10606"
+      }
+    },
+    {
+      "label": {
+        "text": "Estalactita puntiaguda x16"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 2.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10607"
+      }
+    },
+    {
+      "label": {
+        "text": "Esponja x2"
+      },
+      "tooltip": {
+        "text": "16 E · se desbloquea a los 4.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10608"
+      }
+    },
+    {
+      "label": {
+        "text": "Obsidiana llorosa x8"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10609"
+      }
+    },
+    {
+      "label": {
+        "text": "Pack de brotes (7 árboles x2)"
+      },
+      "tooltip": {
+        "text": "6 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10610"
+      }
+    },
+    {
+      "label": {
+        "text": "Propágulo de mangle x4"
+      },
+      "tooltip": {
+        "text": "4 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10611"
+      }
+    },
+    {
+      "label": {
+        "text": "Hongos del Overworld x8"
+      },
+      "tooltip": {
+        "text": "4 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10612"
+      }
+    },
+    {
+      "label": {
+        "text": "Hongos del Nether x8"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10613"
+      }
+    },
+    {
+      "label": {
+        "text": "Verruga del Nether x8"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10614"
+      }
+    },
+    {
+      "label": {
+        "text": "Caña de azúcar x8"
+      },
+      "tooltip": {
+        "text": "3 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10615"
+      }
+    },
+    {
+      "label": {
+        "text": "Cactus x8"
+      },
+      "tooltip": {
+        "text": "3 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10616"
+      }
+    },
+    {
+      "label": {
+        "text": "Bambú x16"
+      },
+      "tooltip": {
+        "text": "4 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10617"
+      }
+    },
+    {
+      "label": {
+        "text": "Semillas surtidas x24"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10618"
+      }
+    },
+    {
+      "label": {
+        "text": "Granos de cacao x8"
+      },
+      "tooltip": {
+        "text": "4 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10619"
+      }
+    },
+    {
+      "label": {
+        "text": "Bayas dulces x8"
+      },
+      "tooltip": {
+        "text": "3 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10620"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

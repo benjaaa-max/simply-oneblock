@@ -1,0 +1,115 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Botas de diamante (Prot. III, Pluma III)",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:diamond_boots",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Botas de diamante (Prot. III, Pluma III)",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio unitario: 22 esmeraldas. Los lotes tienen descuento.",
+        "color": "green"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 22 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3121"
+      }
+    },
+    {
+      "label": {
+        "text": "x2 · 42 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 2 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3122"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 61 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 5 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3123"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 78 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 10 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3124"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 145 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 31 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3128"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_3"
+    }
+  }
+}

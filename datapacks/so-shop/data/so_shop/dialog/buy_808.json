@@ -1,19 +1,19 @@
 {
-  "type": "minecraft:confirmation",
+  "type": "minecraft:multi_action",
   "title": {
-    "text": "Confirmar venta",
+    "text": "Azulejos vidriados 1 (4 colores x4)",
     "color": "gold"
   },
   "body": [
     {
       "type": "minecraft:item",
       "item": {
-        "id": "minecraft:gold_ingot",
-        "count": 32
+        "id": "minecraft:white_glazed_terracotta",
+        "count": 4
       },
       "description": {
         "contents": {
-          "text": "Vender 32 oro",
+          "text": "Azulejos vidriados 1 (4 colores x4)",
           "color": "white"
         }
       }
@@ -21,30 +21,95 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "Recibes: 14 esmeraldas",
+        "text": "Precio unitario: 6 esmeraldas. Los lotes tienen descuento.",
         "color": "green"
       }
     }
   ],
+  "columns": 2,
   "can_close_with_escape": true,
   "pause": false,
-  "yes": {
-    "label": {
-      "text": "Vender",
-      "color": "green"
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 6 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8081"
+      }
     },
-    "action": {
-      "type": "minecraft:run_command",
-      "command": "/trigger shop_buy set 808"
+    {
+      "label": {
+        "text": "x2 · 11 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8082"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 17 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8083"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 22 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 2 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8084"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 40 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 8 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8088"
+      }
     }
-  },
-  "no": {
+  ],
+  "exit_action": {
     "label": {
       "text": "« Volver"
     },
+    "width": 150,
     "action": {
       "type": "minecraft:show_dialog",
-      "dialog": "so_shop:cat_sell"
+      "dialog": "so_shop:cat_8"
     }
   }
 }

@@ -1,0 +1,256 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Decoración y tintes",
+    "color": "dark_aqua",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Pack de 16 tintes (x4 c/u)"
+      },
+      "tooltip": {
+        "text": "6 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10801"
+      }
+    },
+    {
+      "label": {
+        "text": "Lana blanca x64"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10802"
+      }
+    },
+    {
+      "label": {
+        "text": "Hormigón blanco x64"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10803"
+      }
+    },
+    {
+      "label": {
+        "text": "Terracota blanca x64"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10804"
+      }
+    },
+    {
+      "label": {
+        "text": "Vidrio blanco x64"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10805"
+      }
+    },
+    {
+      "label": {
+        "text": "Panel de vidrio blanco x64"
+      },
+      "tooltip": {
+        "text": "3 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10806"
+      }
+    },
+    {
+      "label": {
+        "text": "Vidrio tintado x32"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10807"
+      }
+    },
+    {
+      "label": {
+        "text": "Azulejos vidriados 1 (4 colores x4)"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10808"
+      }
+    },
+    {
+      "label": {
+        "text": "Azulejos vidriados 2 (4 colores x4)"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10809"
+      }
+    },
+    {
+      "label": {
+        "text": "Azulejos vidriados 3 (4 colores x4)"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10810"
+      }
+    },
+    {
+      "label": {
+        "text": "Azulejos vidriados 4 (4 colores x4)"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10811"
+      }
+    },
+    {
+      "label": {
+        "text": "Faroles x8 (normal y de almas)"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10812"
+      }
+    },
+    {
+      "label": {
+        "text": "Cadena x32"
+      },
+      "tooltip": {
+        "text": "4 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10813"
+      }
+    },
+    {
+      "label": {
+        "text": "Cuadros y marcos brillantes x16"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10814"
+      }
+    },
+    {
+      "label": {
+        "text": "Maceta decorada x4"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10815"
+      }
+    },
+    {
+      "label": {
+        "text": "Andamio x32"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10816"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

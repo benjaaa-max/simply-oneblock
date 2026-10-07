@@ -1,19 +1,19 @@
 {
   "type": "minecraft:multi_action",
   "title": {
-    "text": "Confirmar compra",
+    "text": "Hacha de hierro (Efic. III)",
     "color": "gold"
   },
   "body": [
     {
       "type": "minecraft:item",
       "item": {
-        "id": "minecraft:sculk",
-        "count": 32
+        "id": "minecraft:iron_axe",
+        "count": 1
       },
       "description": {
         "contents": {
-          "text": "Sculk x32",
+          "text": "Hacha de hierro (Efic. III)",
           "color": "white"
         }
       }
@@ -21,28 +21,30 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "Precio: 14 esmeraldas",
+        "text": "Precio unitario: 8 esmeraldas. Los lotes tienen descuento.",
         "color": "green"
       }
     }
   ],
+  "columns": 2,
   "can_close_with_escape": true,
   "pause": false,
-  "columns": 2,
   "actions": [
     {
       "label": {
-        "text": "x1 · 14 E"
+        "text": "x1 · 8 E",
+        "color": "white"
       },
       "width": 150,
       "action": {
         "type": "minecraft:run_command",
-        "command": "/trigger shop_buy set 303"
+        "command": "/trigger shop_buy set 3031"
       }
     },
     {
       "label": {
-        "text": "x2 · 27 E"
+        "text": "x2 · 15 E",
+        "color": "green"
       },
       "tooltip": {
         "text": "Ahorrás 1 esmeraldas",
@@ -56,10 +58,11 @@
     },
     {
       "label": {
-        "text": "x3 · 39 E"
+        "text": "x3 · 23 E",
+        "color": "green"
       },
       "tooltip": {
-        "text": "Ahorrás 3 esmeraldas",
+        "text": "Ahorrás 1 esmeraldas",
         "color": "green"
       },
       "width": 150,
@@ -70,10 +73,11 @@
     },
     {
       "label": {
-        "text": "x4 · 50 E"
+        "text": "x4 · 29 E",
+        "color": "green"
       },
       "tooltip": {
-        "text": "Ahorrás 6 esmeraldas",
+        "text": "Ahorrás 3 esmeraldas",
         "color": "green"
       },
       "width": 150,
@@ -84,10 +88,11 @@
     },
     {
       "label": {
-        "text": "x8 · 92 E"
+        "text": "x8 · 53 E",
+        "color": "green"
       },
       "tooltip": {
-        "text": "Ahorrás 20 esmeraldas",
+        "text": "Ahorrás 11 esmeraldas",
         "color": "green"
       },
       "width": 150,
@@ -104,7 +109,7 @@
     "width": 150,
     "action": {
       "type": "minecraft:show_dialog",
-      "dialog": "so_shop:cat_raros"
+      "dialog": "so_shop:cat_3"
     }
   }
 }

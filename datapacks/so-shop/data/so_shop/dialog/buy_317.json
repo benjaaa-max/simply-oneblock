@@ -1,0 +1,115 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Armadura de caballo de hierro",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:iron_horse_armor",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Armadura de caballo de hierro",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio unitario: 14 esmeraldas. Los lotes tienen descuento.",
+        "color": "green"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 14 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3171"
+      }
+    },
+    {
+      "label": {
+        "text": "x2 · 27 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3172"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 39 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 3 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3173"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 50 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 6 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3174"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 92 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 20 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 3178"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_3"
+    }
+  }
+}

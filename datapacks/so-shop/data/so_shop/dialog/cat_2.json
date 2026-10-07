@@ -1,0 +1,228 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Minerales e ingredientes",
+    "color": "aqua",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Carbón x32"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10201"
+      }
+    },
+    {
+      "label": {
+        "text": "Lingote de cobre x32"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10202"
+      }
+    },
+    {
+      "label": {
+        "text": "Lingote de hierro x16"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10203"
+      }
+    },
+    {
+      "label": {
+        "text": "Lingote de oro x16"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10204"
+      }
+    },
+    {
+      "label": {
+        "text": "Diamante x4"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10205"
+      }
+    },
+    {
+      "label": {
+        "text": "Fragmento de netherita x2"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10206"
+      }
+    },
+    {
+      "label": {
+        "text": "Lingote de netherita"
+      },
+      "tooltip": {
+        "text": "24 E · se desbloquea a los 7.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10207"
+      }
+    },
+    {
+      "label": {
+        "text": "Lapislázuli x32"
+      },
+      "tooltip": {
+        "text": "4 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10208"
+      }
+    },
+    {
+      "label": {
+        "text": "Fragmento de amatista x16"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10209"
+      }
+    },
+    {
+      "label": {
+        "text": "Polvo de piedra luminosa x32"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10210"
+      }
+    },
+    {
+      "label": {
+        "text": "Cuarzo del Nether x32"
+      },
+      "tooltip": {
+        "text": "3 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10211"
+      }
+    },
+    {
+      "label": {
+        "text": "Pólvora x16"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10212"
+      }
+    },
+    {
+      "label": {
+        "text": "Perla de Ender x4"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 5.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10213"
+      }
+    },
+    {
+      "label": {
+        "text": "Vara de breeze x2"
+      },
+      "tooltip": {
+        "text": "14 E · se desbloquea a los 7.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10214"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

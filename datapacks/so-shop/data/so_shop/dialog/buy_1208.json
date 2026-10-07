@@ -1,0 +1,50 @@
+{
+  "type": "minecraft:confirmation",
+  "title": {
+    "text": "Confirmar venta",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:gold_ingot",
+        "count": 32
+      },
+      "description": {
+        "contents": {
+          "text": "Vender 32 lingotes de oro",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Recibes: 28 esmeraldas",
+        "color": "green"
+      }
+    }
+  ],
+  "can_close_with_escape": true,
+  "pause": false,
+  "yes": {
+    "label": {
+      "text": "Vender",
+      "color": "green"
+    },
+    "action": {
+      "type": "minecraft:run_command",
+      "command": "/trigger shop_buy set 12081"
+    }
+  },
+  "no": {
+    "label": {
+      "text": "« Volver"
+    },
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_12"
+    }
+  }
+}

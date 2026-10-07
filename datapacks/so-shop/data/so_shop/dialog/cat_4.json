@@ -1,0 +1,284 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Bloques funcionales",
+    "color": "gold",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Barril x4"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10401"
+      }
+    },
+    {
+      "label": {
+        "text": "Cama roja"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10402"
+      }
+    },
+    {
+      "label": {
+        "text": "Soporte de armaduras x2"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10403"
+      }
+    },
+    {
+      "label": {
+        "text": "Telar"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10404"
+      }
+    },
+    {
+      "label": {
+        "text": "Alto horno"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10405"
+      }
+    },
+    {
+      "label": {
+        "text": "Ahumador"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10406"
+      }
+    },
+    {
+      "label": {
+        "text": "Cortapiedras"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10407"
+      }
+    },
+    {
+      "label": {
+        "text": "Afilador"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10408"
+      }
+    },
+    {
+      "label": {
+        "text": "Librería x8"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10409"
+      }
+    },
+    {
+      "label": {
+        "text": "Cofre de cobre encerado x2"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10410"
+      }
+    },
+    {
+      "label": {
+        "text": "Mesa de herrería"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 2.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10411"
+      }
+    },
+    {
+      "label": {
+        "text": "Yunque"
+      },
+      "tooltip": {
+        "text": "16 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10412"
+      }
+    },
+    {
+      "label": {
+        "text": "Tocadiscos"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10413"
+      }
+    },
+    {
+      "label": {
+        "text": "Atril"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10414"
+      }
+    },
+    {
+      "label": {
+        "text": "Mesa de encantamientos"
+      },
+      "tooltip": {
+        "text": "26 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10415"
+      }
+    },
+    {
+      "label": {
+        "text": "Cofre de Ender"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 5.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10416"
+      }
+    },
+    {
+      "label": {
+        "text": "Soporte para pociones"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10417"
+      }
+    },
+    {
+      "label": {
+        "text": "Nexo de reaparición"
+      },
+      "tooltip": {
+        "text": "24 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10418"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

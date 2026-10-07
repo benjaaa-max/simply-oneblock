@@ -1,0 +1,115 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Huevo de caballo",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:horse_spawn_egg",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Huevo de caballo",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio unitario: 14 esmeraldas. Los lotes tienen descuento.",
+        "color": "green"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 14 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 9051"
+      }
+    },
+    {
+      "label": {
+        "text": "x2 · 27 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 9052"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 39 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 3 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 9053"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 50 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 6 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 9054"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 92 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 20 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 9058"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_9"
+    }
+  }
+}

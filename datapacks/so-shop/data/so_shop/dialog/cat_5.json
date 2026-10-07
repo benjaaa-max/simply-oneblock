@@ -1,0 +1,228 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Mecanismos y redstone",
+    "color": "red",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Polvo de redstone x32"
+      },
+      "tooltip": {
+        "text": "4 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10501"
+      }
+    },
+    {
+      "label": {
+        "text": "Pistón x8"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10502"
+      }
+    },
+    {
+      "label": {
+        "text": "Pistón pegajoso x8"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10503"
+      }
+    },
+    {
+      "label": {
+        "text": "Observador x8"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 2.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10504"
+      }
+    },
+    {
+      "label": {
+        "text": "Repetidor x8"
+      },
+      "tooltip": {
+        "text": "4 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10505"
+      }
+    },
+    {
+      "label": {
+        "text": "Comparador x4"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10506"
+      }
+    },
+    {
+      "label": {
+        "text": "Tolva x4"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10507"
+      }
+    },
+    {
+      "label": {
+        "text": "Dispensador x4"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10508"
+      }
+    },
+    {
+      "label": {
+        "text": "Soltador x4"
+      },
+      "tooltip": {
+        "text": "4 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10509"
+      }
+    },
+    {
+      "label": {
+        "text": "Lámpara de redstone x8"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10510"
+      }
+    },
+    {
+      "label": {
+        "text": "Sensor de luz solar x2"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10511"
+      }
+    },
+    {
+      "label": {
+        "text": "Diana x4"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10512"
+      }
+    },
+    {
+      "label": {
+        "text": "Bloque de slime x4"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10513"
+      }
+    },
+    {
+      "label": {
+        "text": "Riel propulsor x8"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10514"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+tellraw @s {"text":""}
+tellraw @s {"text":"══ HERRAMIENTAS, ARMAS Y ARMADURAS ══","color":"yellow","bold":true}
+execute if score #blocks so_shop matches 500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Pico de hierro (Efic. III, Irromp. II)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3011"}},{"text":"  —  10 E","color":"green"}]
+execute unless score #blocks so_shop matches 500.. run tellraw @s {"text":"  ✖ Pico de hierro (Efic. III, Irromp. II) — 500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Espada de hierro (Filo III)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3021"}},{"text":"  —  8 E","color":"green"}]
+execute unless score #blocks so_shop matches 500.. run tellraw @s {"text":"  ✖ Espada de hierro (Filo III) — 500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Hacha de hierro (Efic. III)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3031"}},{"text":"  —  8 E","color":"green"}]
+execute unless score #blocks so_shop matches 500.. run tellraw @s {"text":"  ✖ Hacha de hierro (Efic. III) — 500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Pala de hierro (Efic. III)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3041"}},{"text":"  —  6 E","color":"green"}]
+execute unless score #blocks so_shop matches 500.. run tellraw @s {"text":"  ✖ Pala de hierro (Efic. III) — 500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 1000.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Pechera de hierro (Prot. II)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3051"}},{"text":"  —  12 E","color":"green"}]
+execute unless score #blocks so_shop matches 1000.. run tellraw @s {"text":"  ✖ Pechera de hierro (Prot. II) — 1.000 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 1000.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Pantalones de hierro (Prot. II)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3061"}},{"text":"  —  11 E","color":"green"}]
+execute unless score #blocks so_shop matches 1000.. run tellraw @s {"text":"  ✖ Pantalones de hierro (Prot. II) — 1.000 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 3500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Pico de diamante (Efic. IV, Fortuna II)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3071"}},{"text":"  —  24 E","color":"green"}]
+execute unless score #blocks so_shop matches 3500.. run tellraw @s {"text":"  ✖ Pico de diamante (Efic. IV, Fortuna II) — 3.500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 3500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Espada de diamante (Filo IV, Botín II)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3081"}},{"text":"  —  22 E","color":"green"}]
+execute unless score #blocks so_shop matches 3500.. run tellraw @s {"text":"  ✖ Espada de diamante (Filo IV, Botín II) — 3.500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 3500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Hacha de diamante (Efic. IV)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3091"}},{"text":"  —  20 E","color":"green"}]
+execute unless score #blocks so_shop matches 3500.. run tellraw @s {"text":"  ✖ Hacha de diamante (Efic. IV) — 3.500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 3500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Azada de diamante (Fortuna II)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3101"}},{"text":"  —  16 E","color":"green"}]
+execute unless score #blocks so_shop matches 3500.. run tellraw @s {"text":"  ✖ Azada de diamante (Fortuna II) — 3.500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 4000.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Pechera de diamante (Prot. III)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3111"}},{"text":"  —  28 E","color":"green"}]
+execute unless score #blocks so_shop matches 4000.. run tellraw @s {"text":"  ✖ Pechera de diamante (Prot. III) — 4.000 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 4000.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Botas de diamante (Prot. III, Pluma III)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3121"}},{"text":"  —  22 E","color":"green"}]
+execute unless score #blocks so_shop matches 4000.. run tellraw @s {"text":"  ✖ Botas de diamante (Prot. III, Pluma III) — 4.000 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 8500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Pico de netherita (Efic. V, Irromp. III)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3131"}},{"text":"  —  55 E","color":"green"}]
+execute unless score #blocks so_shop matches 8500.. run tellraw @s {"text":"  ✖ Pico de netherita (Efic. V, Irromp. III) — 8.500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 8500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Espada de netherita (Filo V, Fuego II)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3141"}},{"text":"  —  50 E","color":"green"}]
+execute unless score #blocks so_shop matches 8500.. run tellraw @s {"text":"  ✖ Espada de netherita (Filo V, Fuego II) — 8.500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 9000.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Pechera de netherita (Prot. IV)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3151"}},{"text":"  —  55 E","color":"green"}]
+execute unless score #blocks so_shop matches 9000.. run tellraw @s {"text":"  ✖ Pechera de netherita (Prot. IV) — 9.000 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 1000.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Tijeras (Toque de seda)","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3161"}},{"text":"  —  12 E","color":"green"}]
+execute unless score #blocks so_shop matches 1000.. run tellraw @s {"text":"  ✖ Tijeras (Toque de seda) — 1.000 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 1500.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Armadura de caballo de hierro","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3171"}},{"text":"  —  14 E","color":"green"}]
+execute unless score #blocks so_shop matches 1500.. run tellraw @s {"text":"  ✖ Armadura de caballo de hierro — 1.500 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 4000.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Armadura de caballo de diamante","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3181"}},{"text":"  —  28 E","color":"green"}]
+execute unless score #blocks so_shop matches 4000.. run tellraw @s {"text":"  ✖ Armadura de caballo de diamante — 4.000 bloques","color":"dark_gray"}
+execute if score #blocks so_shop matches 5000.. run tellraw @s [{"text":"  ▸ ","color":"dark_gray"},{"text":"Arnés para Happy Ghast","color":"white","click_event":{"action":"run_command","command":"/trigger shop_buy set 3191"}},{"text":"  —  20 E","color":"green"}]
+execute unless score #blocks so_shop matches 5000.. run tellraw @s {"text":"  ✖ Arnés para Happy Ghast — 5.000 bloques","color":"dark_gray"}
+tellraw @s {"text":"  « Volver","color":"yellow","click_event":{"action":"run_command","command":"/trigger shop set 2"}}

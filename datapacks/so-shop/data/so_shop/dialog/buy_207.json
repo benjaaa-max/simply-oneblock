@@ -1,19 +1,19 @@
 {
   "type": "minecraft:multi_action",
   "title": {
-    "text": "Confirmar compra",
+    "text": "Lingote de netherita",
     "color": "gold"
   },
   "body": [
     {
       "type": "minecraft:item",
       "item": {
-        "id": "minecraft:cyan_stained_glass",
-        "count": 64
+        "id": "minecraft:netherite_ingot",
+        "count": 1
       },
       "description": {
         "contents": {
-          "text": "Cristal coloreado x64 (cian)",
+          "text": "Lingote de netherita",
           "color": "white"
         }
       }
@@ -21,31 +21,33 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "Precio: 6 esmeraldas",
+        "text": "Precio unitario: 24 esmeraldas. Los lotes tienen descuento.",
         "color": "green"
       }
     }
   ],
+  "columns": 2,
   "can_close_with_escape": true,
   "pause": false,
-  "columns": 2,
   "actions": [
     {
       "label": {
-        "text": "x1 · 6 E"
+        "text": "x1 · 24 E",
+        "color": "white"
       },
       "width": 150,
       "action": {
         "type": "minecraft:run_command",
-        "command": "/trigger shop_buy set 207"
+        "command": "/trigger shop_buy set 2071"
       }
     },
     {
       "label": {
-        "text": "x2 · 11 E"
+        "text": "x2 · 46 E",
+        "color": "green"
       },
       "tooltip": {
-        "text": "Ahorrás 1 esmeraldas",
+        "text": "Ahorrás 2 esmeraldas",
         "color": "green"
       },
       "width": 150,
@@ -56,10 +58,11 @@
     },
     {
       "label": {
-        "text": "x3 · 17 E"
+        "text": "x3 · 67 E",
+        "color": "green"
       },
       "tooltip": {
-        "text": "Ahorrás 1 esmeraldas",
+        "text": "Ahorrás 5 esmeraldas",
         "color": "green"
       },
       "width": 150,
@@ -70,10 +73,11 @@
     },
     {
       "label": {
-        "text": "x4 · 22 E"
+        "text": "x4 · 85 E",
+        "color": "green"
       },
       "tooltip": {
-        "text": "Ahorrás 2 esmeraldas",
+        "text": "Ahorrás 11 esmeraldas",
         "color": "green"
       },
       "width": 150,
@@ -84,10 +88,11 @@
     },
     {
       "label": {
-        "text": "x8 · 40 E"
+        "text": "x8 · 158 E",
+        "color": "green"
       },
       "tooltip": {
-        "text": "Ahorrás 8 esmeraldas",
+        "text": "Ahorrás 34 esmeraldas",
         "color": "green"
       },
       "width": 150,
@@ -104,7 +109,7 @@
     "width": 150,
     "action": {
       "type": "minecraft:show_dialog",
-      "dialog": "so_shop:cat_color"
+      "dialog": "so_shop:cat_2"
     }
   }
 }

@@ -1,19 +1,19 @@
 {
-  "type": "minecraft:confirmation",
+  "type": "minecraft:multi_action",
   "title": {
-    "text": "Confirmar venta",
+    "text": "Vidrio tintado x32",
     "color": "gold"
   },
   "body": [
     {
       "type": "minecraft:item",
       "item": {
-        "id": "minecraft:iron_ingot",
+        "id": "minecraft:tinted_glass",
         "count": 32
       },
       "description": {
         "contents": {
-          "text": "Vender 32 hierro",
+          "text": "Vidrio tintado x32",
           "color": "white"
         }
       }
@@ -21,30 +21,95 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "Recibes: 12 esmeraldas",
+        "text": "Precio unitario: 8 esmeraldas. Los lotes tienen descuento.",
         "color": "green"
       }
     }
   ],
+  "columns": 2,
   "can_close_with_escape": true,
   "pause": false,
-  "yes": {
-    "label": {
-      "text": "Vender",
-      "color": "green"
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 8 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8071"
+      }
     },
-    "action": {
-      "type": "minecraft:run_command",
-      "command": "/trigger shop_buy set 807"
+    {
+      "label": {
+        "text": "x2 · 15 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8072"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 23 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 1 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8073"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 29 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 3 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8074"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 53 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 11 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 8078"
+      }
     }
-  },
-  "no": {
+  ],
+  "exit_action": {
     "label": {
       "text": "« Volver"
     },
+    "width": 150,
     "action": {
       "type": "minecraft:show_dialog",
-      "dialog": "so_shop:cat_sell"
+      "dialog": "so_shop:cat_8"
     }
   }
 }

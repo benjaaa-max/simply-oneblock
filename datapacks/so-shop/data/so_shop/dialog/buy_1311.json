@@ -1,0 +1,115 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Wither Arena",
+    "color": "gold"
+  },
+  "body": [
+    {
+      "type": "minecraft:item",
+      "item": {
+        "id": "minecraft:ominous_trial_key",
+        "count": 1
+      },
+      "description": {
+        "contents": {
+          "text": "Wither Arena",
+          "color": "white"
+        }
+      }
+    },
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Precio unitario: 30 esmeraldas. Los lotes tienen descuento.",
+        "color": "green"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "x1 · 30 E",
+        "color": "white"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 13111"
+      }
+    },
+    {
+      "label": {
+        "text": "x2 · 57 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 3 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 13112"
+      }
+    },
+    {
+      "label": {
+        "text": "x3 · 83 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 7 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 13113"
+      }
+    },
+    {
+      "label": {
+        "text": "x4 · 106 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 14 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 13114"
+      }
+    },
+    {
+      "label": {
+        "text": "x8 · 197 E",
+        "color": "green"
+      },
+      "tooltip": {
+        "text": "Ahorrás 43 esmeraldas",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_buy set 13118"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:cat_13"
+    }
+  }
+}

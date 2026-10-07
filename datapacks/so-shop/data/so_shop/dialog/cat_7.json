@@ -1,0 +1,256 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Alimentos y pociones",
+    "color": "light_purple",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Pan x32"
+      },
+      "tooltip": {
+        "text": "3 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10701"
+      }
+    },
+    {
+      "label": {
+        "text": "Torta"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10702"
+      }
+    },
+    {
+      "label": {
+        "text": "Filete cocinado x16"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10703"
+      }
+    },
+    {
+      "label": {
+        "text": "Chuleta cocinada x16"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10704"
+      }
+    },
+    {
+      "label": {
+        "text": "Zanahoria dorada x16"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10705"
+      }
+    },
+    {
+      "label": {
+        "text": "Manzana dorada x2"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 3.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10706"
+      }
+    },
+    {
+      "label": {
+        "text": "Manzana de Notch"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10707"
+      }
+    },
+    {
+      "label": {
+        "text": "Arrojadiza: Curación II x2"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10708"
+      }
+    },
+    {
+      "label": {
+        "text": "Arrojadiza: Regeneración x2"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10709"
+      }
+    },
+    {
+      "label": {
+        "text": "Arrojadiza: Fuerza II x2"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10710"
+      }
+    },
+    {
+      "label": {
+        "text": "Arrojadiza: Velocidad II x2"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10711"
+      }
+    },
+    {
+      "label": {
+        "text": "Arrojadiza: Caída lenta x2"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10712"
+      }
+    },
+    {
+      "label": {
+        "text": "Arrojadiza: Daño II x2"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10713"
+      }
+    },
+    {
+      "label": {
+        "text": "Arrojadiza: Debilidad x2"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10714"
+      }
+    },
+    {
+      "label": {
+        "text": "Arrojadiza: Veneno x2"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10715"
+      }
+    },
+    {
+      "label": {
+        "text": "Arrojadiza: Infestación x2"
+      },
+      "tooltip": {
+        "text": "12 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10716"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}

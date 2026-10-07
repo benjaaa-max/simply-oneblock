@@ -1,19 +1,19 @@
 {
   "type": "minecraft:multi_action",
   "title": {
-    "text": "Comprar llave OneBlock",
+    "text": "Arrojadiza: Infestación x2",
     "color": "gold"
   },
   "body": [
     {
       "type": "minecraft:item",
       "item": {
-        "id": "minecraft:trial_key",
-        "count": 1
+        "id": "minecraft:splash_potion",
+        "count": 2
       },
       "description": {
         "contents": {
-          "text": "Rusty Mineshaft Key",
+          "text": "Arrojadiza: Infestación x2",
           "color": "white"
         }
       }
@@ -21,7 +21,7 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "Precio: 11 esmeraldas",
+        "text": "Precio unitario: 12 esmeraldas. Los lotes tienen descuento.",
         "color": "green"
       }
     }
@@ -32,17 +32,19 @@
   "actions": [
     {
       "label": {
-        "text": "x1 · 11 E"
+        "text": "x1 · 12 E",
+        "color": "white"
       },
       "width": 150,
       "action": {
         "type": "minecraft:run_command",
-        "command": "/trigger shop_buy set 716"
+        "command": "/trigger shop_buy set 7161"
       }
     },
     {
       "label": {
-        "text": "x2 · 21 E"
+        "text": "x2 · 23 E",
+        "color": "green"
       },
       "tooltip": {
         "text": "Ahorrás 1 esmeraldas",
@@ -56,7 +58,8 @@
     },
     {
       "label": {
-        "text": "x3 · 31 E"
+        "text": "x3 · 34 E",
+        "color": "green"
       },
       "tooltip": {
         "text": "Ahorrás 2 esmeraldas",
@@ -70,7 +73,8 @@
     },
     {
       "label": {
-        "text": "x4 · 39 E"
+        "text": "x4 · 43 E",
+        "color": "green"
       },
       "tooltip": {
         "text": "Ahorrás 5 esmeraldas",
@@ -84,10 +88,11 @@
     },
     {
       "label": {
-        "text": "x8 · 73 E"
+        "text": "x8 · 79 E",
+        "color": "green"
       },
       "tooltip": {
-        "text": "Ahorrás 15 esmeraldas",
+        "text": "Ahorrás 17 esmeraldas",
         "color": "green"
       },
       "width": 150,
@@ -104,7 +109,7 @@
     "width": 150,
     "action": {
       "type": "minecraft:show_dialog",
-      "dialog": "so_shop:cat_oneblock"
+      "dialog": "so_shop:cat_7"
     }
   }
 }

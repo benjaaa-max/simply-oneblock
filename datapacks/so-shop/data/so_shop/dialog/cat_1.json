@@ -1,0 +1,354 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Bloques de construcción",
+    "color": "green",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Toca un artículo para ver precios y lotes. Si está bloqueado, te digo cuántos bloques faltan.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Tronco de roble x32"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10101"
+      }
+    },
+    {
+      "label": {
+        "text": "Tronco de abedul x32"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10102"
+      }
+    },
+    {
+      "label": {
+        "text": "Tronco de abeto x32"
+      },
+      "tooltip": {
+        "text": "4 E · disponible siempre",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10103"
+      }
+    },
+    {
+      "label": {
+        "text": "Tronco de jungla x32"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10104"
+      }
+    },
+    {
+      "label": {
+        "text": "Tronco de acacia x32"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10105"
+      }
+    },
+    {
+      "label": {
+        "text": "Tronco de roble oscuro x32"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10106"
+      }
+    },
+    {
+      "label": {
+        "text": "Tronco de cerezo x32"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10107"
+      }
+    },
+    {
+      "label": {
+        "text": "Tronco de mangle x32"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10108"
+      }
+    },
+    {
+      "label": {
+        "text": "Bloque de bambú x32"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10109"
+      }
+    },
+    {
+      "label": {
+        "text": "Tallo carmesí x32"
+      },
+      "tooltip": {
+        "text": "7 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10110"
+      }
+    },
+    {
+      "label": {
+        "text": "Tallo distorsionado x32"
+      },
+      "tooltip": {
+        "text": "7 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10111"
+      }
+    },
+    {
+      "label": {
+        "text": "Ladrillos de piedra x64"
+      },
+      "tooltip": {
+        "text": "5 E · se desbloquea a los 500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10112"
+      }
+    },
+    {
+      "label": {
+        "text": "Pizarra profunda pulida x64"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 2.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10113"
+      }
+    },
+    {
+      "label": {
+        "text": "Ladrillos x64"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 1.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10114"
+      }
+    },
+    {
+      "label": {
+        "text": "Bloque de cuarzo x32"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10115"
+      }
+    },
+    {
+      "label": {
+        "text": "Ladrillos del Nether x64"
+      },
+      "tooltip": {
+        "text": "6 E · se desbloquea a los 6.667 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10116"
+      }
+    },
+    {
+      "label": {
+        "text": "Prismarina x32"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 4.000 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10117"
+      }
+    },
+    {
+      "label": {
+        "text": "Ladrillos de piedra del End x32"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 8.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10118"
+      }
+    },
+    {
+      "label": {
+        "text": "Bloque de púrpur x32"
+      },
+      "tooltip": {
+        "text": "8 E · se desbloquea a los 8.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10119"
+      }
+    },
+    {
+      "label": {
+        "text": "Cobre encerado x64"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10120"
+      }
+    },
+    {
+      "label": {
+        "text": "Cobre expuesto encerado x64"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10121"
+      }
+    },
+    {
+      "label": {
+        "text": "Cobre desgastado encerado x64"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10122"
+      }
+    },
+    {
+      "label": {
+        "text": "Cobre oxidado encerado x64"
+      },
+      "tooltip": {
+        "text": "10 E · se desbloquea a los 1.500 bloques",
+        "color": "green"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger shop_menu set 10123"
+      }
+    }
+  ],
+  "exit_action": {
+    "label": {
+      "text": "« Volver"
+    },
+    "width": 150,
+    "action": {
+      "type": "minecraft:show_dialog",
+      "dialog": "so_shop:main"
+    }
+  }
+}
