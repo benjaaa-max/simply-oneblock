@@ -1,4 +1,4 @@
-# so_quests v2
+# so_quests v3
 
 Misiones para Simply OneBlock. Abrir: `/trigger quests` (alias `/shop`-style: en Purpur `quests: trigger quests` en commands.yml).
 
@@ -6,6 +6,12 @@ Misiones para Simply OneBlock. Abrir: `/trigger quests` (alias `/shop`-style: en
 - 28 logros de Minecraft con recompensa extra
 - 36 Metas de la Isla (grupales): suman lo que hace todo el servidor; cada jugador reclama su parte una vez
 - 3 diarias (se reinician cada dia de Minecraft)
+- Colores por estado en el menu: gris (sin empezar), rojo/amarillo (en progreso),
+  verde [!] en negrita (lista para reclamar), tachado (ya reclamada). Las misiones
+  de un solo objetivo nunca usan rojo/amarillo.
+- El menu se reabre solo: al ver una mision incompleta o al reclamar, la ventana
+  vuelve sola para seguir jugando con el menu abierto.
+- Aviso unico al completar una mision: actionbar + sonido (sin spam).
 
 Reclamo manual con ventana de confirmacion y chequeo de inventario lleno.
 Cuenta de bloques: so_core primero, si no existe lee `fake_player ib_minedcount`.

@@ -1,5 +1,5 @@
 =====================================================
- SO QUESTS v2 - Guia de objetivos sin especificacion
+ SO QUESTS v3 - Guia de objetivos sin especificacion
 =====================================================
 
 Este listado explica SOLO las misiones cuya ventana no dice

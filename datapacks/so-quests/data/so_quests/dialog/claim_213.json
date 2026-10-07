@@ -50,8 +50,8 @@
       "text": "« Volver"
     },
     "action": {
-      "type": "minecraft:show_dialog",
-      "dialog": "so_quests:cat_2"
+      "type": "minecraft:run_command",
+      "command": "/trigger quest_menu set 2"
     }
   }
 }

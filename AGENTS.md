@@ -11,3 +11,4 @@
 
 - Preserve the corrected `datapacks/so-shop` as the source of truth; run `tools/extend_so_shop.py` on it to regenerate key and bulk-buy additions, because the older base shop generator predates the verified dialog/cooldown fixes.
 - Keep Simply OneBlock keys as vanilla trial keys with the exact plain `minecraft:custom_name` strings shared with `so_crates`; their original chamber doors and crate vaults depend on exact matching.
+- Build `so_quests` state-aware UI as dynamic inline dialogs (macro'd `$dialog show` fed from `storage so_quests:menu` in `function/menu/cat_*`), not static dialog JSON; per-player button colors cannot be expressed in static dialog files.

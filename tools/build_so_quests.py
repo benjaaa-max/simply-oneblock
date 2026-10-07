@@ -215,7 +215,11 @@ for q in ALL:
     give = [f"give @s minecraft:{it} {n}" for it, n in q["rew"]]
     done_msg = f"tellraw @s {T(PFX, {'text': 'Reclamaste ', 'color': 'green'}, {'text': q['name'], 'color': 'white'}, {'text': ' → ' + rew_text(q['rew']), 'color': 'gray'})}"
     snd = "playsound minecraft:entity.player.levelup master @s ~ ~ ~ 0.6 1.2"
-    full = f"execute unless function {NS}:lib/space run return run tellraw @s {T(PFX, {'text': 'Inventario lleno: libera un espacio y vuelve a reclamar.', 'color': 'red'})}"
+    full = [f"execute unless function {NS}:lib/space run tellraw @s {T(PFX, {'text': 'Inventario lleno: libera un espacio y vuelve a reclamar.', 'color': 'red'})}",
+            f"execute unless function {NS}:lib/space run dialog show @s so_quests:claim_{i}",
+            "execute unless function so_quests:lib/space run return fail"]
+    err = "playsound minecraft:entity.villager.no master @s ~ ~ ~ 0.5 1"
+    reopen = f"function so_quests:menu/cat_{q['cat']} with storage so_quests:menu"
     back = {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": f"/trigger quest_menu set {q['cat']}"}}
 
     if kind == "grp":
@@ -228,15 +232,17 @@ for q in ALL:
         check.append(f"execute unless score #done_{i} sq_group matches 1 if score {g} sq_group matches {q['target']}.. run {ready_cmd}")
         F(f"q/{i}/ready", ["scoreboard players set #done_" + str(i) + " sq_group 1",
                            f"tellraw @a {T(PFX, {'text': '¡Meta de la Isla completada! ', 'color': 'light_purple'}, {'text': q['name'], 'color': 'white'}, {'text': ' — todos pueden reclamar su parte con /trigger quests', 'color': 'gray'})}",
+                           'title @a actionbar {text:"¡Meta de la Isla completada!",color:"light_purple"}',
                            "execute as @a at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 0.7 1"])
         prog = [{"score": {"name": g, "objective": "sq_group"}, "color": "yellow"}, {"text": f" / {q['target']}", "color": "gray"}]
         F(f"q/{i}/view", [
             f"execute if score #done_{i} sq_group matches 1 unless score @s {s} matches 2 run return run dialog show @s {NS}:claim_{i}",
-            f"execute if score @s {s} matches 2 run return run tellraw @s {T(PFX, {'text': q['name'] + ': ya reclamaste tu parte.', 'color': 'gray'}, back)}",
-            f"tellraw @s {T(PFX, {'text': q['name'] + ': ', 'color': 'white'}, *prog, back)}"])
+            f"execute if score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ya reclamaste tu parte.', 'color': 'gray'}, back)}",
+            f"execute unless score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ', 'color': 'white'}, *prog, back)}",
+            err, reopen])
         F(f"q/{i}/claim", [f"execute unless score #done_{i} sq_group matches 1 run return fail",
-                           f"execute if score @s {s} matches 2 run return fail", full,
-                           f"scoreboard players set @s {s} 2", *give, done_msg, snd])
+                           f"execute if score @s {s} matches 2 run return fail", *full,
+                           f"scoreboard players set @s {s} 2", *give, done_msg, snd, reopen])
     else:
         c = q["cond"]; t = c[0]; prog = []
         sel = f"@a[scores={{{s}=0}}]" if kind == "ind" else f"@a[scores={{{s}=0}}]"
@@ -262,25 +268,30 @@ for q in ALL:
         if t != "deliver":
             F(f"q/{i}/ready", [f"scoreboard players set @s {s} 1",
                                f"tellraw @s {T(PFX, {'text': '¡Misión lista para reclamar! ', 'color': 'green'}, {'text': q['name'], 'color': 'white'}, {'text': ' [Abrir]', 'color': 'aqua', 'click_event': {'action': 'run_command', 'command': f'/trigger quest_view set {i}'}})}",
+                               'title @s actionbar {text:"¡Misión lista para reclamar!",color:"green"}',
                                "playsound minecraft:entity.experience_orb.pickup master @s ~ ~ ~ 0.7 1.6"])
             F(f"q/{i}/view", [
                 f"execute if score @s {s} matches 1 run return run dialog show @s {NS}:claim_{i}",
-                f"execute if score @s {s} matches 2 run return run tellraw @s {T(PFX, {'text': q['name'] + ': completada.', 'color': 'gray'}, back)}",
-                f"tellraw @s {T(PFX, {'text': q['name'] + ': ', 'color': 'white'}, *prog, back)}"])
-            F(f"q/{i}/claim", [f"execute unless score @s {s} matches 1 run return fail", full,
-                               f"scoreboard players set @s {s} 2", *give, done_msg, snd])
+                f"execute if score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': completada y reclamada.', 'color': 'gray'}, back)}",
+                f"execute unless score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ', 'color': 'white'}, *prog, back)}",
+                err, reopen])
+            F(f"q/{i}/claim", [f"execute unless score @s {s} matches 1 run return fail", *full,
+                               f"scoreboard players set @s {s} 2", *give, done_msg, snd, reopen])
         else:
             item, n = c[1], c[2]
             F(f"q/{i}/view", [
-                f"execute if score @s {s} matches 2 run return run tellraw @s {T(PFX, {'text': q['name'] + ': ya entregada hoy.', 'color': 'gray'}, back)}",
-                f"execute store result score @s sq_tmp run clear @s minecraft:{item} 0",
-                f"execute if score @s sq_tmp matches {n}.. run return run dialog show @s {NS}:claim_{i}",
-                f"tellraw @s {T(PFX, {'text': q['name'] + ': tienes ', 'color': 'white'}, {'score': {'name': '@s', 'objective': 'sq_tmp'}, 'color': 'yellow'}, {'text': f' / {n}', 'color': 'gray'}, back)}"])
+                f"execute if score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ya entregada hoy.', 'color': 'gray'}, back)}",
+                f"execute unless score @s {s} matches 2 run execute store result score @s sq_tmp run clear @s minecraft:{item} 0",
+                f"execute unless score @s {s} matches 2 run execute if score @s sq_tmp matches {n}.. run return run dialog show @s {NS}:claim_{i}",
+                f"execute if score @s {s} matches 0 run tellraw @s {T(PFX, {'text': q['name'] + ': tienes ', 'color': 'white'}, {'score': {'name': '@s', 'objective': 'sq_tmp'}, 'color': 'yellow'}, {'text': f' / {n}', 'color': 'gray'}, back)}",
+                err, reopen])
             F(f"q/{i}/claim", [f"execute if score @s {s} matches 2 run return fail",
-                               f"execute store result score @s sq_tmp run clear @s minecraft:{item} 0",
-                               f"execute unless score @s sq_tmp matches {n}.. run return run tellraw @s {T(PFX, {'text': 'Te faltan objetos para entregar.', 'color': 'red'})}",
-                               full, f"clear @s minecraft:{item} {n}",
-                               f"scoreboard players set @s {s} 2", *give, done_msg, snd])
+                                f"execute store result score @s sq_tmp run clear @s minecraft:{item} 0",
+                                f"execute unless score @s sq_tmp matches {n}.. run tellraw @s {T(PFX, {'text': 'Te faltan objetos para entregar.', 'color': 'red'})}",
+                                f"execute unless score @s sq_tmp matches {n}.. run dialog show @s so_quests:claim_{i}",
+                                f"execute unless score @s sq_tmp matches {n}.. run return fail",
+                                *full, f"clear @s minecraft:{item} {n}",
+                                f"scoreboard players set @s {s} 2", *give, done_msg, snd, reopen])
         if kind == "day": reset_day.append(f"scoreboard players set * {s} 0")
 
     # ventana de reclamo (confirmacion)
@@ -293,7 +304,7 @@ for q in ALL:
         "body": body, "can_close_with_escape": True, "pause": False,
         "yes": {"label": {"text": "Entregar y reclamar" if q.get("cond", ("",))[0] == "deliver" else "Reclamar", "color": "green"},
                 "action": {"type": "minecraft:run_command", "command": f"/trigger quest_claim set {i}"}},
-        "no": {"label": {"text": "« Volver"}, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:cat_{q['cat']}"}}})
+        "no": {"label": {"text": "« Volver"}, "action": {"type": "minecraft:run_command", "command": f"/trigger quest_menu set {q['cat']}"}}})
 
 # advancements de mercaderes (oneblock_adventure_traders)
 def trade_adv(name, tag):
@@ -311,16 +322,67 @@ W(f"data/{NS}/dialog/main.json", {
     "columns": 2, "can_close_with_escape": True, "pause": False,
     "actions": [{"label": {"text": n, "color": col}, "width": 150,
                  "action": {"type": "minecraft:run_command", "command": f"/trigger quest_menu set {k}"}} for k, (n, col) in CATS.items()]})
+# ---------- menus dinamicos (colores por estado) ----------
+MENU_HINT = "Gris = sin empezar · Rojo/Amarillo = en progreso · Verde [!] = lista para reclamar · Tachado = reclamada."
+
+def menu_lines(q, s):
+    """Lineas que pintan el boton de una mision segun el estado del jugador."""
+    i, M = q["id"], f"data modify storage {NS}:menu"
+    def sv(var, val, cond=""):
+        return f"execute {cond + ' ' if cond else ''}run {M} {var}{i} set value \"{val}\""
+    L = [f'{M} t{i} set value "{q["name"]}"', f'{M} c{i} set value "gray"', f'{M} x{i} set value ""']
+    if q["kind"] == "grp":
+        p, half = f"#g_{i} sq_group", (q["target"] + 1) // 2
+        rdy = f"if score #done_{i} sq_group matches 1 unless score @s {s} matches 2"
+        L += [sv("c", "red", f"if score {p} matches 1.. if score @s {s} matches 0"),
+              sv("c", "yellow", f"if score {p} matches {half}.. if score @s {s} matches 0"),
+              sv("t", f"[!] {q['name']}", rdy), sv("c", "green", rdy), sv("x", ",bold:true", rdy),
+              sv("c", "white", f"if score @s {s} matches 2"), sv("x", ",strikethrough:true", f"if score @s {s} matches 2")]
+        return L
+    t = q["cond"][0]
+    if t == "deliver":
+        item, n = q["cond"][1], q["cond"][2]
+        rdy = f"if score @s sq_tmp matches {n}.. unless score @s {s} matches 2"
+        L += [f"execute store result score @s sq_tmp run clear @s minecraft:{item} 0",
+              sv("t", f"[!] {q['name']}", rdy), sv("c", "green", rdy), sv("x", ",bold:true", rdy),
+              sv("c", "white", f"if score @s {s} matches 2"), sv("x", ",strikethrough:true", f"if score @s {s} matches 2")]
+        return L
+    if t == "blocks":
+        p, tgt = "#blocks sq", q["cond"][1]
+    elif t == "stat":
+        tgt = q["cond"][2] // q["cond"][3]
+        p = f"@s sqv_{i}" if q["cond"][3] > 1 else f"@s sqp_{i}"
+    elif t == "score":
+        p, tgt = f"@s {q['cond'][1]}", q["cond"][2]
+    else:  # adv: objetivo de un solo paso, sin rojo/amarillo
+        p, tgt = None, 1
+    if p is not None and tgt > 1:
+        half = (tgt + 1) // 2
+        L += [sv("c", "red", f"if score {p} matches 1.. if score @s {s} matches 0"),
+              sv("c", "yellow", f"if score {p} matches {half}.. if score @s {s} matches 0")]
+    L += [sv("t", f"[!] {q['name']}", f"if score @s {s} matches 1"), sv("c", "green", f"if score @s {s} matches 1"),
+          sv("x", ",bold:true", f"if score @s {s} matches 1"),
+          sv("c", "white", f"if score @s {s} matches 2"), sv("x", ",strikethrough:true", f"if score @s {s} matches 2")]
+    return L
+
 for k, (n, col) in CATS.items():
-    acts = [{"label": {"text": q["name"], "color": col}, "width": 150,
-             "tooltip": {"text": cond_desc(q) + "\nRecompensa: " + rew_text(q["rew"])},
-             "action": {"type": "minecraft:run_command", "command": f"/trigger quest_view set {q['id']}"}}
-            for q in ALL if q["cat"] == k]
-    W(f"data/{NS}/dialog/cat_{k}.json", {
-        "type": "minecraft:multi_action", "title": {"text": n, "color": col, "bold": True},
-        "body": [{"type": "minecraft:plain_message", "contents": {"text": "Verde en el chat = lista para reclamar. Pasa el ratón para ver el objetivo.", "color": "gray"}}],
-        "columns": 2, "can_close_with_escape": True, "pause": False, "actions": acts,
-        "exit_action": {"label": {"text": "« Volver"}, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:main"}}})
+    lines = []
+    for q in ALL:
+        if q["cat"] == k: lines += menu_lines(q, f"sqs_{q['id']}")
+    acts = []
+    for q in ALL:
+        if q["cat"] != k: continue
+        i = q["id"]
+        tip = (cond_desc(q) + "\\nRecompensa: " + rew_text(q["rew"])).replace('"', "'")
+        acts.append(('{"label":{"text":"$(t%d)","color":"$(c%d)"$(x%d)},"width":150,'
+                     '"tooltip":{"text":"%s","color":"gray"},'
+                     '"action":{"type":"minecraft:run_command","command":"/trigger quest_view set %d"}}') % (i, i, i, tip, i))
+    lines.append(('$dialog show @s {type:"minecraft:multi_action",title:{text:"%s",color:"%s",bold:true},'
+                  'body:[{type:"minecraft:plain_message",contents:{text:"%s",color:"gray"}}],'
+                  'columns:2,can_close_with_escape:true,pause:false,actions:[%s],'
+                  'exit_action:{label:{text:"« Volver"},action:{type:"minecraft:show_dialog",dialog:"so_quests:main"}}}')
+                 % (n, col, MENU_HINT, ",".join(acts)))
+    F(f"menu/cat_{k}", lines)
 
 # ---------- funciones base ----------
 F("load", ["# Crea marcadores (repetir no falla: Minecraft solo avisa que ya existen)",
@@ -328,7 +390,7 @@ F("load", ["# Crea marcadores (repetir no falla: Minecraft solo avisa que ya exi
            "scoreboard objectives add so_core dummy", "scoreboard objectives add ib_minedcount dummy",
            "execute unless score #enabled sq matches 0.. run scoreboard players set #enabled sq 1",
            "scoreboard players set #100 sq 100",
-           f"tellraw @a[tag=oneblock_admin] {T(PFX, {'text': 'v2 cargado. /function so_quests:admin/help', 'color': 'gray'})}"])
+           f"tellraw @a[tag=oneblock_admin] {T(PFX, {'text': 'v3 cargado. /function so_quests:admin/help', 'color': 'gray'})}"])
 F("lib/read_count", ["# so_core primero; si no existe, lectura autonoma de Simply OneBlock",
     "scoreboard players set #src sq 0",
     "execute if score #blocks so_core matches -2147483648.. run scoreboard players set #src sq 1",
@@ -343,7 +405,7 @@ F("lib/check", ["function so_quests:lib/read_count", *check])
 F("lib/new_day", [*reset_day, f"tellraw @a {T(PFX, {'text': 'Nuevo día: las misiones diarias se reiniciaron.', 'color': 'yellow'})}"])
 F("lib/view", ["$function so_quests:q/$(id)/view"])
 F("lib/claim", ["$function so_quests:q/$(id)/claim"])
-F("lib/open_cat", ["$dialog show @s so_quests:cat_$(id)"])
+F("lib/open_cat", ["$function so_quests:menu/cat_$(id) with storage so_quests:menu"])
 F("lib/h_open_cat", ["execute store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_menu", "function so_quests:lib/open_cat with storage so_quests:tmp"])
 F("lib/h_view", ["execute store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_view", "function so_quests:lib/view with storage so_quests:tmp"])
 F("lib/h_claim", ["execute store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_claim", "function so_quests:lib/claim with storage so_quests:tmp"])
@@ -377,7 +439,7 @@ F("uninstall", [f"scoreboard objectives remove {o.split()[0]}" for o in objectiv
 
 README2 = """\
 =====================================================
- SO QUESTS v2 - Guia de objetivos sin especificacion
+ SO QUESTS v3 - Guia de objetivos sin especificacion
 =====================================================
 
 Este listado explica SOLO las misiones cuya ventana no dice
@@ -496,7 +558,7 @@ instante desde la seccion Logros.
 """
 
 README1 = """\
-# so_quests v2
+# so_quests v3
 
 Misiones para Simply OneBlock. Abrir: `/trigger quests` (alias `/shop`-style: en Purpur `quests: trigger quests` en commands.yml).
 
@@ -504,6 +566,12 @@ Misiones para Simply OneBlock. Abrir: `/trigger quests` (alias `/shop`-style: en
 - 28 logros de Minecraft con recompensa extra
 - 36 Metas de la Isla (grupales): suman lo que hace todo el servidor; cada jugador reclama su parte una vez
 - 3 diarias (se reinician cada dia de Minecraft)
+- Colores por estado en el menu: gris (sin empezar), rojo/amarillo (en progreso),
+  verde [!] en negrita (lista para reclamar), tachado (ya reclamada). Las misiones
+  de un solo objetivo nunca usan rojo/amarillo.
+- El menu se reabre solo: al ver una mision incompleta o al reclamar, la ventana
+  vuelve sola para seguir jugando con el menu abierto.
+- Aviso unico al completar una mision: actionbar + sonido (sin spam).
 
 Reclamo manual con ventana de confirmacion y chequeo de inventario lleno.
 Cuenta de bloques: so_core primero, si no existe lee `fake_player ib_minedcount`.
@@ -521,7 +589,7 @@ W("README.md", README1)
 W("README-OBJETIVOS.md", README2)
 W("data/minecraft/tags/function/load.json", {"values": [f"{NS}:load"]})
 W("data/minecraft/tags/function/tick.json", {"values": [f"{NS}:tick"]})
-W("pack.mcmeta", {"pack": {"description": "Simply OneBlock Expansion - Quests v2 (/trigger quests)", "min_format": [107, 1], "max_format": [107, 1]}})
+W("pack.mcmeta", {"pack": {"description": "Simply OneBlock Expansion - Quests v3 (/trigger quests)", "min_format": [107, 1], "max_format": [107, 1]}})
 
 if os.path.isdir(OUT): shutil.rmtree(OUT)
 for p, c in files.items():
