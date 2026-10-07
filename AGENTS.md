@@ -13,3 +13,4 @@
 - Lock so_shop articles per item (block-count guard in each buy function and detail opener), never per section; players need early access to cosmetic items in every section.
 - Keep Simply OneBlock keys as vanilla trial keys with the exact plain `minecraft:custom_name` strings shared with `so_crates`; their original chamber doors and crate vaults depend on exact matching.
 - Build `so_quests` state-aware UI as dynamic inline dialogs (macro'd `$dialog show` fed from `storage so_quests:menu` in `function/menu/cat_*`), not static dialog JSON; per-player button colors cannot be expressed in static dialog files.
+- Keep `so_status` travel commands as direct destination triggers owned by their destination pack (for example `crates`/`isla` in `so_crates`), never a central numeric warp dispatcher, so adding destinations does not couple datapacks.
