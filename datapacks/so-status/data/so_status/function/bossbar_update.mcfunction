@@ -18,16 +18,17 @@ execute if score #phase_idx so_sys matches 17 run bossbar set so_status:progress
 execute if score #phase_idx so_sys matches 18 run bossbar set so_status:progress name [{"text":"Fase 18: Badlands","color":"aqua","bold":true},{"text":"  "},{"score":{"name":"#blk","objective":"so_sys"},"color":"white"},{"text":" / ","color":"gray"},{"score":{"name":"#phase_hi","objective":"so_sys"},"color":"white"}]
 execute if score #phase_idx so_sys matches 19 run bossbar set so_status:progress name [{"text":"Fase 19: Desert","color":"aqua","bold":true},{"text":"  "},{"score":{"name":"#blk","objective":"so_sys"},"color":"white"},{"text":" / ","color":"gray"},{"score":{"name":"#phase_hi","objective":"so_sys"},"color":"white"}]
 execute if score #phase_idx so_sys matches 20 run bossbar set so_status:progress name [{"text":"Fase 20: The End","color":"aqua","bold":true},{"text":"  "},{"score":{"name":"#blk","objective":"so_sys"},"color":"white"},{"text":" / ","color":"gray"},{"score":{"name":"#phase_hi","objective":"so_sys"},"color":"white"}]
-execute if score #phase_idx so_sys matches 21 run bossbar set so_status:progress name [{"text":"After Phase","color":"light_purple","bold":true},{"text":"  (fuera del rango de fases mapeado)","color":"gray"}]
-
-bossbar set so_status:progress max 100
+execute if score #phase_idx so_sys matches 21 run bossbar set so_status:progress name [{"text":"After Phase","color":"light_purple","bold":true},{"text":"  "},{"score":{"name":"#blk","objective":"so_sys"},"color":"white"}]
+bossbar set so_status:progress players @a
+bossbar set so_status:progress visible true
 scoreboard players operation #width so_sys = #phase_hi so_sys
 scoreboard players operation #width so_sys -= #phase_lo so_sys
 scoreboard players add #width so_sys 1
 scoreboard players operation #prog so_sys = #blk so_sys
 scoreboard players operation #prog so_sys -= #phase_lo so_sys
-scoreboard players add #prog so_sys 1
+execute if score #prog so_sys matches ..-1 run scoreboard players set #prog so_sys 0
 scoreboard players operation #pct so_sys = #prog so_sys
 scoreboard players operation #pct so_sys *= #100 so_sys
 scoreboard players operation #pct so_sys /= #width so_sys
+execute if score #pct so_sys matches 101.. run scoreboard players set #pct so_sys 100
 execute store result bossbar so_status:progress value run scoreboard players get #pct so_sys
