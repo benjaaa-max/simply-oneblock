@@ -1,0 +1,10 @@
+{
+  "pack": {
+    "description": "Simply OneBlock Expansion - Status (rangos, HUD y barra de progreso)",
+    "min_format": [
+      107,
+      1
+    ],
+    "max_format": 107
+  }
+}
