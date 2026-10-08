@@ -194,7 +194,7 @@ for g in GROUPS: ALL.append(dict(id=g[0], cat=5, name=g[1], icon=g[2], crit=g[3]
 for d in DAILY: ALL.append(dict(id=d[0], cat=6, name=d[1], icon=d[2], cond=d[3], rew=d[4], kind="day"))
 
 objectives = ["sq dummy", "sq_group dummy", "sq_tmp dummy", "so_shop_seen dummy", "so_shop_buys dummy",
-              "quests trigger", "quest_menu trigger", "quest_view trigger", "quest_claim trigger"]
+              "quests trigger", "pendientes trigger", "quest_menu trigger", "quest_view trigger", "quest_claim trigger"]
 check = []   # cada segundo
 reset_day = []
 
@@ -208,6 +208,27 @@ def cond_desc(q):
     if t == "score": return f"Objetivo: {c[2]}"
     if t == "deliver": return f"Entregar {c[2]} {c[1].replace('_', ' ')} (se quitan al reclamar)"
 
+CLAIMED = {"text": "[RECLAMADA]", "color": "gray", "bold": True, "strikethrough": True}
+def prog_lines(q, s, prog):
+    """Progreso en el chat: gris sin empezar, rojo <50%, amarillo >=50% (negrita)."""
+    if q["kind"] == "grp": p, tgt = f"#g_{q['id']} sq_group", q["target"]
+    else:
+        c = q["cond"]; t = c[0]
+        if t == "blocks": p, tgt = "#blocks sq", c[1]
+        elif t == "stat": tgt = c[2] // c[3]; p = f"@s sqv_{q['id']}" if c[3] > 1 else f"@s sqp_{q['id']}"
+        elif t == "score": p, tgt = f"@s {c[1]}", c[2]
+        else: p, tgt = None, 1
+    base = f"unless score @s {s} matches 2"
+    if p is None or tgt <= 1:
+        return [f"execute {base} run tellraw @s {T(PFX, {'text': q['name'] + ' ', 'color': 'white'}, {'text': '[POR COMPLETAR]', 'color': 'gray', 'bold': True})}"]
+    half = (tgt + 1) // 2
+    def line(col, cond, tag):
+        pr = [dict(x, color=col, bold=True) for x in prog]
+        return f"execute {base} {cond} run tellraw @s {T(PFX, {'text': q['name'] + ' ', 'color': 'white'}, {'text': tag + ' ', 'color': col, 'bold': True}, *pr)}"
+    return [line("gray", f"unless score {p} matches 1..", "[SIN EMPEZAR]"),
+            line("red", f"if score {p} matches 1..{half - 1}" if half > 1 else f"if score {p} matches 0", "[EN PROGRESO]"),
+            line("yellow", f"if score {p} matches {half}..", "[EN PROGRESO]")]
+
 for q in ALL:
     i, kind = q["id"], q["kind"]
     s = f"sqs_{i}"; objectives.append(f"{s} dummy")
@@ -219,7 +240,7 @@ for q in ALL:
             f"execute unless function {NS}:lib/space run dialog show @s so_quests:claim_{i}",
             "execute unless function so_quests:lib/space run return fail"]
     err = "playsound minecraft:entity.villager.no master @s ~ ~ ~ 0.5 1"
-    reopen = f"function so_quests:menu/cat_{q['cat']} with storage so_quests:menu"
+    reopen = f"function so_quests:menu/cat_{q['cat']}"
     back = {"text": " [Volver]", "color": "aqua", "click_event": {"action": "run_command", "command": f"/trigger quest_menu set {q['cat']}"}}
 
     if kind == "grp":
@@ -237,8 +258,8 @@ for q in ALL:
         prog = [{"score": {"name": g, "objective": "sq_group"}, "color": "yellow"}, {"text": f" / {q['target']}", "color": "gray"}]
         F(f"q/{i}/view", [
             f"execute if score #done_{i} sq_group matches 1 unless score @s {s} matches 2 run return run dialog show @s {NS}:claim_{i}",
-            f"execute if score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ya reclamaste tu parte.', 'color': 'gray'}, back)}",
-            f"execute unless score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ', 'color': 'white'}, *prog, back)}",
+            f"execute if score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ' ', 'color': 'white'}, CLAIMED)}",
+            *prog_lines(q, s, prog),
             err, reopen])
         F(f"q/{i}/claim", [f"execute unless score #done_{i} sq_group matches 1 run return fail",
                            f"execute if score @s {s} matches 2 run return fail", *full,
@@ -272,8 +293,8 @@ for q in ALL:
                                "playsound minecraft:entity.experience_orb.pickup master @s ~ ~ ~ 0.7 1.6"])
             F(f"q/{i}/view", [
                 f"execute if score @s {s} matches 1 run return run dialog show @s {NS}:claim_{i}",
-                f"execute if score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': completada y reclamada.', 'color': 'gray'}, back)}",
-                f"execute unless score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ': ', 'color': 'white'}, *prog, back)}",
+                f"execute if score @s {s} matches 2 run tellraw @s {T(PFX, {'text': q['name'] + ' ', 'color': 'white'}, CLAIMED)}",
+                *prog_lines(q, s, prog),
                 err, reopen])
             F(f"q/{i}/claim", [f"execute unless score @s {s} matches 1 run return fail", *full,
                                f"scoreboard players set @s {s} 2", *give, done_msg, snd, reopen])
@@ -321,68 +342,38 @@ W(f"data/{NS}/dialog/main.json", {
     "body": [{"type": "minecraft:plain_message", "contents": {"text": "Toca una misión para ver tu progreso o reclamarla.", "color": "gray"}}],
     "columns": 2, "can_close_with_escape": True, "pause": False,
     "actions": [{"label": {"text": n, "color": col}, "width": 150,
-                 "action": {"type": "minecraft:run_command", "command": f"/trigger quest_menu set {k}"}} for k, (n, col) in CATS.items()]})
-# ---------- menus dinamicos (colores por estado) ----------
-MENU_HINT = "Gris = sin empezar · Rojo/Amarillo = en progreso · Verde [!] = lista para reclamar · Tachado = reclamada."
-
-def menu_lines(q, s):
-    """Lineas que pintan el boton de una mision segun el estado del jugador."""
-    i, M = q["id"], f"data modify storage {NS}:menu"
-    def sv(var, val, cond=""):
-        return f"execute {cond + ' ' if cond else ''}run {M} {var}{i} set value \"{val}\""
-    L = [f'{M} t{i} set value "{q["name"]}"', f'{M} c{i} set value "gray"', f'{M} x{i} set value ""']
-    if q["kind"] == "grp":
-        p, half = f"#g_{i} sq_group", (q["target"] + 1) // 2
-        rdy = f"if score #done_{i} sq_group matches 1 unless score @s {s} matches 2"
-        L += [sv("c", "red", f"if score {p} matches 1.. if score @s {s} matches 0"),
-              sv("c", "yellow", f"if score {p} matches {half}.. if score @s {s} matches 0"),
-              sv("t", f"[!] {q['name']}", rdy), sv("c", "green", rdy), sv("x", ",bold:true", rdy),
-              sv("c", "white", f"if score @s {s} matches 2"), sv("x", ",strikethrough:true", f"if score @s {s} matches 2")]
-        return L
-    t = q["cond"][0]
-    if t == "deliver":
-        item, n = q["cond"][1], q["cond"][2]
-        rdy = f"if score @s sq_tmp matches {n}.. unless score @s {s} matches 2"
-        L += [f"execute store result score @s sq_tmp run clear @s minecraft:{item} 0",
-              sv("t", f"[!] {q['name']}", rdy), sv("c", "green", rdy), sv("x", ",bold:true", rdy),
-              sv("c", "white", f"if score @s {s} matches 2"), sv("x", ",strikethrough:true", f"if score @s {s} matches 2")]
-        return L
-    if t == "blocks":
-        p, tgt = "#blocks sq", q["cond"][1]
-    elif t == "stat":
-        tgt = q["cond"][2] // q["cond"][3]
-        p = f"@s sqv_{i}" if q["cond"][3] > 1 else f"@s sqp_{i}"
-    elif t == "score":
-        p, tgt = f"@s {q['cond'][1]}", q["cond"][2]
-    else:  # adv: objetivo de un solo paso, sin rojo/amarillo
-        p, tgt = None, 1
-    if p is not None and tgt > 1:
-        half = (tgt + 1) // 2
-        L += [sv("c", "red", f"if score {p} matches 1.. if score @s {s} matches 0"),
-              sv("c", "yellow", f"if score {p} matches {half}.. if score @s {s} matches 0")]
-    L += [sv("t", f"[!] {q['name']}", f"if score @s {s} matches 1"), sv("c", "green", f"if score @s {s} matches 1"),
-          sv("x", ",bold:true", f"if score @s {s} matches 1"),
-          sv("c", "white", f"if score @s {s} matches 2"), sv("x", ",strikethrough:true", f"if score @s {s} matches 2")]
-    return L
-
+                 "action": {"type": "minecraft:run_command", "command": f"/trigger quest_menu set {k}"}} for k, (n, col) in CATS.items()]
+               + [{"label": {"text": "Misiones pendientes", "color": "green", "bold": True}, "width": 150,
+                   "action": {"type": "minecraft:run_command", "command": "/trigger pendientes"}}]})
+# ---------- menus estaticos por categoria (dialogos JSON nativos, como so_shop) ----------
+MENU_HINT = "Toca una misión: si está lista se abre el reclamo; si no, tu progreso sale en el chat con colores."
 for k, (n, col) in CATS.items():
-    lines = []
-    for q in ALL:
-        if q["cat"] == k: lines += menu_lines(q, f"sqs_{q['id']}")
-    acts = []
-    for q in ALL:
-        if q["cat"] != k: continue
-        i = q["id"]
-        tip = (cond_desc(q) + "\\nRecompensa: " + rew_text(q["rew"])).replace('"', "'")
-        acts.append(('{"label":{"text":"$(t%d)","color":"$(c%d)"$(x%d)},"width":150,'
-                     '"tooltip":{"text":"%s","color":"gray"},'
-                     '"action":{"type":"minecraft:run_command","command":"/trigger quest_view set %d"}}') % (i, i, i, tip, i))
-    lines.append(('$dialog show @s {type:"minecraft:multi_action",title:{text:"%s",color:"%s",bold:true},'
-                  'body:[{type:"minecraft:plain_message",contents:{text:"%s",color:"gray"}}],'
-                  'columns:2,can_close_with_escape:true,pause:false,actions:[%s],'
-                  'exit_action:{label:{text:"« Volver"},action:{type:"minecraft:show_dialog",dialog:"so_quests:main"}}}')
-                 % (n, col, MENU_HINT, ",".join(acts)))
-    F(f"menu/cat_{k}", lines)
+    acts = [{"label": {"text": q["name"], "color": "white"}, "width": 150,
+             "tooltip": {"text": cond_desc(q) + "\nRecompensa: " + rew_text(q["rew"]), "color": "gray"},
+             "action": {"type": "minecraft:run_command", "command": f"/trigger quest_view set {q['id']}"}}
+            for q in ALL if q["cat"] == k]
+    W(f"data/{NS}/dialog/cat_{k}.json", {
+        "type": "minecraft:multi_action", "title": {"text": n, "color": col, "bold": True},
+        "body": [{"type": "minecraft:plain_message", "contents": {"text": MENU_HINT, "color": "gray"}}],
+        "columns": 2, "can_close_with_escape": True, "pause": False, "actions": acts,
+        "exit_action": {"label": {"text": "« Volver"}, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:main"}}})
+    F(f"menu/cat_{k}", [f"dialog show @s {NS}:cat_{k}"])
+
+# ---------- /trigger pendientes: lista en el chat (mision + seccion) ----------
+pend = ["scoreboard players set @s sq_tmp 0",
+        f"tellraw @s {T({'text': '[Misiones pendientes]', 'color': 'green', 'bold': True})}"]
+for q in ALL:
+    i, s = q["id"], f"sqs_{q['id']}"
+    if q["kind"] == "grp": cond = f"if score #done_{i} sq_group matches 1 unless score @s {s} matches 2"
+    elif q.get("cond", ("",))[0] == "deliver": continue
+    else: cond = f"if score @s {s} matches 1"
+    sec = CATS[q["cat"]][0]
+    pend += [f"execute {cond} run tellraw @s {T({'text': '• ' + q['name'], 'color': 'green', 'bold': True}, {'text': ' [' + sec + ']', 'color': 'gray'})}",
+             f"execute {cond} run scoreboard players add @s sq_tmp 1"]
+pend += [f"execute if score @s sq_tmp matches 0 run tellraw @s {T({'text': 'No tienes misiones pendientes de reclamar.', 'color': 'gray'})}",
+         f"execute if score @s sq_tmp matches 1.. run tellraw @s {T({'text': 'Abre /trigger quests, entra a la sección y toca la misión para reclamarla.', 'color': 'gray'})}",
+         "playsound minecraft:ui.button.click master @s ~ ~ ~ 0.5 1.2"]
+F("lib/pendientes", pend)
 
 # ---------- funciones base ----------
 F("load", ["# Crea marcadores (repetir no falla: Minecraft solo avisa que ya existen)",
@@ -390,7 +381,7 @@ F("load", ["# Crea marcadores (repetir no falla: Minecraft solo avisa que ya exi
            "scoreboard objectives add so_core dummy", "scoreboard objectives add ib_minedcount dummy",
            "execute unless score #enabled sq matches 0.. run scoreboard players set #enabled sq 1",
            "scoreboard players set #100 sq 100",
-           f"tellraw @a[tag=oneblock_admin] {T(PFX, {'text': 'v3 cargado. /function so_quests:admin/help', 'color': 'gray'})}"])
+           f"tellraw @a[tag=oneblock_admin] {T(PFX, {'text': 'v3.1 cargado. /function so_quests:admin/help', 'color': 'gray'})}"])
 F("lib/read_count", ["# so_core primero; si no existe, lectura autonoma de Simply OneBlock",
     "scoreboard players set #src sq 0",
     "execute if score #blocks so_core matches -2147483648.. run scoreboard players set #src sq 1",
@@ -405,7 +396,7 @@ F("lib/check", ["function so_quests:lib/read_count", *check])
 F("lib/new_day", [*reset_day, f"tellraw @a {T(PFX, {'text': 'Nuevo día: las misiones diarias se reiniciaron.', 'color': 'yellow'})}"])
 F("lib/view", ["$function so_quests:q/$(id)/view"])
 F("lib/claim", ["$function so_quests:q/$(id)/claim"])
-F("lib/open_cat", ["$function so_quests:menu/cat_$(id) with storage so_quests:menu"])
+F("lib/open_cat", ["$function so_quests:menu/cat_$(id)"])
 F("lib/h_open_cat", ["execute store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_menu", "function so_quests:lib/open_cat with storage so_quests:tmp"])
 F("lib/h_view", ["execute store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_view", "function so_quests:lib/view with storage so_quests:tmp"])
 F("lib/h_claim", ["execute store result storage so_quests:tmp id int 1 run scoreboard players get @s quest_claim", "function so_quests:lib/claim with storage so_quests:tmp"])
@@ -420,6 +411,8 @@ F("tick", [
     "execute if score #day sq matches 24000.. run scoreboard players set #day sq 0",
     "execute as @a[scores={quests=1..}] at @s run dialog show @s so_quests:main",
     "scoreboard players reset @a quests", "scoreboard players enable @a quests",
+    "execute as @a[scores={pendientes=1..}] at @s run function so_quests:lib/pendientes",
+    "scoreboard players reset @a pendientes", "scoreboard players enable @a pendientes",
     "execute as @a[scores={quest_menu=1..6}] at @s run function so_quests:lib/h_open_cat",
     "scoreboard players reset @a quest_menu", "scoreboard players enable @a quest_menu",
     "execute as @a[scores={quest_view=1..}] at @s run function so_quests:lib/h_view",
@@ -566,9 +559,11 @@ Misiones para Simply OneBlock. Abrir: `/trigger quests` (alias `/shop`-style: en
 - 28 logros de Minecraft con recompensa extra
 - 36 Metas de la Isla (grupales): suman lo que hace todo el servidor; cada jugador reclama su parte una vez
 - 3 diarias (se reinician cada dia de Minecraft)
-- Colores por estado en el menu: gris (sin empezar), rojo/amarillo (en progreso),
-  verde [!] en negrita (lista para reclamar), tachado (ya reclamada). Las misiones
-  de un solo objetivo nunca usan rojo/amarillo.
+- Menus en ventanas nativas (como so_shop). Al tocar una mision: si esta lista se abre
+  el reclamo; si no, el progreso sale en el chat: gris (sin empezar), rojo <50%,
+  amarillo >=50% (negrita), gris tachado [RECLAMADA].
+- `/trigger pendientes` (o boton en el menu): lista en el chat las misiones listas
+  para reclamar, solo nombre y seccion.
 - El menu se reabre solo: al ver una mision incompleta o al reclamar, la ventana
   vuelve sola para seguir jugando con el menu abierto.
 - Aviso unico al completar una mision: actionbar + sonido (sin spam).
@@ -589,7 +584,7 @@ W("README.md", README1)
 W("README-OBJETIVOS.md", README2)
 W("data/minecraft/tags/function/load.json", {"values": [f"{NS}:load"]})
 W("data/minecraft/tags/function/tick.json", {"values": [f"{NS}:tick"]})
-W("pack.mcmeta", {"pack": {"description": "Simply OneBlock Expansion - Quests v3 (/trigger quests)", "min_format": [107, 1], "max_format": [107, 1]}})
+W("pack.mcmeta", {"pack": {"description": "Simply OneBlock Expansion - Quests v3.1 (/trigger quests)", "min_format": [107, 1], "max_format": [107, 1]}})
 
 if os.path.isdir(OUT): shutil.rmtree(OUT)
 for p, c in files.items():
