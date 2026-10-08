@@ -21,6 +21,7 @@ scoreboard players set #20 so_sys 20
 scoreboard players set #60 so_sys 60
 scoreboard players set #100 so_sys 100
 scoreboard players set #1200 so_sys 1200
+bossbar remove so_status:progress
 bossbar add so_status:progress {"text":"Progreso del OneBlock","color":"green"}
 bossbar set so_status:progress color green
 bossbar set so_status:progress max 100
