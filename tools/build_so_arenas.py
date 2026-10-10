@@ -234,7 +234,7 @@ for nid, _, _, _, _, acts in NPCS:
     W(f"data/{NS}/advancement/npc/{nid}.json", {
         "criteria": {"click": {"trigger": "minecraft:player_interacted_with_entity", "conditions": {
             "entity": [{"condition": "minecraft:entity_properties", "entity": "this",
-                        "predicate": {"type": "minecraft:interaction", "nbt": f"{{Tags:[\"so_ar_npc_{nid}\"]}}"}}]}}},
+                        "predicate": {"nbt": f"{{Tags:[\"so_ar_npc_{nid}\"]}}"}}]}}},
         "rewards": {"function": f"{NS}:npc/{nid}"}})
     F(f"npc/{nid}", [f"advancement revoke @s only {NS}:npc/{nid}",
                      "playsound minecraft:entity.villager.yes master @s ~ ~ ~ 1 1", *acts])
@@ -611,7 +611,7 @@ W(f"data/{NS}/dialog/contracts.json", {
     ]})
 
 # ---------------------------------------------------------------- construcción
-GRAD_MIX = ["minecraft:stone_bricks", "minecraft:polished_deepslate", "minecraft:sandstone_bricks", "minecraft:smooth_sandstone"]
+GRAD_MIX = ["minecraft:stone_bricks", "minecraft:polished_deepslate", "minecraft:cut_sandstone", "minecraft:smooth_sandstone"]
 FLOOR_MIX = ["minecraft:sandstone", "minecraft:smooth_sandstone", "minecraft:coarse_dirt", "minecraft:packed_mud"]
 
 
@@ -661,7 +661,7 @@ steps += [cur[:len(cur) // 2], cur[len(cur) // 2:]]
 cur = []
 for dx in range(-AX, AX + 1):
     x = CX + dx
-    blk = "minecraft:sandstone_bricks" if (dx // 6) % 2 == 0 else "minecraft:stone_bricks"
+    blk = "minecraft:cut_sandstone" if (dx // 6) % 2 == 0 else "minecraft:stone_bricks"
     cur += band(x, dx, R_GRADA, R_WALL, G, 125, blk)
     cur += band(x, dx, R_GRADA, R_WALL, 126, 127, "minecraft:polished_deepslate")
     if dx % 2 == 0:
@@ -674,7 +674,7 @@ cur = []
 for tx, tz in TOWERS:
     cur += [f"fill {tx - 2} {G} {tz - 2} {tx + 2} {TOP_Y} {tz + 2} minecraft:polished_tuff",
             f"fill {tx - 1} 96 {tz - 1} {tx + 1} {TOP_Y - 1} {tz + 1} minecraft:air",
-            f"fill {tx - 3} {TOP_Y + 1} {tz - 3} {tx + 3} {TOP_Y + 1} {tz + 3} minecraft:sandstone_bricks",
+            f"fill {tx - 3} {TOP_Y + 1} {tz - 3} {tx + 3} {TOP_Y + 1} {tz + 3} minecraft:cut_sandstone",
             f"fill {tx - 1} {TOP_Y + 2} {tz - 1} {tx + 1} {TOP_Y + 2} {tz + 1} minecraft:glowstone"]
 steps.append(cur)
 
