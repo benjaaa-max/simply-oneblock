@@ -1,7 +1,21 @@
 function so_events:lib/begin
 scoreboard players set #active so_ev 4
-bossbar set so_events:ev name {"text": "Mercader errante", "color": "aqua"}
+execute store result score #ttype so_ev run random value 1..4
+execute if score #force_trader so_ev matches 1..4 run scoreboard players operation #ttype so_ev = #force_trader so_ev
+scoreboard players set #force_trader so_ev 0
 bossbar set so_events:ev max 300
 bossbar set so_events:ev color blue
-execute as @a[tag=so_ev_in,limit=1,sort=random] at @s run summon minecraft:wandering_trader ~ ~ ~ {Tags:["so_ev_mob"],Invulnerable:1b,NoAI:1b,PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{text:"Mercader de Eventos",color:"aqua",bold:true},Offers:{Recipes:[{buy:{id:"minecraft:emerald",count:10},sell:{id:"minecraft:diamond",count:1},maxUses:4},{buy:{id:"minecraft:emerald",count:6},sell:{id:"minecraft:golden_apple",count:1},maxUses:3},{buy:{id:"minecraft:emerald",count:4},sell:{id:"minecraft:ender_pearl",count:2},maxUses:4},{buy:{id:"minecraft:emerald",count:8},sell:{id:"minecraft:experience_bottle",count:16},maxUses:3},{buy:{id:"minecraft:emerald",count:16},sell:{id:"minecraft:netherite_scrap",count:1},maxUses:1},{buy:{id:"minecraft:emerald",count:12},sell:{id:"minecraft:heart_of_the_sea",count:1},maxUses:1},{buy:{id:"minecraft:diamond",count:2},sell:{id:"minecraft:emerald",count:24},maxUses:4},{buy:{id:"minecraft:emerald",count:20},sell:{id:"minecraft:totem_of_undying",count:1},maxUses:1}]}}
-tellraw @a [{"text": "[Evento] ", "color": "gold", "bold": true}, {"text": "Un mercader especial apareció en la isla por 5 minutos.", "color": "aqua", "bold": false}]
+execute if score #ttype so_ev matches 1 run bossbar set so_events:ev name {"text": "Mercader Misterioso", "color": "aqua"}
+execute if score #ttype so_ev matches 2 run bossbar set so_events:ev name {"text": "Alquimista Errante", "color": "light_purple"}
+execute if score #ttype so_ev matches 3 run bossbar set so_events:ev name {"text": "Armero de la Corte", "color": "gold"}
+execute if score #ttype so_ev matches 4 run bossbar set so_events:ev name {"text": "Minero Ambulante", "color": "gray"}
+scoreboard players set #near so_ev 1
+execute if score #ttype so_ev matches 1 in minecraft:overworld positioned 0 65 0 run function so_events:lib/spawn {mob:"npc/trader_1"}
+execute if score #ttype so_ev matches 2 in minecraft:overworld positioned 0 65 0 run function so_events:lib/spawn {mob:"npc/trader_2"}
+execute if score #ttype so_ev matches 3 in minecraft:overworld positioned 0 65 0 run function so_events:lib/spawn {mob:"npc/trader_3"}
+execute if score #ttype so_ev matches 4 in minecraft:overworld positioned 0 65 0 run function so_events:lib/spawn {mob:"npc/trader_4"}
+scoreboard players set #near so_ev 0
+execute if score #ttype so_ev matches 1 run tellraw @a [{"text": "[Evento] ", "color": "gold", "bold": true}, {"text": "Mercader Misterioso", "color": "aqua", "bold": true}, {"text": " llegó junto al OneBlock por 5 minutos.", "color": "aqua", "bold": false}]
+execute if score #ttype so_ev matches 2 run tellraw @a [{"text": "[Evento] ", "color": "gold", "bold": true}, {"text": "Alquimista Errante", "color": "light_purple", "bold": true}, {"text": " llegó junto al OneBlock por 5 minutos.", "color": "aqua", "bold": false}]
+execute if score #ttype so_ev matches 3 run tellraw @a [{"text": "[Evento] ", "color": "gold", "bold": true}, {"text": "Armero de la Corte", "color": "gold", "bold": true}, {"text": " llegó junto al OneBlock por 5 minutos.", "color": "aqua", "bold": false}]
+execute if score #ttype so_ev matches 4 run tellraw @a [{"text": "[Evento] ", "color": "gold", "bold": true}, {"text": "Minero Ambulante", "color": "gray", "bold": true}, {"text": " llegó junto al OneBlock por 5 minutos.", "color": "aqua", "bold": false}]

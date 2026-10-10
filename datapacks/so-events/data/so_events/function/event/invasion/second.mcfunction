@@ -4,5 +4,9 @@ bossbar set so_events:ev players @a[tag=so_ev_in]
 execute if score #stage so_ev matches 0 run function so_events:event/invasion/countdown
 execute if score #stage so_ev matches 1 run function so_events:event/invasion/waves
 execute if score #stage so_ev matches 2 unless entity @e[tag=so_ev_boss] run function so_events:event/invasion/win
+# Golems enfurecidos: un roce minimo atribuido al jugador mas cercano los vuelve hostiles.
+scoreboard players operation #m so_ev = #t so_ev
+scoreboard players operation #m so_ev %= #five so_ev
+execute if score #m so_ev matches 0 as @e[tag=so_ev_golem] at @s if entity @a[tag=so_ev_in,distance=..32] run damage @s 0.01 minecraft:player_attack by @p[tag=so_ev_in]
 execute if score #active so_ev matches 5 if score #t so_ev matches 420.. run function so_events:event/invasion/fail
 execute if score #active so_ev matches 5 unless entity @a[tag=so_ev_in] run function so_events:event/invasion/fail

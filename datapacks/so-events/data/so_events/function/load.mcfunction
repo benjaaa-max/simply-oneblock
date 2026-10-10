@@ -12,3 +12,6 @@ bossbar set so_events:ev color yellow
 bossbar set so_events:boss color red
 tellraw @a[tag=oneblock_admin] [{"text": "[SO Events] ", "color": "gold"}, {"text": "cargado. Ayuda: /function so_events:admin/help", "color": "gray"}]
 scoreboard players set #twenty so_ev 20
+scoreboard players set #five so_ev 5
+scoreboard players set #near so_ev 0
+function so_events:load_offers
