@@ -19,6 +19,13 @@
   ],
   "columns": 2,
   "can_close_with_escape": true,
+  "exit_action": {
+    "label": {
+      "text": "✕ Cerrar",
+      "color": "gray"
+    },
+    "width": 170
+  },
   "pause": false,
   "actions": [
     {

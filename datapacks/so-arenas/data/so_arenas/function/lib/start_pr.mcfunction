@@ -7,9 +7,9 @@ execute if score #tier so_ar matches 11..14 run scoreboard players remove #tier 
 scoreboard players set #loan so_ar 1
 execute if score @s arena_pr matches 11..14 run scoreboard players set #loan so_ar 0
 execute unless score #tier so_ar matches 1..4 run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "Opción de práctica inválida.", "color": "red", "bold": false}]
-execute if score #tier so_ar matches 2 unless score #blk so_ar matches 3334.. run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "El Tier Veterano se desbloquea a los 3.334 bloques.", "color": "red", "bold": false}]
-execute if score #tier so_ar matches 3 unless score #blk so_ar matches 7501.. run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "El Tier Élite se desbloquea a los 7.501 bloques.", "color": "red", "bold": false}]
-execute if score #tier so_ar matches 4 unless score #blk so_ar matches 15000.. run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "El Tier Maestro se desbloquea a los 15.000 bloques.", "color": "red", "bold": false}]
+execute if score #tier so_ar matches 2 unless entity @s[tag=oneblock_admin] unless score #blk so_ar matches 3334.. run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "El Tier Veterano se desbloquea a los 3.334 bloques.", "color": "red", "bold": false}]
+execute if score #tier so_ar matches 3 unless entity @s[tag=oneblock_admin] unless score #blk so_ar matches 7501.. run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "El Tier Élite se desbloquea a los 7.501 bloques.", "color": "red", "bold": false}]
+execute if score #tier so_ar matches 4 unless entity @s[tag=oneblock_admin] unless score #blk so_ar matches 15000.. run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "El Tier Maestro se desbloquea a los 15.000 bloques.", "color": "red", "bold": false}]
 execute if score #loan so_ar matches 1 run function so_arenas:lib/kit
 execute if score #loan so_ar matches 0 run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "Entrás con tu propio equipo: si morís, tus cosas quedan en el foso.", "color": "yellow", "bold": false}]
 function so_arenas:lib/enter_pit

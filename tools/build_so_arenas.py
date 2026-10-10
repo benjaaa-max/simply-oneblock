@@ -289,6 +289,8 @@ F("lib/blocks", [
     "scoreboard players set #blk so_ar 0",
     "execute if score fake_player ib_minedcount matches -2147483648.. run scoreboard players operation #blk so_ar = fake_player ib_minedcount",
     "execute if score #blocks so_core matches -2147483648.. run scoreboard players operation #blk so_ar = #blocks so_core",
+    "# modo prueba admin: bloques simulados",
+    "execute if score #fake so_ar matches 0.. run scoreboard players operation #blk so_ar = #fake so_ar",
 ])
 TIERS = [  # (tier, nombre, mobs, bloques mínimos)
     (1, "Novato", ["zombie", "skeleton", "spider", "husk"], 0),
@@ -317,7 +319,7 @@ F("lib/start_pr", [
     "scoreboard players set #loan so_ar 1",
     "execute if score @s arena_pr matches 11..14 run scoreboard players set #loan so_ar 0",
     f'execute unless score #tier so_ar matches 1..4 run return run {say("@s", "Opción de práctica inválida.", "red")}',
-    *[f'execute if score #tier so_ar matches {t} unless score #blk so_ar matches {thr}.. run return run {say("@s", f"El Tier {n} se desbloquea a los {thr:,} bloques.".replace(",", "."), "red")}'
+    *[f'execute if score #tier so_ar matches {t} unless entity @s[tag=oneblock_admin] unless score #blk so_ar matches {thr}.. run return run {say("@s", f"El Tier {n} se desbloquea a los {thr:,} bloques.".replace(",", "."), "red")}'
       for t, n, _, thr in TIERS if thr > 0],
     f"execute if score #loan so_ar matches 1 run function {NS}:lib/kit",
     f'execute if score #loan so_ar matches 0 run {say("@s", "Entrás con tu propio equipo: si morís, tus cosas quedan en el foso.", "yellow")}',
@@ -414,8 +416,8 @@ F("lib/start_con", [
     f"execute if score @s arena_con matches 9 run return run function {NS}:lib/join",
     *busy_guard(),
     f"function {NS}:lib/blocks",
-    f'execute unless score #blk so_ar matches 400.. run return run {say("@s", "Los contratos se abren a los 400 bloques. Mientras, probá la práctica.", "red")}',
-    f'execute if score @s arena_con matches 3 unless score #blk so_ar matches 2501.. run return run {say("@s", "La Defensa del Núcleo se desbloquea a los 2.501 bloques.", "red")}',
+    f'execute unless entity @s[tag=oneblock_admin] unless score #blk so_ar matches 400.. run return run {say("@s", "Los contratos se abren a los 400 bloques. Mientras, probá la práctica.", "red")}',
+    f'execute if score @s arena_con matches 3 unless entity @s[tag=oneblock_admin] unless score #blk so_ar matches 2501.. run return run {say("@s", "La Defensa del Núcleo se desbloquea a los 2.501 bloques.", "red")}',
     "scoreboard players operation #con so_ar = @s arena_con",
     f"execute unless score #con so_ar matches 1..3 run return run {say('@s', 'Contrato inválido.', 'red')}",
     f"function {NS}:lib/enter_pit",
@@ -579,12 +581,13 @@ def act(cmd, label, tip=None, color=None, w=170):
     return a
 
 
+CLOSE = {"label": {"text": "✕ Cerrar", "color": "gray"}, "width": 170}
 BACK = {"label": {"text": "« Volver"}, "width": 170, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:main"}}
 W(f"data/{NS}/dialog/main.json", {
     "type": "minecraft:multi_action", "title": {"text": "Coliseo VorNeX", "color": "gold", "bold": True},
     "external_title": {"text": "Arena"},
     "body": [{"type": "minecraft:plain_message", "contents": {"text": "Practicá, cumplí contratos y volvé con botín. Los mercaderes del lobby venden flechas, pociones, tótems y más.", "color": "gray"}}],
-    "columns": 2, "can_close_with_escape": True, "pause": False,
+    "columns": 2, "can_close_with_escape": True, "exit_action": CLOSE, "pause": False,
     "actions": [
         {"label": {"text": "Práctica por tiers", "color": "yellow"}, "width": 170, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:practice"}},
         {"label": {"text": "Contratos", "color": "aqua"}, "width": 170, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:contracts"}},
@@ -595,14 +598,14 @@ W(f"data/{NS}/dialog/main.json", {
 W(f"data/{NS}/dialog/practice.json", {
     "type": "minecraft:multi_action", "title": {"text": "Práctica por tiers", "color": "yellow", "bold": True},
     "body": [{"type": "minecraft:plain_message", "contents": {"text": "El kit prestado se retira solo al terminar. Con equipo propio, si morís tus cosas quedan en el foso.", "color": "gray"}}],
-    "columns": 2, "can_close_with_escape": True, "pause": False,
+    "columns": 2, "can_close_with_escape": True, "exit_action": CLOSE, "pause": False,
     "actions": [x for t, n, mobs, thr in TIERS for x in (
         act(f"/trigger arena_pr set {t}", f"Tier {t} · {n} (kit)", f"Desde {thr:,} bloques.".replace(",", "."), "yellow"),
         act(f"/trigger arena_pr set {t + 10}", f"Tier {t} · {n} (propio)", f"Desde {thr:,} bloques.".replace(",", "."), "gold"))] + [BACK]})
 W(f"data/{NS}/dialog/contracts.json", {
     "type": "minecraft:multi_action", "title": {"text": "Contratos", "color": "aqua", "bold": True},
     "body": [{"type": "minecraft:plain_message", "contents": {"text": "Un contrato por vez. Los enemigos escalan con tu fase. Cumplirlo sube tu rango oculto.", "color": "gray"}}],
-    "columns": 1, "can_close_with_escape": True, "pause": False,
+    "columns": 1, "can_close_with_escape": True, "exit_action": CLOSE | {"width": 250}, "pause": False,
     "actions": [
         act("/trigger arena_con set 1", "Caza: 15 bajas objetivo", "Desde 400 bloques.", "aqua", 250),
         act("/trigger arena_con set 2", "Oleadas dobles", "3 oleadas. Desde 400 bloques.", "aqua", 250),
@@ -783,8 +786,26 @@ F("admin/help", [f"tellraw @s {T({'text': h, 'color': 'gold' if i == 0 else 'gra
     "Construir: /trigger arena (o volá a -5000 100 -5000) y /function so_arenas:admin/build",
     "Recolocar aldeanos: /function so_arenas:admin/npcs",
     "/function so_arenas:admin/status | stop | enable | disable",
+    "Probar todo: /function so_arenas:admin/test",
     "Jugadores: /trigger arena (ir/menú), /trigger volver (salir o abandono), /trigger levelrank",
 ])])
+F("admin/test", [
+    f"tellraw @s {T({'text': '━━━ SO Arenas · Modo prueba ━━━', 'color': 'gold', 'bold': True})}",
+    f"tellraw @s {T({'text': 'Como admin entrás a todo sin importar los bloques. Fase simulada para los enemigos:', 'color': 'gray'})}",
+    f"tellraw @s {T(*[link(f'[{n}] ', f'/function so_arenas:admin/fase_{i}', 'aqua', f'Simular {v} bloques') for i, (n, v) in enumerate([('Fase 1', 0), ('Fase 2', 3500), ('Fase 3', 8000), ('Fase 4', 16000)])], link('[Real]', '/function so_arenas:admin/fase_real', 'gray', 'Usar los bloques reales'))}",
+    f"tellraw @s {T({'text': ' Práctica: ', 'color': 'gray'}, *[link(f'[T{t}] ', f'/trigger arena_pr set {t}', 'yellow', f'Tier {t} con kit') for t in range(1, 5)])}",
+    f"tellraw @s {T({'text': ' Contratos: ', 'color': 'gray'}, link('[Caza] ', '/trigger arena_con set 1', 'aqua', 'Caza'), link('[Oleadas] ', '/trigger arena_con set 2', 'aqua', 'Oleadas'), link('[Defensa] ', '/trigger arena_con set 3', 'aqua', 'Defensa'))}",
+    f"tellraw @s {T(link('[Ganar ya] ', '/function so_arenas:admin/win', 'green', 'Forzar victoria'), link('[Detener]', '/function so_arenas:admin/stop', 'red', 'Cancelar desafío'))}",
+    "Tip: primero /trigger arena para estar en el coliseo." and f"tellraw @s {T({'text': 'Primero entrá con /trigger arena.', 'color': 'dark_gray'})}",
+])
+for i, v in enumerate([0, 3500, 8000, 16000]):
+    F(f"admin/fase_{i}", [f"scoreboard players set #fake so_ar {v}", say("@s", f"Fase simulada: {v} bloques.", "aqua")])
+F("admin/fase_real", ["scoreboard players reset #fake so_ar", say("@s", "Usando bloques reales.", "gray")])
+F("admin/win", [
+    f"execute if score #mode so_ar matches 1 run return run function {NS}:lib/win_practice",
+    f"execute unless score #mode so_ar matches 0 run return run function {NS}:lib/win_contract",
+    say("@s", "No hay desafío en curso.", "gray"),
+])
 F("admin/status", [f"function {NS}:lib/blocks",
     f"tellraw @s {T(PFX, {'text': 'modo=', 'color': 'gray', 'bold': False}, {'score': {'name': '#mode', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '  bloques=', 'color': 'gray'}, {'score': {'name': '#blk', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '  activo=', 'color': 'gray'}, {'score': {'name': '#enabled', 'objective': 'so_ar'}, 'color': 'white'})}"])
 F("admin/stop", [f"function {NS}:lib/end", say("@a", "Desafío del coliseo detenido por un administrador.", "gray")])
