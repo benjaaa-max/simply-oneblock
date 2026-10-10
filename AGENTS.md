@@ -15,3 +15,6 @@
 - Build `so_quests` state-aware UI as dynamic inline dialogs (macro'd `$dialog show` fed from `storage so_quests:menu` in `function/menu/cat_*`), not static dialog JSON; per-player button colors cannot be expressed in static dialog files.
 - Keep `so_status` travel commands as direct destination triggers owned by their destination pack (for example `crates`/`isla` in `so_crates`), never a central numeric warp dispatcher, so adding destinations does not couple datapacks.
 - Generate `so_events` only from `tools/build_so_events.py`; it owns mobs, bosses and world events and exposes `so_events:api/*` (boss, mob, cleanup) so `so_arenas` reuses enemies without duplicating them.
+
+## Estructura
+- Generar so_arenas solo desde tools/build_so_arenas.py (como so_events). Arena usa /trigger arena (entrada) y /trigger volver (salida/abandono); los mobs entran por so_events:api y se retagean a so_ar_mob dentro del coliseo para no pisar eventos de la isla.
