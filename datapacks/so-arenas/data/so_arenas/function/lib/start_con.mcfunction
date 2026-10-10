@@ -3,8 +3,8 @@ execute if score @s arena_con matches 9 run return run function so_arenas:lib/jo
 execute unless entity @s[tag=so_ar_zone] run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "Primero entrá al Coliseo con /trigger arena.", "color": "red", "bold": false}]
 execute unless score #mode so_ar matches 0 run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "Ya hay un desafío en curso. Podés unirte con el botón Unirse.", "color": "red", "bold": false}]
 function so_arenas:lib/blocks
-execute unless score #blk so_ar matches 400.. run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "Los contratos se abren a los 400 bloques. Mientras, probá la práctica.", "color": "red", "bold": false}]
-execute if score @s arena_con matches 3 unless score #blk so_ar matches 2501.. run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "La Defensa del Núcleo se desbloquea a los 2.501 bloques.", "color": "red", "bold": false}]
+execute unless entity @s[tag=oneblock_admin] unless score #blk so_ar matches 400.. run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "Los contratos se abren a los 400 bloques. Mientras, probá la práctica.", "color": "red", "bold": false}]
+execute if score @s arena_con matches 3 unless entity @s[tag=oneblock_admin] unless score #blk so_ar matches 2501.. run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "La Defensa del Núcleo se desbloquea a los 2.501 bloques.", "color": "red", "bold": false}]
 scoreboard players operation #con so_ar = @s arena_con
 execute unless score #con so_ar matches 1..3 run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "Contrato inválido.", "color": "red", "bold": false}]
 function so_arenas:lib/enter_pit
