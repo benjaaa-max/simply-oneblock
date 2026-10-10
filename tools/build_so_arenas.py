@@ -80,6 +80,7 @@ F("load", [
 ])
 F("tick", [
     "scoreboard players add #beat so_ar 1",
+    f"execute as @a[scores={{arena=1..}}] run function {NS}:lib/dispatch",
     f"execute if score #beat so_ar matches 20.. run function {NS}:lib/second",
     "execute if score #beat so_ar matches 20.. run scoreboard players set #beat so_ar 0",
 ])
