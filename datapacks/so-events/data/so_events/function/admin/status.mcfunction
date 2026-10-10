@@ -1,0 +1,2 @@
+function so_events:lib/blocks
+tellraw @s [{"text": "[Evento] ", "color": "gold", "bold": true}, {"text": "activo=", "color": "gray", "bold": false}, {"score": {"name": "#active", "objective": "so_ev"}, "color": "white"}, {"text": "  bloques=", "color": "gray"}, {"score": {"name": "#blk", "objective": "so_ev"}, "color": "white"}, {"text": "  próximo=", "color": "gray"}, {"score": {"name": "#next", "objective": "so_ev"}, "color": "white"}, {"text": "  cada=", "color": "gray"}, {"score": {"name": "#every", "objective": "so_ev"}, "color": "white"}]
