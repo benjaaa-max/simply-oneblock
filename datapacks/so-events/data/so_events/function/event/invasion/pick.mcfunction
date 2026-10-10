@@ -1,4 +1,3 @@
-# Tipo segun fase: slimes/zombis al inicio, acorazados y raid luego, Nether desde 6667.
-execute store result score #type so_ev run random value 1..2
-execute if score #blk so_ev matches 2501.. store result score #type so_ev run random value 1..4
-execute if score #blk so_ev matches 6667.. store result score #type so_ev run random value 1..5
+# Elige al azar entre los tipos ya desbloqueados por bloques minados.
+scoreboard players set #tries so_ev 0
+function so_events:event/invasion/pick_try
