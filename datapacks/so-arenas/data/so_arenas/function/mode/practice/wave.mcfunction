@@ -1,63 +1,63 @@
 scoreboard players add #wave so_ar 1
 execute store result bossbar so_arenas:fight value run scoreboard players get #wave so_ar
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"zombie"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"skeleton"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"spider"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"husk"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"zombie"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"zombie"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"skeleton"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"skeleton"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"spider"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"spider"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"husk"}
-execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"husk"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"zombie_armor"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"skeleton_armor"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"piglin"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"cave_spider"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"slime_big"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"zombie_armor"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"zombie_armor"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"skeleton_armor"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"skeleton_armor"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"piglin"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"piglin"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"cave_spider"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"cave_spider"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"slime_big"}
-execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"slime_big"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"vindicator"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"pillager"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"witch"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"drowned_trident"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"spider_big"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"vindicator"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"vindicator"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"pillager"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"pillager"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"witch"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"witch"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"drowned_trident"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"drowned_trident"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"spider_big"}
-execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"spider_big"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"enderman"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"breeze"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"zombie_ominous"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"skeleton_ominous"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"bogged"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"wither_skeleton"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"enderman"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"enderman"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"breeze"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"breeze"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"zombie_ominous"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"zombie_ominous"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"skeleton_ominous"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"skeleton_ominous"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"bogged"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"bogged"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"wither_skeleton"}
-execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 as @a[tag=so_ar_in] at @s run function so_arenas:lib/spawn_near {m:"wither_skeleton"}
-playsound minecraft:entity.zombie.ambient hostile @a[tag=so_ar_in] ~ ~ ~ 1 0.8
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"zombie",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"skeleton",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"spider",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"husk",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"zombie",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"zombie",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"skeleton",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"skeleton",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"spider",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"spider",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"husk",t:0}
+execute if score #tier so_ar matches 1 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"husk",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"zombie_armor",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"skeleton_armor",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"piglin",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"cave_spider",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"slime_big",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"zombie_armor",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"zombie_armor",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"skeleton_armor",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"skeleton_armor",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"piglin",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"piglin",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"cave_spider",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"cave_spider",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"slime_big",t:0}
+execute if score #tier so_ar matches 2 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"slime_big",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"vindicator",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"pillager",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"witch",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"drowned_trident",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"spider_big",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"vindicator",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"vindicator",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"pillager",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"pillager",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"witch",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"witch",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"drowned_trident",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"drowned_trident",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"spider_big",t:0}
+execute if score #tier so_ar matches 3 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"spider_big",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"enderman",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"breeze",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"zombie_ominous",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"skeleton_ominous",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"bogged",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 1 run function so_arenas:lib/spawn {m:"wither_skeleton",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"enderman",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"enderman",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"breeze",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"breeze",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"zombie_ominous",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"zombie_ominous",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"skeleton_ominous",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"skeleton_ominous",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"bogged",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"bogged",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"wither_skeleton",t:0}
+execute if score #tier so_ar matches 4 if score #wave so_ar matches 2 run function so_arenas:lib/spawn {m:"wither_skeleton",t:0}
+execute as @a[tag=so_ar_in] at @s run playsound minecraft:event.raid.horn master @s ~ ~ ~ 0.6 1.3

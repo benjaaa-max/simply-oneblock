@@ -1,221 +1,52 @@
-# coliseo: parte 8/10
-fill -5002 103 -4951 -5002 103 -4951 minecraft:stone_bricks
-fill -5001 103 -5049 -5001 103 -5049 minecraft:stone_bricks
-fill -5001 103 -4951 -5001 103 -4951 minecraft:stone_bricks
-fill -5000 103 -5049 -5000 103 -5049 minecraft:stone_bricks
-fill -5000 103 -4951 -5000 103 -4951 minecraft:stone_bricks
-fill -4999 103 -5049 -4999 103 -5049 minecraft:stone_bricks
-fill -4999 103 -4951 -4999 103 -4951 minecraft:stone_bricks
-fill -4998 103 -5049 -4998 103 -5049 minecraft:stone_bricks
-fill -4998 103 -4951 -4998 103 -4951 minecraft:stone_bricks
-fill -4997 103 -5049 -4997 103 -5049 minecraft:stone_bricks
-fill -4997 103 -4951 -4997 103 -4951 minecraft:stone_bricks
-fill -4996 103 -5049 -4996 103 -5049 minecraft:stone_bricks
-fill -4996 103 -4951 -4996 103 -4951 minecraft:stone_bricks
-fill -4994 103 -5048 -4994 103 -5048 minecraft:stone_bricks
-fill -4994 103 -4952 -4994 103 -4952 minecraft:stone_bricks
-fill -4993 103 -5048 -4993 103 -5048 minecraft:stone_bricks
-fill -4993 103 -4952 -4993 103 -4952 minecraft:stone_bricks
-fill -4992 103 -5048 -4992 103 -5048 minecraft:stone_bricks
-fill -4992 103 -4952 -4992 103 -4952 minecraft:stone_bricks
-fill -4991 103 -5048 -4991 103 -5048 minecraft:stone_bricks
-fill -4991 103 -4952 -4991 103 -4952 minecraft:stone_bricks
-fill -4990 103 -5047 -4990 103 -5047 minecraft:stone_bricks
-fill -4990 103 -4953 -4990 103 -4953 minecraft:stone_bricks
-fill -4989 103 -5047 -4989 103 -5047 minecraft:stone_bricks
-fill -4989 103 -4953 -4989 103 -4953 minecraft:stone_bricks
-fill -4988 103 -5047 -4988 103 -5047 minecraft:stone_bricks
-fill -4988 103 -4953 -4988 103 -4953 minecraft:stone_bricks
-fill -4987 103 -5046 -4987 103 -5046 minecraft:stone_bricks
-fill -4987 103 -4954 -4987 103 -4954 minecraft:stone_bricks
-fill -4986 103 -5046 -4986 103 -5046 minecraft:stone_bricks
-fill -4986 103 -4954 -4986 103 -4954 minecraft:stone_bricks
-fill -4985 103 -5045 -4985 103 -5045 minecraft:stone_bricks
-fill -4985 103 -4955 -4985 103 -4955 minecraft:stone_bricks
-fill -4984 103 -5045 -4984 103 -5045 minecraft:stone_bricks
-fill -4984 103 -4955 -4984 103 -4955 minecraft:stone_bricks
-fill -4983 103 -5044 -4983 103 -5044 minecraft:stone_bricks
-fill -4983 103 -4956 -4983 103 -4956 minecraft:stone_bricks
-fill -4982 103 -5044 -4982 103 -5044 minecraft:stone_bricks
-fill -4982 103 -4956 -4982 103 -4956 minecraft:stone_bricks
-fill -4981 103 -5043 -4981 103 -5043 minecraft:stone_bricks
-fill -4981 103 -4957 -4981 103 -4957 minecraft:stone_bricks
-fill -4980 103 -5043 -4980 103 -5043 minecraft:stone_bricks
-fill -4980 103 -4957 -4980 103 -4957 minecraft:stone_bricks
-fill -4979 103 -5042 -4979 103 -5042 minecraft:stone_bricks
-fill -4979 103 -4958 -4979 103 -4958 minecraft:stone_bricks
-fill -4978 103 -5041 -4978 103 -5041 minecraft:stone_bricks
-fill -4978 103 -4959 -4978 103 -4959 minecraft:stone_bricks
-fill -4977 103 -5040 -4977 103 -5040 minecraft:stone_bricks
-fill -4977 103 -4960 -4977 103 -4960 minecraft:stone_bricks
-fill -4976 103 -5040 -4976 103 -5040 minecraft:stone_bricks
-fill -4976 103 -4960 -4976 103 -4960 minecraft:stone_bricks
-fill -4975 103 -5039 -4975 103 -5039 minecraft:stone_bricks
-fill -4975 103 -4961 -4975 103 -4961 minecraft:stone_bricks
-fill -4974 103 -5038 -4974 103 -5038 minecraft:stone_bricks
-fill -4974 103 -4962 -4974 103 -4962 minecraft:stone_bricks
-fill -4973 103 -5037 -4973 103 -5037 minecraft:stone_bricks
-fill -4973 103 -4963 -4973 103 -4963 minecraft:stone_bricks
-fill -4972 103 -5036 -4972 103 -5036 minecraft:stone_bricks
-fill -4972 103 -4964 -4972 103 -4964 minecraft:stone_bricks
-fill -4971 103 -5035 -4971 103 -5034 minecraft:stone_bricks
-fill -4971 103 -4966 -4971 103 -4965 minecraft:stone_bricks
-fill -4970 103 -5033 -4970 103 -5033 minecraft:stone_bricks
-fill -4970 103 -4967 -4970 103 -4967 minecraft:stone_bricks
-fill -4969 103 -5032 -4969 103 -5032 minecraft:stone_bricks
-fill -4969 103 -4968 -4969 103 -4968 minecraft:stone_bricks
-fill -4968 103 -5031 -4968 103 -5030 minecraft:stone_bricks
-fill -4968 103 -4970 -4968 103 -4969 minecraft:stone_bricks
-fill -4967 103 -5029 -4967 103 -5029 minecraft:stone_bricks
-fill -4967 103 -4971 -4967 103 -4971 minecraft:stone_bricks
-fill -4966 103 -5028 -4966 103 -5027 minecraft:stone_bricks
-fill -4966 103 -4973 -4966 103 -4972 minecraft:stone_bricks
-fill -4965 103 -5026 -4965 103 -5025 minecraft:stone_bricks
-fill -4965 103 -4975 -4965 103 -4974 minecraft:stone_bricks
-fill -4964 103 -5024 -4964 103 -5023 minecraft:stone_bricks
-fill -4964 103 -4977 -4964 103 -4976 minecraft:stone_bricks
-fill -4963 103 -5022 -4963 103 -5021 minecraft:stone_bricks
-fill -4963 103 -4979 -4963 103 -4978 minecraft:stone_bricks
-fill -4962 103 -5019 -4962 103 -5018 minecraft:stone_bricks
-fill -4962 103 -4982 -4962 103 -4981 minecraft:stone_bricks
-fill -4961 103 -5016 -4961 103 -5014 minecraft:stone_bricks
-fill -4961 103 -4986 -4961 103 -4984 minecraft:stone_bricks
-fill -4960 103 -5012 -4960 103 -5009 minecraft:stone_bricks
-fill -4960 103 -4991 -4960 103 -4988 minecraft:stone_bricks
-fill -4959 103 -5006 -4959 103 -5001 minecraft:stone_bricks
-fill -4959 103 -4999 -4959 103 -4994 minecraft:stone_bricks
-fill -5042 104 -5004 -5042 104 -5001 minecraft:polished_deepslate
-fill -5042 104 -4999 -5042 104 -4996 minecraft:polished_deepslate
-fill -5041 104 -5011 -5041 104 -5007 minecraft:polished_deepslate
-fill -5041 104 -4993 -5041 104 -4989 minecraft:polished_deepslate
-fill -5040 104 -5015 -5040 104 -5013 minecraft:polished_deepslate
-fill -5040 104 -4987 -5040 104 -4985 minecraft:polished_deepslate
-fill -5039 104 -5019 -5039 104 -5017 minecraft:polished_deepslate
-fill -5039 104 -4983 -5039 104 -4981 minecraft:polished_deepslate
-fill -5038 104 -5021 -5038 104 -5020 minecraft:polished_deepslate
-fill -5038 104 -4980 -5038 104 -4979 minecraft:polished_deepslate
-fill -5037 104 -5024 -5037 104 -5023 minecraft:polished_deepslate
-fill -5037 104 -4977 -5037 104 -4976 minecraft:polished_deepslate
-fill -5036 104 -5026 -5036 104 -5025 minecraft:polished_deepslate
-fill -5036 104 -4975 -5036 104 -4974 minecraft:polished_deepslate
-fill -5035 104 -5027 -5035 104 -5027 minecraft:polished_deepslate
-fill -5035 104 -4973 -5035 104 -4973 minecraft:polished_deepslate
-fill -5034 104 -5029 -5034 104 -5029 minecraft:polished_deepslate
-fill -5034 104 -4971 -5034 104 -4971 minecraft:polished_deepslate
-fill -5033 104 -5031 -5033 104 -5030 minecraft:polished_deepslate
-fill -5033 104 -4970 -5033 104 -4969 minecraft:polished_deepslate
-fill -5032 104 -5032 -5032 104 -5032 minecraft:polished_deepslate
-fill -5032 104 -4968 -5032 104 -4968 minecraft:polished_deepslate
-fill -5031 104 -5034 -5031 104 -5033 minecraft:polished_deepslate
-fill -5031 104 -4967 -5031 104 -4966 minecraft:polished_deepslate
-fill -5030 104 -5035 -5030 104 -5034 minecraft:polished_deepslate
-fill -5030 104 -4966 -5030 104 -4965 minecraft:polished_deepslate
-fill -5029 104 -5036 -5029 104 -5036 minecraft:polished_deepslate
-fill -5029 104 -4964 -5029 104 -4964 minecraft:polished_deepslate
-fill -5028 104 -5037 -5028 104 -5037 minecraft:polished_deepslate
-fill -5028 104 -4963 -5028 104 -4963 minecraft:polished_deepslate
-fill -5027 104 -5038 -5027 104 -5038 minecraft:polished_deepslate
-fill -5027 104 -4962 -5027 104 -4962 minecraft:polished_deepslate
-fill -5026 104 -5039 -5026 104 -5039 minecraft:polished_deepslate
-fill -5026 104 -4961 -5026 104 -4961 minecraft:polished_deepslate
-fill -5025 104 -5040 -5025 104 -5040 minecraft:polished_deepslate
-fill -5025 104 -4960 -5025 104 -4960 minecraft:polished_deepslate
-fill -5024 104 -5041 -5024 104 -5041 minecraft:polished_deepslate
-fill -5024 104 -4959 -5024 104 -4959 minecraft:polished_deepslate
-fill -5023 104 -5042 -5023 104 -5041 minecraft:polished_deepslate
-fill -5023 104 -4959 -5023 104 -4958 minecraft:polished_deepslate
-fill -5022 104 -5042 -5022 104 -5042 minecraft:polished_deepslate
-fill -5022 104 -4958 -5022 104 -4958 minecraft:polished_deepslate
-fill -5021 104 -5043 -5021 104 -5043 minecraft:polished_deepslate
-fill -5021 104 -4957 -5021 104 -4957 minecraft:polished_deepslate
-fill -5020 104 -5044 -5020 104 -5044 minecraft:polished_deepslate
-fill -5020 104 -4956 -5020 104 -4956 minecraft:polished_deepslate
-fill -5019 104 -5044 -5019 104 -5044 minecraft:polished_deepslate
-fill -5019 104 -4956 -5019 104 -4956 minecraft:polished_deepslate
-fill -5018 104 -5045 -5018 104 -5045 minecraft:polished_deepslate
-fill -5018 104 -4955 -5018 104 -4955 minecraft:polished_deepslate
-fill -5017 104 -5045 -5017 104 -5045 minecraft:polished_deepslate
-fill -5017 104 -4955 -5017 104 -4955 minecraft:polished_deepslate
-fill -5016 104 -5046 -5016 104 -5046 minecraft:polished_deepslate
-fill -5016 104 -4954 -5016 104 -4954 minecraft:polished_deepslate
-fill -5015 104 -5046 -5015 104 -5046 minecraft:polished_deepslate
-fill -5015 104 -4954 -5015 104 -4954 minecraft:polished_deepslate
-fill -5014 104 -5047 -5014 104 -5047 minecraft:polished_deepslate
-fill -5014 104 -4953 -5014 104 -4953 minecraft:polished_deepslate
-fill -5013 104 -5047 -5013 104 -5047 minecraft:polished_deepslate
-fill -5013 104 -4953 -5013 104 -4953 minecraft:polished_deepslate
-fill -5012 104 -5048 -5012 104 -5048 minecraft:polished_deepslate
-fill -5012 104 -4952 -5012 104 -4952 minecraft:polished_deepslate
-fill -5011 104 -5048 -5011 104 -5048 minecraft:polished_deepslate
-fill -5011 104 -4952 -5011 104 -4952 minecraft:polished_deepslate
-fill -5010 104 -5048 -5010 104 -5048 minecraft:polished_deepslate
-fill -5010 104 -4952 -5010 104 -4952 minecraft:polished_deepslate
-fill -5009 104 -5049 -5009 104 -5049 minecraft:polished_deepslate
-fill -5009 104 -4951 -5009 104 -4951 minecraft:polished_deepslate
-fill -5008 104 -5049 -5008 104 -5049 minecraft:polished_deepslate
-fill -5008 104 -4951 -5008 104 -4951 minecraft:polished_deepslate
-fill -5007 104 -5049 -5007 104 -5049 minecraft:polished_deepslate
-fill -5007 104 -4951 -5007 104 -4951 minecraft:polished_deepslate
-fill -5006 104 -5049 -5006 104 -5049 minecraft:polished_deepslate
-fill -5006 104 -4951 -5006 104 -4951 minecraft:polished_deepslate
-fill -5005 104 -5049 -5005 104 -5049 minecraft:polished_deepslate
-fill -5005 104 -4951 -5005 104 -4951 minecraft:polished_deepslate
-fill -5003 104 -5050 -5003 104 -5050 minecraft:polished_deepslate
-fill -5003 104 -4950 -5003 104 -4950 minecraft:polished_deepslate
-fill -5002 104 -5050 -5002 104 -5050 minecraft:polished_deepslate
-fill -5002 104 -4950 -5002 104 -4950 minecraft:polished_deepslate
-fill -5001 104 -5050 -5001 104 -5050 minecraft:polished_deepslate
-fill -5001 104 -4950 -5001 104 -4950 minecraft:polished_deepslate
-fill -5000 104 -5050 -5000 104 -5050 minecraft:polished_deepslate
-fill -5000 104 -4950 -5000 104 -4950 minecraft:polished_deepslate
-fill -4999 104 -5050 -4999 104 -5050 minecraft:polished_deepslate
-fill -4999 104 -4950 -4999 104 -4950 minecraft:polished_deepslate
-fill -4998 104 -5050 -4998 104 -5050 minecraft:polished_deepslate
-fill -4998 104 -4950 -4998 104 -4950 minecraft:polished_deepslate
-fill -4997 104 -5050 -4997 104 -5050 minecraft:polished_deepslate
-fill -4997 104 -4950 -4997 104 -4950 minecraft:polished_deepslate
-fill -4995 104 -5049 -4995 104 -5049 minecraft:polished_deepslate
-fill -4995 104 -4951 -4995 104 -4951 minecraft:polished_deepslate
-fill -4994 104 -5049 -4994 104 -5049 minecraft:polished_deepslate
-fill -4994 104 -4951 -4994 104 -4951 minecraft:polished_deepslate
-fill -4993 104 -5049 -4993 104 -5049 minecraft:polished_deepslate
-fill -4993 104 -4951 -4993 104 -4951 minecraft:polished_deepslate
-fill -4992 104 -5049 -4992 104 -5049 minecraft:polished_deepslate
-fill -4992 104 -4951 -4992 104 -4951 minecraft:polished_deepslate
-fill -4991 104 -5049 -4991 104 -5049 minecraft:polished_deepslate
-fill -4991 104 -4951 -4991 104 -4951 minecraft:polished_deepslate
-fill -4990 104 -5048 -4990 104 -5048 minecraft:polished_deepslate
-fill -4990 104 -4952 -4990 104 -4952 minecraft:polished_deepslate
-fill -4989 104 -5048 -4989 104 -5048 minecraft:polished_deepslate
-fill -4989 104 -4952 -4989 104 -4952 minecraft:polished_deepslate
-fill -4988 104 -5048 -4988 104 -5048 minecraft:polished_deepslate
-fill -4988 104 -4952 -4988 104 -4952 minecraft:polished_deepslate
-fill -4987 104 -5047 -4987 104 -5047 minecraft:polished_deepslate
-fill -4987 104 -4953 -4987 104 -4953 minecraft:polished_deepslate
-fill -4986 104 -5047 -4986 104 -5047 minecraft:polished_deepslate
-fill -4986 104 -4953 -4986 104 -4953 minecraft:polished_deepslate
-fill -4985 104 -5046 -4985 104 -5046 minecraft:polished_deepslate
-fill -4985 104 -4954 -4985 104 -4954 minecraft:polished_deepslate
-fill -4984 104 -5046 -4984 104 -5046 minecraft:polished_deepslate
-fill -4984 104 -4954 -4984 104 -4954 minecraft:polished_deepslate
-fill -4983 104 -5045 -4983 104 -5045 minecraft:polished_deepslate
-fill -4983 104 -4955 -4983 104 -4955 minecraft:polished_deepslate
-fill -4982 104 -5045 -4982 104 -5045 minecraft:polished_deepslate
-fill -4982 104 -4955 -4982 104 -4955 minecraft:polished_deepslate
-fill -4981 104 -5044 -4981 104 -5044 minecraft:polished_deepslate
-fill -4981 104 -4956 -4981 104 -4956 minecraft:polished_deepslate
-fill -4980 104 -5044 -4980 104 -5044 minecraft:polished_deepslate
-fill -4980 104 -4956 -4980 104 -4956 minecraft:polished_deepslate
-fill -4979 104 -5043 -4979 104 -5043 minecraft:polished_deepslate
-fill -4979 104 -4957 -4979 104 -4957 minecraft:polished_deepslate
-fill -4978 104 -5042 -4978 104 -5042 minecraft:polished_deepslate
-fill -4978 104 -4958 -4978 104 -4958 minecraft:polished_deepslate
-fill -4977 104 -5042 -4977 104 -5041 minecraft:polished_deepslate
-fill -4977 104 -4959 -4977 104 -4958 minecraft:polished_deepslate
-fill -4976 104 -5041 -4976 104 -5041 minecraft:polished_deepslate
-fill -4976 104 -4959 -4976 104 -4959 minecraft:polished_deepslate
-fill -4975 104 -5040 -4975 104 -5040 minecraft:polished_deepslate
-fill -4975 104 -4960 -4975 104 -4960 minecraft:polished_deepslate
-fill -4974 104 -5039 -4974 104 -5039 minecraft:polished_deepslate
-fill -4974 104 -4961 -4974 104 -4961 minecraft:polished_deepslate
-fill -4973 104 -5038 -4973 104 -5038 minecraft:polished_deepslate
+# coliseo: paso 8/8
+fill -5004 95 -4968 -4996 101 -4940 minecraft:stone_bricks
+fill -5003 96 -4968 -4997 100 -4940 minecraft:air
+fill -5003 95 -4968 -4997 95 -4940 minecraft:polished_deepslate
+fill -5003 96 -4968 -4997 100 -4968 minecraft:iron_bars
+setblock -5000 100 -4960 minecraft:lantern[hanging=true]
+setblock -5000 100 -4952 minecraft:lantern[hanging=true]
+fill -5011 95 -4940 -4989 105 -4920 minecraft:stone_bricks hollow
+fill -5010 95 -4939 -4990 95 -4921 minecraft:polished_deepslate
+fill -5010 105 -4939 -4990 105 -4921 minecraft:chiseled_sandstone
+fill -5003 96 -4940 -4997 100 -4940 minecraft:air
+fill -5003 96 -4940 -4997 100 -4940 minecraft:iron_bars
+fill -5000 95 -4939 -5000 95 -4921 minecraft:red_terracotta
+setblock -5006 104 -4935 minecraft:lantern[hanging=true]
+setblock -5006 104 -4928 minecraft:lantern[hanging=true]
+setblock -5006 104 -4924 minecraft:lantern[hanging=true]
+setblock -5000 104 -4935 minecraft:lantern[hanging=true]
+setblock -5000 104 -4928 minecraft:lantern[hanging=true]
+setblock -5000 104 -4924 minecraft:lantern[hanging=true]
+setblock -4994 104 -4935 minecraft:lantern[hanging=true]
+setblock -4994 104 -4928 minecraft:lantern[hanging=true]
+setblock -4994 104 -4924 minecraft:lantern[hanging=true]
+setblock -5003 95 -4931 minecraft:yellow_concrete
+setblock -5003 96 -4931 minecraft:light_weighted_pressure_plate
+setblock -5003 96 -4932 minecraft:oak_sign[rotation=0]{is_waxed:1b,front_text:{messages:[{text:"Pisá la placa",color:"black",bold:false},{text:"Práctica",color:"dark_blue",bold:true,click_event:{action:"run_command",command:"/trigger arena_pr set 20"}},{text:"(o tocá el cartel)",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -5001 95 -4931 minecraft:light_blue_concrete
+setblock -5001 96 -4931 minecraft:light_weighted_pressure_plate
+setblock -5001 96 -4932 minecraft:oak_sign[rotation=0]{is_waxed:1b,front_text:{messages:[{text:"Pisá la placa",color:"black",bold:false},{text:"Contratos",color:"dark_blue",bold:true,click_event:{action:"run_command",command:"/trigger arena_con set 20"}},{text:"(o tocá el cartel)",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -4999 95 -4931 minecraft:lime_concrete
+setblock -4999 96 -4931 minecraft:light_weighted_pressure_plate
+setblock -4999 96 -4932 minecraft:oak_sign[rotation=0]{is_waxed:1b,front_text:{messages:[{text:"Pisá la placa",color:"black",bold:false},{text:"Unirse",color:"dark_blue",bold:true,click_event:{action:"run_command",command:"/trigger arena_con set 9"}},{text:"(o tocá el cartel)",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -4997 95 -4931 minecraft:red_concrete
+setblock -4997 96 -4931 minecraft:light_weighted_pressure_plate
+setblock -4997 96 -4932 minecraft:oak_sign[rotation=0]{is_waxed:1b,front_text:{messages:[{text:"Pisá la placa",color:"black",bold:false},{text:"Volver",color:"dark_blue",bold:true,click_event:{action:"run_command",command:"/trigger volver"}},{text:"(o tocá el cartel)",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -5010 98 -4934 minecraft:oak_wall_sign[facing=east]{is_waxed:1b,front_text:{messages:[{text:"Práctica T1",color:"black",bold:false},{text:"Novato",color:"dark_green",bold:true,click_event:{action:"run_command",command:"/trigger arena_pr set 1"}},{text:"kit prestado",color:"black",bold:false},{text:"0 bloques+",color:"black",bold:false}]}}
+setblock -5010 97 -4934 minecraft:oak_wall_sign[facing=east]{is_waxed:1b,front_text:{messages:[{text:"Práctica T1",color:"black",bold:false},{text:"Novato",color:"dark_red",bold:true,click_event:{action:"run_command",command:"/trigger arena_pr set 11"}},{text:"equipo propio",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -5010 98 -4931 minecraft:oak_wall_sign[facing=east]{is_waxed:1b,front_text:{messages:[{text:"Práctica T2",color:"black",bold:false},{text:"Veterano",color:"dark_green",bold:true,click_event:{action:"run_command",command:"/trigger arena_pr set 2"}},{text:"kit prestado",color:"black",bold:false},{text:"3334 bloques+",color:"black",bold:false}]}}
+setblock -5010 97 -4931 minecraft:oak_wall_sign[facing=east]{is_waxed:1b,front_text:{messages:[{text:"Práctica T2",color:"black",bold:false},{text:"Veterano",color:"dark_red",bold:true,click_event:{action:"run_command",command:"/trigger arena_pr set 12"}},{text:"equipo propio",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -5010 98 -4928 minecraft:oak_wall_sign[facing=east]{is_waxed:1b,front_text:{messages:[{text:"Práctica T3",color:"black",bold:false},{text:"Élite",color:"dark_green",bold:true,click_event:{action:"run_command",command:"/trigger arena_pr set 3"}},{text:"kit prestado",color:"black",bold:false},{text:"7501 bloques+",color:"black",bold:false}]}}
+setblock -5010 97 -4928 minecraft:oak_wall_sign[facing=east]{is_waxed:1b,front_text:{messages:[{text:"Práctica T3",color:"black",bold:false},{text:"Élite",color:"dark_red",bold:true,click_event:{action:"run_command",command:"/trigger arena_pr set 13"}},{text:"equipo propio",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -5010 98 -4925 minecraft:oak_wall_sign[facing=east]{is_waxed:1b,front_text:{messages:[{text:"Práctica T4",color:"black",bold:false},{text:"Maestro",color:"dark_green",bold:true,click_event:{action:"run_command",command:"/trigger arena_pr set 4"}},{text:"kit prestado",color:"black",bold:false},{text:"15000 bloques+",color:"black",bold:false}]}}
+setblock -5010 97 -4925 minecraft:oak_wall_sign[facing=east]{is_waxed:1b,front_text:{messages:[{text:"Práctica T4",color:"black",bold:false},{text:"Maestro",color:"dark_red",bold:true,click_event:{action:"run_command",command:"/trigger arena_pr set 14"}},{text:"equipo propio",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -4990 98 -4934 minecraft:oak_wall_sign[facing=west]{is_waxed:1b,front_text:{messages:[{text:"Contrato",color:"black",bold:false},{text:"Caza 15 bajas",color:"dark_aqua",bold:true,click_event:{action:"run_command",command:"/trigger arena_con set 1"}},{text:"400 bloques+",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -4990 98 -4931 minecraft:oak_wall_sign[facing=west]{is_waxed:1b,front_text:{messages:[{text:"Contrato",color:"black",bold:false},{text:"Oleadas dobles",color:"dark_aqua",bold:true,click_event:{action:"run_command",command:"/trigger arena_con set 2"}},{text:"400 bloques+",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -4990 98 -4928 minecraft:oak_wall_sign[facing=west]{is_waxed:1b,front_text:{messages:[{text:"Contrato",color:"black",bold:false},{text:"Defensa Núcleo",color:"dark_purple",bold:true,click_event:{action:"run_command",command:"/trigger arena_con set 3"}},{text:"2501 bloques+",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -4990 98 -4925 minecraft:oak_wall_sign[facing=west]{is_waxed:1b,front_text:{messages:[{text:"Desafío en curso",color:"black",bold:false},{text:"Unirse",color:"dark_green",bold:true,click_event:{action:"run_command",command:"/trigger arena_con set 9"}},{text:"",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -4990 97 -4934 minecraft:oak_wall_sign[facing=west]{is_waxed:1b,front_text:{messages:[{text:"Tu rango",color:"black",bold:false},{text:"Ver rango",color:"dark_gray",bold:true,click_event:{action:"run_command",command:"/trigger levelrank"}},{text:"(oculto)",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -4990 97 -4931 minecraft:oak_wall_sign[facing=west]{is_waxed:1b,front_text:{messages:[{text:"Salir",color:"black",bold:false},{text:"Volver a la isla",color:"dark_red",bold:true,click_event:{action:"run_command",command:"/trigger volver"}},{text:"",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -4990 97 -4928 minecraft:oak_wall_sign[facing=west]{is_waxed:1b,front_text:{messages:[{text:"Menú",color:"black",bold:false},{text:"Abrir menú",color:"gold",bold:true,click_event:{action:"run_command",command:"/trigger arena"}},{text:"",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -5000 96 -4923 minecraft:oak_sign[rotation=8]{is_waxed:1b,front_text:{messages:[{text:"Guía del Colise",color:"black",bold:false},{text:"Tocá acá",color:"dark_blue",bold:true,click_event:{action:"run_command",command:"/trigger arena"}},{text:"o al aldeano",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -5007 96 -4935 minecraft:oak_sign[rotation=0]{is_waxed:1b,front_text:{messages:[{text:"Maestro de Arma",color:"black",bold:false},{text:"Tocá acá",color:"dark_blue",bold:true,click_event:{action:"run_command",command:"/trigger arena_pr set 20"}},{text:"o al aldeano",color:"black",bold:false},{text:"",color:"black",bold:false}]}}
+setblock -4993 96 -4935 minecraft:oak_sign[rotation=0]{is_waxed:1b,front_text:{messages:[{text:"Comandante de C",color:"black",bold:false},{text:"Tocá acá",color:"dark_blue",bold:true,click_event:{action:"run_command",command:"/trigger arena_con set 20"}},{text:"o al aldeano",color:"black",bold:false},{text:"",color:"black",bold:false}]}}

@@ -9,7 +9,7 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "El kit prestado se retira solo al terminar. Con tu propio equipo, si morís aparecés en la isla.",
+        "text": "El kit prestado se retira solo al terminar. Con equipo propio, si morís tus cosas quedan en el foso.",
         "color": "gray"
       }
     }
@@ -20,55 +20,55 @@
   "actions": [
     {
       "label": {
-        "text": "Tier I · Novato (kit)",
+        "text": "Tier 1 · Novato (kit)",
         "color": "yellow"
       },
-      "width": 150,
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
         "command": "/trigger arena_pr set 1"
       },
       "tooltip": {
-        "text": "Zombis, esqueletos y arañas. Libres desde el inicio.",
+        "text": "Desde 0 bloques.",
         "color": "gray"
       }
     },
     {
       "label": {
-        "text": "Tier I · Novato (equipo propio)",
-        "color": "yellow"
+        "text": "Tier 1 · Novato (propio)",
+        "color": "gold"
       },
-      "width": 150,
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
         "command": "/trigger arena_pr set 11"
       },
       "tooltip": {
-        "text": "Con tu propio equipo.",
+        "text": "Desde 0 bloques.",
         "color": "gray"
       }
     },
     {
       "label": {
-        "text": "Tier II · Veterano (kit)",
+        "text": "Tier 2 · Veterano (kit)",
         "color": "yellow"
       },
-      "width": 150,
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
         "command": "/trigger arena_pr set 2"
       },
       "tooltip": {
-        "text": "Mobs acorazados y Nether. Desde 3.334 bloques.",
+        "text": "Desde 3.334 bloques.",
         "color": "gray"
       }
     },
     {
       "label": {
-        "text": "Tier II · Veterano (equipo propio)",
-        "color": "yellow"
+        "text": "Tier 2 · Veterano (propio)",
+        "color": "gold"
       },
-      "width": 150,
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
         "command": "/trigger arena_pr set 12"
@@ -80,25 +80,25 @@
     },
     {
       "label": {
-        "text": "Tier III · Élite (kit)",
+        "text": "Tier 3 · Élite (kit)",
         "color": "yellow"
       },
-      "width": 150,
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
         "command": "/trigger arena_pr set 3"
       },
       "tooltip": {
-        "text": "Illagers, brujas y drowned. Desde 7.501 bloques.",
+        "text": "Desde 7.501 bloques.",
         "color": "gray"
       }
     },
     {
       "label": {
-        "text": "Tier III · Élite (equipo propio)",
-        "color": "yellow"
+        "text": "Tier 3 · Élite (propio)",
+        "color": "gold"
       },
-      "width": 150,
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
         "command": "/trigger arena_pr set 13"
@@ -110,31 +110,31 @@
     },
     {
       "label": {
-        "text": "Tier IV · Maestro (kit)",
+        "text": "Tier 4 · Maestro (kit)",
         "color": "yellow"
       },
-      "width": 150,
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
         "command": "/trigger arena_pr set 4"
       },
       "tooltip": {
-        "text": "Ominosos y breezes. After Phase (15.000).",
+        "text": "Desde 15.000 bloques.",
         "color": "gray"
       }
     },
     {
       "label": {
-        "text": "Tier IV · Maestro (equipo propio)",
-        "color": "yellow"
+        "text": "Tier 4 · Maestro (propio)",
+        "color": "gold"
       },
-      "width": 150,
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
         "command": "/trigger arena_pr set 14"
       },
       "tooltip": {
-        "text": "After Phase (15.000).",
+        "text": "Desde 15.000 bloques.",
         "color": "gray"
       }
     },
@@ -142,6 +142,7 @@
       "label": {
         "text": "« Volver"
       },
+      "width": 170,
       "action": {
         "type": "minecraft:show_dialog",
         "dialog": "so_arenas:main"
