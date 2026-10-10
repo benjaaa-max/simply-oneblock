@@ -230,6 +230,11 @@ LOOT = {
 for n, (rolls, entries) in LOOT.items():
     W(f"data/{NS}/loot_table/{n}.json", {"type": "minecraft:chest", "pools": [{"rolls": rolls, "entries": entries}]})
 
+# avance invisible que detecta golpes al fugitivo
+W(f"data/{NS}/advancement/hit.json", {"criteria": {"hit": {"trigger": "minecraft:player_hurt_entity", "conditions": {"entity": [
+    {"condition": "minecraft:entity_properties", "entity": "this", "predicate": {"nbt": "{Tags:[\"so_ev_runner\"]}"}}]}}},
+    "rewards": {"function": f"{NS}:hit"}})
+
 # ---------------------------------------------------------------- nucleo
 F("load", [
     "scoreboard objectives add so_ev dummy",

@@ -1,0 +1,5 @@
+execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/vindicator"}
+execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/vindicator"}
+execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/evoker"}
+execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/evoker"}
+execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/ravager"}
