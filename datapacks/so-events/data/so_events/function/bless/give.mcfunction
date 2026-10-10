@@ -1,8 +1,8 @@
-execute if score #r so_ev matches 1 run effect give @s minecraft:minecraft:haste 300 9 true
-execute if score #r so_ev matches 2 run effect give @s minecraft:minecraft:regeneration 60 2 true
-execute if score #r so_ev matches 3 run effect give @s minecraft:minecraft:strength 60 4 true
-execute if score #r so_ev matches 4 run effect give @s minecraft:minecraft:speed 120 1 true
-execute if score #r so_ev matches 5 run effect give @s minecraft:minecraft:absorption 180 8 true
+execute if score #r so_ev matches 1 run effect give @s minecraft:haste 300 9 true
+execute if score #r so_ev matches 2 run effect give @s minecraft:regeneration 60 2 true
+execute if score #r so_ev matches 3 run effect give @s minecraft:strength 60 4 true
+execute if score #r so_ev matches 4 run effect give @s minecraft:speed 120 1 true
+execute if score #r so_ev matches 5 run effect give @s minecraft:absorption 180 8 true
 execute if score #r so_ev matches ..0 run effect give @s minecraft:haste 300 9 true
 execute if score #r so_ev matches 1 run title @s actionbar [{"text": "[Evento] ", "color": "gold", "bold": true}, {"text": "Bendición: Prisa Minera X", "color": "gold", "bold": true}, {"text": " (5 minutos)", "color": "gray"}]
 execute if score #r so_ev matches 2 run title @s actionbar [{"text": "[Evento] ", "color": "gold", "bold": true}, {"text": "Bendición: Regeneración III", "color": "light_purple", "bold": true}, {"text": " (60 segundos)", "color": "gray"}]

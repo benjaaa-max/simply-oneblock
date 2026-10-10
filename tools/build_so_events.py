@@ -599,11 +599,11 @@ F("event/dark/end", [f"execute as {IN} run loot give @s loot {NS}:reward_small",
     say("@a", "Amaneció. Los sobrevivientes recibieron una recompensa.", "green"), f"function {NS}:lib/cleanup"])
 # ---------------------------------------------------------------- v3: bendiciones del bloque (cada 200 bloques)
 BLESS = [
-    ("prisa_minera", "minecraft:haste", 9, 300, "Prisa Minera X", "5 minutos", "gold"),
-    ("regeneracion", "minecraft:regeneration", 2, 60, "Regeneración III", "60 segundos", "light_purple"),
-    ("fuerza", "minecraft:strength", 4, 60, "Fuerza V", "60 segundos", "red"),
-    ("velocidad", "minecraft:speed", 1, 120, "Velocidad II", "2 minutos", "aqua"),
-    ("absorcion", "minecraft:absorption", 8, 180, "Absorción IX", "3 minutos", "yellow"),
+    ("prisa_minera", "haste", 9, 300, "Prisa Minera X", "5 minutos", "gold"),
+    ("regeneracion", "regeneration", 2, 60, "Regeneración III", "60 segundos", "light_purple"),
+    ("fuerza", "strength", 4, 60, "Fuerza V", "60 segundos", "red"),
+    ("velocidad", "speed", 1, 120, "Velocidad II", "2 minutos", "aqua"),
+    ("absorcion", "absorption", 8, 180, "Absorción IX", "3 minutos", "yellow"),
 ]
 F("bless/check", [
     "# Se activa cuando los bloques minados avanzan #bless_every (200) desde #bless_next.",
@@ -636,7 +636,7 @@ F("bless/give", [
 F("event/runner/start", [
     f"function {NS}:lib/begin", "scoreboard players set #active so_ev 7", "scoreboard players set #hits so_ev 0",
     f'bossbar set {NS}:ev name {T({"text": "Caza del fugitivo", "color": "gold"})}',
-    f"bossbar set {NS}:ev max 60", f"bossbar set {NS}:ev color gold",
+    f"bossbar set {NS}:ev max 60", f"bossbar set {NS}:ev color yellow",
     "execute store result score #kind so_ev run random value 1..2",
     f'execute if score #kind so_ev matches 1 as @a[tag=so_ev_in,limit=1,sort=random] at @s run summon minecraft:chicken ~ ~ ~ {{Tags:["so_ev_mob","so_ev_runner"],PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{{text:"Pollo Dorado",color:"gold",bold:true}},active_effects:[{{id:"minecraft:speed",amplifier:1b,duration:-1,show_particles:1b}}],attributes:[{{id:"minecraft:movement_speed",base:0.42}}]}}',
     f'execute if score #kind so_ev matches 2 as @a[tag=so_ev_in,limit=1,sort=random] at @s run summon minecraft:fox ~ ~ ~ {{Tags:["so_ev_mob","so_ev_runner"],PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{{text:"Zorro Místico",color:"light_purple",bold:true}},active_effects:[{{id:"minecraft:speed",amplifier:1b,duration:-1,show_particles:1b}}],attributes:[{{id:"minecraft:movement_speed",base:0.6}}]}}',
@@ -701,14 +701,14 @@ F("event/altar/start", [
     f"function {NS}:lib/begin", "scoreboard players set #active so_ev 9",
     "scoreboard players set #paid so_ev 0", "scoreboard players set #need so_ev 32",
     f'bossbar set {NS}:ev name {T({"text": "Altar del sacrificio", "color": "gold"})}',
-    f"bossbar set {NS}:ev max 90", f"bossbar set {NS}:ev color gold",
+    f"bossbar set {NS}:ev max 90", f"bossbar set {NS}:ev color yellow",
     "scoreboard players set #near so_ev 1",
     f'execute as @a[tag=so_ev_in,limit=1,sort=random] at @s run function {NS}:event/altar/place',
     "scoreboard players set #near so_ev 0",
     say("@a", "El Altar del Sacrificio apareció. Tirenle encima 32 bloques de piedra o 16 troncos para bendecir la isla.", "gold"),
 ])
 F("event/altar/place", [
-    "$execute positioned ~4 ~ ~ run function so_events:lib/altar_at",
+    "execute positioned ~4 ~ ~ run function so_events:lib/altar_at",
 ])
 F("lib/altar_at", [
     'execute if block ~ ~ ~ #minecraft:air if block ~ ~1 ~ #minecraft:air run summon minecraft:block_display ~ ~0.5 ~ {Tags:["so_ev_altar"],block_state:{Name:"minecraft:end_portal_frame"},brightness:{sky:15,block:0},glowing:1b}',
