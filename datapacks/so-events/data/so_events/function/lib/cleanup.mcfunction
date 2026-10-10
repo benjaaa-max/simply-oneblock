@@ -11,3 +11,5 @@ scoreboard players set #active so_ev 0
 scoreboard players set #t so_ev 0
 scoreboard players set #stage so_ev 0
 scoreboard players set #wave so_ev 0
+scoreboard players set #hits so_ev 0
+scoreboard players set #paid so_ev 0

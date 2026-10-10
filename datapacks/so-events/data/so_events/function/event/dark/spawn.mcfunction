@@ -3,3 +3,4 @@ execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/ske
 execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/spider"}
 execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/witch"}
 execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/blaze"}
+function so_events:lib/tier_up

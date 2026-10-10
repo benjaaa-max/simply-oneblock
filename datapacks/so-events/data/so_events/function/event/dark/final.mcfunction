@@ -8,4 +8,5 @@ execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/wit
 execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/witch"}
 execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/blaze"}
 execute as @a[tag=so_ev_in] at @s run function so_events:lib/spawn {mob:"mob/blaze"}
+function so_events:lib/tier_up
 title @a[tag=so_ev_in] title {"text": "¡Oleada final!", "color": "dark_purple", "bold": true}
