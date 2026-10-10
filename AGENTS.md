@@ -18,3 +18,6 @@
 
 ## Estructura
 - Generar so_arenas solo desde tools/build_so_arenas.py (como so_events). Arena usa /trigger arena (entrada) y /trigger volver (salida/abandono); los mobs entran por so_events:api y se retagean a so_ar_mob dentro del coliseo para no pisar eventos de la isla.
+
+## Estructura
+- Generar so_arenas solo desde tools/build_so_arenas.py (como so_events). Arena usa /trigger arena (entrada) y /trigger volver (salida/abandono); los mobs entran por so_events:api y se retagean a so_ar_mob dentro del coliseo para no pisar eventos de la isla.
