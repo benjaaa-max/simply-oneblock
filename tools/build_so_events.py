@@ -592,6 +592,158 @@ F("event/dark/final", [*[spawn(m) for m in DARK for _ in (0, 1)], f"function {NS
     f"title {IN} title {T({'text': '¡Oleada final!', 'color': 'dark_purple', 'bold': True})}"])
 F("event/dark/end", [f"execute as {IN} run loot give @s loot {NS}:reward_small",
     say("@a", "Amaneció. Los sobrevivientes recibieron una recompensa.", "green"), f"function {NS}:lib/cleanup"])
+# ---------------------------------------------------------------- v3: bendiciones del bloque (cada 200 bloques)
+BLESS = [
+    ("prisa_minera", "minecraft:haste", 9, 300, "Prisa Minera X", "5 minutos", "gold"),
+    ("regeneracion", "minecraft:regeneration", 2, 60, "Regeneración III", "60 segundos", "light_purple"),
+    ("fuerza", "minecraft:strength", 4, 60, "Fuerza V", "60 segundos", "red"),
+    ("velocidad", "minecraft:speed", 1, 120, "Velocidad II", "2 minutos", "aqua"),
+    ("absorcion", "minecraft:absorption", 8, 180, "Absorción IX", "3 minutos", "yellow"),
+]
+F("bless/check", [
+    "# Se activa cuando los bloques minados avanzan #bless_every (200) desde #bless_next.",
+    "execute positioned 0 64 0 store result score #n so_ev if entity @a[distance=..64,gamemode=!spectator]",
+    "execute if score #n so_ev matches 0 run return 0",
+    "scoreboard players operation #diff so_ev = #blk so_ev",
+    "scoreboard players operation #diff so_ev -= #bless_next so_ev",
+    "execute if score #diff so_ev matches ..-1 run scoreboard players operation #bless_next so_ev = #blk so_ev",
+    "execute if score #diff so_ev matches ..-1 run return 0",
+    "execute if score #diff so_ev matches 200.. run scoreboard players operation #bless_next so_ev = #blk so_ev",
+    f"execute if score #diff so_ev matches 200.. run execute store result score #r so_ev run random value 1..{len(BLESS)}",
+    f"execute if score #diff so_ev matches 200.. run function {NS}:admin/bless",
+])
+F("admin/bless", [
+    f"execute positioned 0 64 0 as @a[distance=..64,gamemode=!spectator] run function {NS}:bless/give",
+    say("@s", "Bendición entregada a la isla.", "green"),
+])
+F("bless/give", [
+    *[f'execute if score #r so_ev matches {i} run effect give @s minecraft:{fx} {dur} {amp} true'
+      for i, (_, fx, amp, dur, _, _, _) in enumerate(BLESS, 1)],
+    f'execute if score #r so_ev matches ..0 run effect give @s minecraft:haste 300 9 true',
+    *[f'execute if score #r so_ev matches {i} run title @s actionbar {T(PFX, {"text": "Bendición: " + n, "color": c, "bold": True}, {"text": " (" + d + ")", "color": "gray"})}'
+      for i, (_, _, _, _, n, d, c) in enumerate(BLESS, 1)],
+    f'execute if score #r so_ev matches ..0 run title @s actionbar {T(PFX, {"text": "Bendición: Prisa Minera X", "color": "gold", "bold": True}, {"text": " (5 minutos)", "color": "gray"})}',
+    "playsound minecraft:block.note_block.chime master @s ~ ~ ~ 1 1.6",
+    "particle minecraft:end_rod ~ ~1 ~ 0.4 0.6 0.4 0.03 20",
+])
+
+# ---------------------------------------------------------------- v3: caza del fugitivo (60 s, 5 golpes)
+F("event/runner/start", [
+    f"function {NS}:lib/begin", "scoreboard players set #active so_ev 7", "scoreboard players set #hits so_ev 0",
+    f'bossbar set {NS}:ev name {T({"text": "Caza del fugitivo", "color": "gold"})}',
+    f"bossbar set {NS}:ev max 60", f"bossbar set {NS}:ev color gold",
+    "execute store result score #kind so_ev run random value 1..2",
+    f'execute if score #kind so_ev matches 1 as @a[tag=so_ev_in,limit=1,sort=random] at @s run summon minecraft:chicken ~ ~ ~ {{Tags:["so_ev_mob","so_ev_runner"],PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{{text:"Pollo Dorado",color:"gold",bold:true}},active_effects:[{{id:"minecraft:speed",amplifier:1b,duration:-1,show_particles:1b}}],attributes:[{{id:"minecraft:movement_speed",base:0.42}}]}}',
+    f'execute if score #kind so_ev matches 2 as @a[tag=so_ev_in,limit=1,sort=random] at @s run summon minecraft:fox ~ ~ ~ {{Tags:["so_ev_mob","so_ev_runner"],PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{{text:"Zorro Místico",color:"light_purple",bold:true}},active_effects:[{{id:"minecraft:speed",amplifier:1b,duration:-1,show_particles:1b}}],attributes:[{{id:"minecraft:movement_speed",base:0.6}}]}}',
+    *[f"execute if score #kind so_ev matches {k} run tellraw @a {T(PFX, {'text': ('¡El Pollo Dorado apareció!' if k == 1 else '¡El Zorro Místico apareció!') + ' Golpeenlo 5 veces en 60 segundos.', 'color': 'gold', 'bold': True})}" for k in (1, 2)],
+    "execute as @e[tag=so_ev_runner,limit=1] at @s run playsound minecraft:entity.experience_orb.pickup master @a ~ ~ ~ 1 1.6",
+])
+F("event/runner/second", [
+    "scoreboard players add #t so_ev 1",
+    f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
+    f"execute as @e[tag=so_ev_runner,limit=1] at @s run particle minecraft:end_rod ~ ~0.5 ~ 0.2 0.2 0.2 0.02 6",
+    f"execute as @e[tag=so_ev_runner,limit=1] at @s run title @a[tag=so_ev_in,distance=..40] actionbar {T({'text': 'Golpes: ', 'color': 'gold'}, {'score': {'name': '#hits', 'objective': 'so_ev'}, 'color': 'white', 'bold': True}, {'text': '/5', 'color': 'gray'})}",
+    f"execute unless entity @e[tag=so_ev_runner] run function {NS}:event/runner/fail",
+    f"execute if score #t so_ev matches 60.. run function {NS}:event/runner/fail",
+])
+F("hit", [
+    f"advancement revoke @s only {NS}:hit",
+    "scoreboard players add #hits so_ev 1",
+    f'execute if score #hits so_ev matches 5.. run function {NS}:event/runner/win',
+    f'execute unless score #hits so_ev matches 5.. run playsound minecraft:entity.experience_orb.pickup master @s ~ ~ ~ 1 1.2',
+])
+F("event/runner/win", [
+    f"execute as @e[tag=so_ev_runner,limit=1] at @s run loot spawn ~ ~ ~ loot {NS}:runner",
+    f"execute as @e[tag=so_ev_runner,limit=1] at @s run particle minecraft:firework ~ ~0.5 ~ 0.3 0.3 0.3 0.1 60",
+    f'title {IN} title {T({"text": "¡Atraparon al fugitivo!", "color": "gold", "bold": True})}',
+    say("@a", "¡El fugitivo cayó! Esmeraldas, botellas de XP y oro en el piso.", "gold"),
+    "kill @e[tag=so_ev_runner]",
+    f"function {NS}:lib/cleanup",
+])
+F("event/runner/fail", [
+    f'title {IN} title {T({"text": "¡Se escapó!", "color": "gray", "bold": True})}',
+    say("@a", "El fugitivo escapó con su tesoro.", "gray"),
+    f"function {NS}:lib/cleanup",
+])
+
+# ---------------------------------------------------------------- v3: tormenta de maná (45 s, orbes cada 3 s)
+F("event/mana/start", [
+    f"function {NS}:lib/begin", "scoreboard players set #active so_ev 8",
+    f'bossbar set {NS}:ev name {T({"text": "Tormenta de maná", "color": "aqua"})}',
+    f"bossbar set {NS}:ev max 45", f"bossbar set {NS}:ev color blue",
+    say("@a", "¡Tormenta de maná! Corran: los orbes de experiencia caen por 45 segundos.", "aqua"),
+])
+F("event/mana/second", [
+    "scoreboard players add #t so_ev 1",
+    f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
+    "scoreboard players operation #m so_ev = #t so_ev", "scoreboard players operation #m so_ev %= #three so_ev",
+    f"execute if score #m so_ev matches 0 run function {NS}:event/mana/burst",
+    f"execute if score #t so_ev matches 45.. run function {NS}:lib/cleanup",
+])
+F("event/mana/burst", [
+    f"execute as @a[tag=so_ev_in,limit=3] at @s run function {NS}:lib/orbs",
+    f"execute as @a[tag=so_ev_in,limit=3] at @s run playsound minecraft:block.amethyst_block.chime master @s ~ ~ ~ 1 1.4",
+])
+F("lib/orbs", [
+    "execute store result storage so_events:tmp dx int 1 run random value -6..6",
+    "execute store result storage so_events:tmp dz int 1 run random value -6..6",
+    "function so_events:lib/orb_spawn with storage so_events:tmp",
+])
+F("lib/orb_spawn", ["$execute positioned ~ ~4 ~ run summon minecraft:experience_orb ~$(dx) ~ ~$(dz) {Value:6}"])
+
+# ---------------------------------------------------------------- v3: altar del sacrificio (90 s, tributo de 32 cobblestone o 16 troncos)
+F("event/altar/start", [
+    f"function {NS}:lib/begin", "scoreboard players set #active so_ev 9",
+    "scoreboard players set #paid so_ev 0", "scoreboard players set #need so_ev 32",
+    f'bossbar set {NS}:ev name {T({"text": "Altar del sacrificio", "color": "gold"})}',
+    f"bossbar set {NS}:ev max 90", f"bossbar set {NS}:ev color gold",
+    "scoreboard players set #near so_ev 1",
+    f'execute as @a[tag=so_ev_in,limit=1,sort=random] at @s run function {NS}:event/altar/place',
+    "scoreboard players set #near so_ev 0",
+    say("@a", "El Altar del Sacrificio apareció. Tirenle encima 32 bloques de piedra o 16 troncos para bendecir la isla.", "gold"),
+])
+F("event/altar/place", [
+    "$execute positioned ~4 ~ ~ run function so_events:lib/altar_at",
+])
+F("lib/altar_at", [
+    'execute if block ~ ~ ~ #minecraft:air if block ~ ~1 ~ #minecraft:air run summon minecraft:block_display ~ ~0.5 ~ {Tags:["so_ev_altar"],block_state:{Name:"minecraft:end_portal_frame"},brightness:{sky:15,block:0},glowing:1b}',
+    'execute if block ~ ~ ~ #minecraft:air if block ~ ~1 ~ #minecraft:air run particle minecraft:flame ~ ~1 ~ 0.2 0.3 0.2 0.02 20',
+])
+F("event/altar/second", [
+    "scoreboard players add #t so_ev 1",
+    f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
+    f"execute as @e[tag=so_ev_altar,limit=1] at @s run particle minecraft:end_rod ~ ~1.2 ~ 0.2 0.4 0.2 0.02 8",
+    f"execute as @e[tag=so_ev_altar,limit=1] at @s run function {NS}:event/altar/take",
+    f"execute if score #t so_ev matches 45.. run title {IN} actionbar {T({'text': '¡Tributo al altar: 32 piedra o 16 troncos!', 'color': 'gold', 'bold': True})}",
+    f"execute if score #paid so_ev matches 32.. run function {NS}:event/altar/win",
+    f"execute if score #t so_ev matches 90.. run function {NS}:event/altar/fail",
+])
+F("event/altar/take", [
+    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'minecraft:cobblestone\'}}}}] run function {NS}:event/altar/add',
+    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'minecraft:cobblestone\'}}}}] run kill @s',
+    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'minecraft:deepslate\'}}}}] run function {NS}:event/altar/add',
+    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'minecraft:deepslate\'}}}}] run kill @s',
+    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'#minecraft:logs\'}}}}] run function {NS}:event/altar/add',
+    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'#minecraft:logs\'}}}}] run kill @s',
+])
+F("event/altar/add", [
+    "execute store result score #cnt so_ev run data get entity @s Item.count 1",
+    "scoreboard players operation #paid so_ev += #cnt so_ev",
+])
+F("event/altar/win", [
+    f'title {IN} title {T({"text": "¡Altar satisfecho!", "color": "gold", "bold": True})}',
+    f"execute as @a[tag=so_ev_in] at @s run summon minecraft:lightning_bolt ~ ~ ~ {{visual_only:1b}}",
+    f"execute as {IN} run effect give @s minecraft:haste 180 1 true",
+    f"execute as {IN} run effect give @s minecraft:regeneration 180 1 true",
+    say("@a", "El altar premió a la isla: Prisa II y Regeneración II por 3 minutos.", "gold"),
+    f"function {NS}:lib/cleanup",
+])
+F("event/altar/fail", [
+    say("@a", "El altar no recibió su tributo y se apagó.", "gray"),
+    f"function {NS}:lib/cleanup",
+])
+
+
 lines = open(os.path.join(ROOT, f"data/{NS}/function/load.mcfunction"), encoding="utf-8").read()
 W(f"data/{NS}/function/load.mcfunction", lines + "scoreboard players set #twenty so_ev 20\nscoreboard players set #five so_ev 5\nscoreboard players set #near so_ev 0\n"
   + "scoreboard players set #three so_ev 3\n" + f"function {NS}:load_offers\n")
