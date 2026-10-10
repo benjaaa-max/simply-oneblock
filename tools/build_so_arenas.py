@@ -436,3 +436,203 @@ F("lib/anticamp", [
     "execute as @a[tag=so_ar_in] at @s if entity @s[y=104..] run scoreboard players add @s so_ar_air 1",
     "execute as @a[tag=so_ar_in] at @s unless entity @s[y=104..] run scoreboard players set @s so_ar_air 0",
 ])
+
+# ---------------------------------------------------------------- dialogs
+def act(cmd, label, tip=None, color=None, w=150):
+    a = {"label": {"text": label} | ({"color": color} if color else {}), "width": w,
+         "action": {"type": "minecraft:run_command", "command": cmd}}
+    if tip: a["tooltip"] = {"text": tip, "color": "gray"}
+    return a
+def back(label="« Volver"):
+    return {"label": {"text": label}, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:main"}}
+W(f"data/{NS}/dialog/main.json", {
+    "type": "minecraft:multi_action", "title": {"text": "Coliseo VorNeX", "color": "gold", "bold": True},
+    "external_title": {"text": "Arena"},
+    "body": [{"type": "minecraft:plain_message", "contents": {"text": "Practicá, cumplí contratos y volvé con botín. El rango se consulta con /trigger levelrank.", "color": "gray"}}],
+    "columns": 2, "can_close_with_escape": True, "pause": False,
+    "actions": [
+        act(f"/dialog show @s {NS}:practice", "Práctica por tiers", "Kit prestado o tu propio equipo. Recompensa chico.", "yellow"),
+        act(f"/dialog show @s {NS}:contracts", "Contratos de caza y defensa", "Esmeraldas, botellas de XP y Fragmentos de Victoria.", "aqua"),
+        act("/trigger levelrank", "Ver mi rango", "Se muestra en el chat.", "gray"),
+        act("/trigger volver", "Volver a la isla", "Sale del coliseo. Si hay desafío activo, se considera abandono.", "red"),
+    ]})
+W(f"data/{NS}/dialog/practice.json", {
+    "type": "minecraft:multi_action", "title": {"text": "Práctica por tiers", "color": "yellow", "bold": True},
+    "body": [{"type": "minecraft:plain_message", "contents": {"text": "El kit prestado se retira solo al terminar. Con tu propio equipo, si morís aparecés en la isla.", "color": "gray"}}],
+    "columns": 2, "can_close_with_escape": True, "pause": False,
+    "actions": [
+        act("/trigger arena_pr set 1", "Tier I · Novato (kit)", "Zombis, esqueletos y arañas. Libres desde el inicio.", "yellow"),
+        act("/trigger arena_pr set 11", "Tier I · Novato (equipo propio)", "Con tu propio equipo.", "yellow"),
+        act("/trigger arena_pr set 2", "Tier II · Veterano (kit)", "Mobs acorazados y Nether. Desde 3.334 bloques.", "yellow"),
+        act("/trigger arena_pr set 12", "Tier II · Veterano (equipo propio)", "Desde 3.334 bloques.", "yellow"),
+        act("/trigger arena_pr set 3", "Tier III · Élite (kit)", "Illagers, brujas y drowned. Desde 7.501 bloques.", "yellow"),
+        act("/trigger arena_pr set 13", "Tier III · Élite (equipo propio)", "Desde 7.501 bloques.", "yellow"),
+        act("/trigger arena_pr set 4", "Tier IV · Maestro (kit)", "Ominosos y breezes. After Phase (15.000).", "yellow"),
+        act("/trigger arena_pr set 14", "Tier IV · Maestro (equipo propio)", "After Phase (15.000).", "yellow"),
+        {"label": {"text": "« Volver"}, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:main"}},
+    ]})
+W(f"data/{NS}/dialog/contracts.json", {
+    "type": "minecraft:multi_action", "title": {"text": "Contratos de Caza", "color": "aqua", "bold": True},
+    "body": [{"type": "minecraft:plain_message", "contents": {"text": "1 contrato por vez. Cumplilo y cobrás esmeraldas, botellas de XP y un Fragmento de Victoria.", "color": "gray"}}],
+    "columns": 2, "can_close_with_escape": True, "pause": False,
+    "actions": [
+        act("/trigger arena_con set 1", "Caza: 15 bajas objetivo", "Mobs de tu fase como objetivo, apoyo molesto extra. Desde 400 bloques.", "aqua"),
+        act("/trigger arena_con set 2", "Oleadas dobles", "3 oleadas mixtas cada vez más duras. Desde 400 bloques.", "aqua"),
+        act("/trigger arena_con set 3", "Defensa del Núcleo", "Proteger el núcleo 2 minutos. Desde 2.501 bloques. Altura permitida.", "aqua"),
+        {"label": {"text": "« Volver"}, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:main"}},
+    ]})
+
+# ---------------------------------------------------------------- construccion del coliseo
+build_cmds = []
+# 1) base y piso del foso (bandas por dx para respetar el óvalo)
+for dx in range(-AX, AX + 1):
+    zmax = dzmax(dx, 1.0)
+    if zmax <= 0: continue
+    z1, z2 = CZ - zmax, CZ + zmax
+    x = CX + dx
+    build_cmds.append(f"fill {x} 90 {z1} {x} 94 {z2} minecraft:deepslate")
+    build_cmds.append(f"fill {x} 95 {z1} {x} 95 {z2} {random.choice(FLOOR_MIX)}")
+    build_cmds.append(f"fill {x} 96 {z1} {x} 179 {z2} minecraft:air")
+# anillo decorativo del foso (borde de arena pulida)
+for dx in range(-AX, AX + 1):
+    for r0, r1 in ((0.86, 0.90), (0.90, 0.94)):
+        za, zb = dzmax(dx, r0), dzmax(dx, r1)
+        if zb <= za: continue
+        x = CX + dx
+        build_cmds.append(f"fill {x} 95 {CZ - zb} {x} 95 {CZ - za - 1} minecraft:sandstone")
+        build_cmds.append(f"fill {x} 95 {CZ + za + 1} {x} 95 {CZ + zb} minecraft:sandstone")
+# 2) gradas: 8 bandas subiendo de 96 a 103
+for i in range(8):
+    r0, r1 = 0.86 + i * 0.018, 0.878 + i * 0.018
+    y = FLOOR + i + 1
+    blk = GRAD_MIX[i % 3]
+    for dx in range(-AX, AX + 1):
+        za, zb = dzmax(dx, r0), dzmax(dx, r1)
+        if zb <= za: continue
+        x = CX + dx
+        build_cmds.append(f"fill {x} {y} {CZ - zb} {x} {y} {CZ - za - 1} {blk}")
+        build_cmds.append(f"fill {x} {y} {CZ + za + 1} {x} {y} {CZ + zb} {blk}")
+# 3) muralla romana con arcos (banda 0.94..1.0, y 104..145)
+for dx in range(-AX, AX + 1):
+    za, zb = dzmax(dx, 0.94), dzmax(dx, 1.0)
+    if zb <= za: continue
+    x = CX + dx
+    arch = (abs(dx) % 14) in (6, 7)
+    blk = "minecraft:sandstone_bricks" if (dx // 6) % 2 == 0 else "minecraft:stone_bricks"
+    if arch:
+        build_cmds.append(f"fill {x} 104 {CZ - zb} {x} 112 {CZ - za - 1} {blk}")
+        build_cmds.append(f"fill {x} 104 {CZ + za + 1} {x} 112 {CZ + zb} {blk}")
+        build_cmds.append(f"fill {x} 120 {CZ - zb} {x} 145 {CZ - za - 1} {blk}")
+        build_cmds.append(f"fill {x} 120 {CZ + za + 1} {x} 145 {CZ + zb} {blk}")
+    else:
+        build_cmds.append(f"fill {x} 104 {CZ - zb} {x} 145 {CZ - za - 1} {blk}")
+        build_cmds.append(f"fill {x} 104 {CZ + za + 1} {x} 145 {CZ + zb} {blk}")
+    build_cmds.append(f"fill {x} 141 {CZ - zb} {x} 146 {CZ - za - 1} minecraft:polished_deepslate")
+    build_cmds.append(f"fill {x} 141 {CZ + za + 1} {x} 146 {CZ + zb} minecraft:polished_deepslate")
+# 4) 8 torres perimetrales hasta y=170
+towers = []
+for k in range(8):
+    ang = k * math.pi / 4
+    tx = CX + round(AX * 0.96 * math.cos(ang))
+    tz = CZ + round(BZ * 0.96 * math.sin(ang))
+    towers.append((tx, tz))
+    build_cmds.append(f"fill {tx - 2} 96 {tz - 2} {tx + 2} {TOP_Y} {tz + 2} minecraft:polished_tuff")
+    build_cmds.append(f"fill {tx - 1} 96 {tz - 1} {tx + 1} {TOP_Y} {tz + 1} minecraft:air")
+    build_cmds.append(f"fill {tx - 3} {TOP_Y + 1} {tz - 3} {tx + 3} {TOP_Y + 1} {tz + 3} minecraft:sandstone_bricks")
+    build_cmds.append(f"fill {tx - 1} {TOP_Y + 2} {tz - 1} {tx + 1} {TOP_Y + 2} {tz + 1} minecraft:glowstone")
+# 5) tunel de gladiadores + lobby (lado sur, z hacia +)
+build_cmds.append(f"fill {CX - 3} 96 {CZ + BZ} {CX + 3} 99 {CZ + BZ + 12} minecraft:air")
+build_cmds.append(f"fill {CX - 4} 95 {CZ + BZ} {CX + 4} 95 {CZ + BZ + 12} minecraft:polished_deepslate")
+build_cmds.append(f"fill {CX - 4} 96 {CZ + BZ} {CX - 4} 99 {CZ + BZ + 12} minecraft:stone_bricks")
+build_cmds.append(f"fill {CX + 4} 96 {CZ + BZ} {CX + 4} 99 {CZ + BZ + 12} minecraft:stone_bricks")
+build_cmds.append(f"fill {CX - 4} 100 {CZ + BZ} {CX + 4} 100 {CZ + BZ + 12} minecraft:polished_deepslate")
+build_cmds.append(f"setblock {CX} 99 {CZ + BZ + 4} minecraft:lantern")
+# lobby (sala de preparacion, z 108..122)
+build_cmds.append(f"fill {CX - 7} 90 {CZ + BZ + 12} {CX + 7} 104 {CZ + BZ + 26} minecraft:air")
+build_cmds.append(f"fill {CX - 8} 94 {CZ + BZ + 12} {CX + 8} 94 {CZ + BZ + 26} minecraft:polished_deepslate")
+build_cmds.append(f"fill {CX - 8} 95 {CZ + BZ + 12} {CX + 8} 103 {CZ + BZ + 12} minecraft:sandstone_bricks")
+build_cmds.append(f"fill {CX - 8} 95 {CZ + BZ + 26} {CX + 8} 103 {CZ + BZ + 26} minecraft:sandstone_bricks")
+build_cmds.append(f"fill {CX - 8} 95 {CZ + BZ + 12} {CX - 8} 103 {CZ + BZ + 26} minecraft:stone_bricks")
+build_cmds.append(f"fill {CX + 8} 95 {CZ + BZ + 12} {CX + 8} 103 {CZ + BZ + 26} minecraft:stone_bricks")
+build_cmds.append(f"fill {CX - 8} 104 {CZ + BZ + 12} {CX + 8} 106 {CZ + BZ + 26} minecraft:chiseled_sandstone")
+build_cmds.append(f"fill {CX - 3} 95 {CZ + BZ + 24} {CX - 3} 95 {CZ + BZ + 24} minecraft:red_carpet")
+build_cmds.append(f"fill {CX + 3} 95 {CZ + BZ + 24} {CX + 3} 95 {CZ + BZ + 24} minecraft:red_carpet")
+for lz in (CZ + BZ + 16, CZ + BZ + 24):
+    build_cmds.append(f"setblock {CX - 7} 103 {lz} minecraft:lantern")
+    build_cmds.append(f"setblock {CX + 7} 103 {lz} minecraft:lantern")
+# reja del tunel (se cierra? decorativa: barras en el tunel)
+build_cmds.append(f"setblock {CX - 2} 96 {CZ + BZ + 6} minecraft:iron_bars")
+build_cmds.append(f"setblock {CX + 2} 96 {CZ + BZ + 6} minecraft:iron_bars")
+
+# trocea en archivos de <=220 comandos
+CHUNK = 220
+chunks = [build_cmds[i:i + CHUNK] for i in range(0, len(build_cmds), CHUNK)]
+F("admin/build_dispatch", [f"function {NS}:admin/build_{i + 1:02d}" for i in range(len(chunks))] + [
+    f'summon minecraft:villager {CX - 3} 95 {CZ + BZ + 21} {{NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Silent:1b,CustomNameVisible:1b,CustomName:{{text:"Comandante de Contratos",color:"aqua",bold:true}}}}',
+    f'summon minecraft:villager {CX + 3} 95 {CZ + BZ + 21} {{NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Silent:1b,CustomNameVisible:1b,CustomName:{{text:"Maestro de Armas",color:"yellow",bold:true}}}}',
+    f'execute positioned {CX} {FLOOR} {CZ} run setblock ~ 96 ~ minecraft:crying_obsidian',
+    f'execute positioned {CX} {FLOOR} {CZ} run setblock ~ 96 ~ minecraft:air',
+    say("@a", "¡El Coliseo VorNeX está listo!", "green"),
+    "playsound minecraft:ui.toast.challenge_complete master @a ~ ~ ~ 1 1",
+])
+for i, c in enumerate(chunks):
+    F(f"admin/build_{i + 1:02d}", [f"# coliseo: parte {i + 1}/{len(chunks)}"] + c)
+
+# ---------------------------------------------------------------- admin
+F("admin/help", [f"tellraw @s {T({'text': h, 'color': 'gold' if i == 0 else 'gray'})}" for i, h in enumerate([
+    "SO Arenas v1 — ayuda admin",
+    "Construcción: /function so_arenas:admin/build_dispatch  (parate en el lobby: /trigger arena)",
+    "/function so_arenas:admin/status | stop | enable | disable",
+    "Jugadores: /trigger arena (menú), /trigger volver (salida o abandono), /trigger levelrank",
+    "Los mobs y jefes vienen de so_events:api (mismo motor, sin duplicar nada).",
+])])
+F("admin/status", [f"function {NS}:lib/blocks",
+    f"tellraw @s {T(PFX, {'text': 'modo=', 'color': 'gray', 'bold': False}, {'score': {'name': '#mode', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '  bloques=', 'color': 'gray'}, {'score': {'name': '#blk', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '  rango mediador=', 'color': 'gray'}, {'score': {'name': '@s', 'objective': 'so_ar_rank'}, 'color': 'white'})}"])
+F("admin/stop", [f"function {NS}:lib/end", say("@a", "Desafío del coliseo detenido por un administrador.", "gray")])
+F("admin/enable", ["scoreboard players set #enabled so_ar 1", say("@s", "Arena activada.", "green")])
+F("admin/disable", [f"function {NS}:lib/end", "scoreboard players set #enabled so_ar 0", say("@s", "Arena desactivada.", "red")])
+F("uninstall", [f"function {NS}:lib/end", f"bossbar remove {NS}:fight",
+    "scoreboard objectives remove so_ar", "scoreboard objectives remove arena",
+    "scoreboard objectives remove arena_pr", "scoreboard objectives remove arena_con",
+    "scoreboard objectives remove levelrank", "scoreboard objectives remove so_ar_air", "scoreboard objectives remove so_ar_rank",
+    say("@s", "so_arenas desinstalado (el coliseo construido queda en el mundo). Quitá el datapack y hacé /reload.", "gray")])
+F("load", lines := open(os.path.join(ROOT, f"data/{NS}/function/load.mcfunction"), encoding="utf-8").read().splitlines() + [
+    "scoreboard players set #twentyfive so_ar 25",
+    f'function {NS}:admin/build_dispatch' and f"function {NS}:lib/dispatch" and "",
+    "function so_arenas:load2",
+])
+W(f"data/{NS}/function/load.mcfunction", "\n".join(l for l in lines if l) + "\n")
+F("load2", ["scoreboard players set #twentyfive so_ar 25"])
+
+W("README.md", """# so_arenas v1 — el Coliseo VorNeX (dónde pasa)
+
+Zona aislada en **-5000 100 -5000** (Overworld). Enemigos del motor `so_events:api` (sin duplicar mobs ni bosses).
+
+## Viaje
+- Entrada: `/trigger arena` (teletransporta al lobby y abre el menú).
+- Salida: `/trigger volver` (si hay desafío activo cuenta como **abandono**: pierde recompensa, kits y suena el cartel de derrota).
+- Rango de cazador: `/trigger levelrank` (oculto por diseño).
+
+## Construcción
+1. `/trigger arena` para viajar (carga los chunks).
+2. Parate en el lobby y corré `/function so_arenas:admin/build_dispatch`.
+3. El coliseo oval (84x100 exterior, gradas de 8 niveles, muralla con arcos, 8 torres de 80 de alto, tunel y lobby con NPC) se levanta por partes (~7 funciones).
+
+## Sistemas
+- **Práctica por tiers** (menú táctil del lobby): Tier I (0), II (3.334), III (7.501), IV (15.000). Kit prestado marcado `so_arena_loan` (se retira al terminar) o tu propio equipo.
+- **Contratos**: Caza 15 bajas (400+), Oleadas dobles (400+), Defensa del Núcleo (2.501+, altura permitida, anti-camping desactivado).
+- **Anti-camping por altura**: 3 s por encima del foso y un wind charge te baja. En defensa está desactivado.
+- **Victoria**: fuegos artificiales desde las 8 torres, fanfarria y recompensa (botellas de XP, esmeraldas y Fragmento de Victoria = echo shard renombrada).
+- **Abandono/muerte**: limpieza total, sin recompensa, título `¡ABANDONASTE, CAGÓN!` y luego el aviso de `/trigger volver`.
+
+Ayuda admin: `/function so_arenas:admin/help`. Los NPC del lobby dan pistas; el menú táctil es la forma de entrar a retos (compatible Bedrock).
+""")
+
+# ---------------------------------------------------------------- zip (raiz limpia)
+os.makedirs("/mnt/documents", exist_ok=True)
+out = "/mnt/documents/so_arenas-v1.zip"
+with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+    for d, _, files in os.walk(ROOT):
+        for f in files:
+            full = os.path.join(d, f); z.write(full, os.path.relpath(full, ROOT))
+print("ok", out)

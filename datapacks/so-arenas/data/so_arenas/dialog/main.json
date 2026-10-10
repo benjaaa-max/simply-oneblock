@@ -1,0 +1,85 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Coliseo VorNeX",
+    "color": "gold",
+    "bold": true
+  },
+  "external_title": {
+    "text": "Arena"
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Practicá, cumplí contratos y volvé con botín. El rango se consulta con /trigger levelrank.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Práctica por tiers",
+        "color": "yellow"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/dialog show @s so_arenas:practice"
+      },
+      "tooltip": {
+        "text": "Kit prestado o tu propio equipo. Recompensa chico.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Contratos de caza y defensa",
+        "color": "aqua"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/dialog show @s so_arenas:contracts"
+      },
+      "tooltip": {
+        "text": "Esmeraldas, botellas de XP y Fragmentos de Victoria.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Ver mi rango",
+        "color": "gray"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger levelrank"
+      },
+      "tooltip": {
+        "text": "Se muestra en el chat.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Volver a la isla",
+        "color": "red"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger volver"
+      },
+      "tooltip": {
+        "text": "Sale del coliseo. Si hay desafío activo, se considera abandono.",
+        "color": "gray"
+      }
+    }
+  ]
+}

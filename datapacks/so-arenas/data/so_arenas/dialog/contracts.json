@@ -1,0 +1,76 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Contratos de Caza",
+    "color": "aqua",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "1 contrato por vez. Cumplilo y cobrás esmeraldas, botellas de XP y un Fragmento de Victoria.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Caza: 15 bajas objetivo",
+        "color": "aqua"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 1"
+      },
+      "tooltip": {
+        "text": "Mobs de tu fase como objetivo, apoyo molesto extra. Desde 400 bloques.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Oleadas dobles",
+        "color": "aqua"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 2"
+      },
+      "tooltip": {
+        "text": "3 oleadas mixtas cada vez más duras. Desde 400 bloques.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Defensa del Núcleo",
+        "color": "aqua"
+      },
+      "width": 150,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 3"
+      },
+      "tooltip": {
+        "text": "Proteger el núcleo 2 minutos. Desde 2.501 bloques. Altura permitida.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "« Volver"
+      },
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_arenas:main"
+      }
+    }
+  ]
+}
