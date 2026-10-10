@@ -108,6 +108,24 @@ MOBS = {
     "skeleton_horseman": ("skeleton_horse", f"{BASE}," + rider("skeleton", f"{BASE},{eq(head='iron_helmet', mainhand='bow')}")),
     # --- rebelion de golems
     "iron_golem": ("iron_golem", GOLEM),
+    # --- v3: ilusion sombria
+    "illusioner": ("illusioner", f"{BASE},{eq(mainhand='bow')}"),
+    "vex": ("vex", f"{BASE},{eq(mainhand='iron_sword')}"),
+    "evoker": ("evoker", BASE),
+    "ravager": ("ravager", BASE),
+    # --- v3: bastion
+    "piglin_brute": ("piglin_brute", f"{BASE},IsImmuneToZombification:1b,{eq(mainhand='golden_axe')}"),
+    # --- v3: oscuridad (sombras invisibles y rapidas)
+    "sombra": ("zombie", f'{BASE},CustomName:{{text:"Sombra",color:"dark_gray"}},{FX("invisibility", "speed")},{eq(mainhand="stone_sword")}'),
+    "acechador": ("husk", f'{BASE},CustomName:{{text:"Acechador del Abismo",color:"dark_aqua"}},{FX("speed", "resistance")},{eq(head="chainmail_helmet", mainhand="iron_sword")}'),
+    # --- v3: pesadilla alada (sin quemarse de dia; mob_griefing esta apagado en el evento)
+    "phantom": ("phantom", f"{BASE},{FX('fire_resistance')}"),
+    "phantom_big": ("phantom", f"{BASE},{FX('fire_resistance')},{attrs(scale=1.6, max_health=30)},Health:30f"),
+    "bat_bomber": ("bat", f"{BASE}," + rider("creeper", f'{BASE},Fuse:25,ExplosionRadius:2b,CustomName:{{text:"Murciélago Bomba",color:"red"}}')),
+    # --- v3: pantano e infierno
+    "blaze_fast": ("blaze", f"{BASE},{FX('speed', 'strength')}"),
+    "zombified_piglin": ("zombified_piglin", f"{GOLEM},{eq(mainhand='golden_sword')}"),
+    "zoglin": ("zoglin", BASE),
 }
 for name, (eid, nbt) in MOBS.items():
     F(f"mob/{name}", [f"summon minecraft:{eid} ~ ~ ~ {{{nbt}}}", "scoreboard players set #ok so_ev 1"])
@@ -149,6 +167,21 @@ BOSSES = {
         extra=eq(head="diamond_helmet", chest="iron_chestplate", mainhand=it("bow", power=2))),
     "golem_furioso": dict(eid="iron_golem", hp=140, label="Gólem Furioso", color="gray",
         tags='"so_ev_mob","so_ev_boss","so_ev_golem"'),
+    # --- v3
+    "archimago": dict(eid="illusioner", hp=140, label="Archimago Espectral", color="dark_blue", att={"scale": 1.4},
+        extra=eq(mainhand=it("bow", power=3))),
+    "caudillo_bruto": dict(eid="piglin_brute", hp=180, label="Caudillo Bruto", color="gold",
+        extra="IsImmuneToZombification:1b," + eq(chest="netherite_chestplate", mainhand=it("golden_axe", sharpness=3))),
+    "guardian_oscuro": dict(eid="warden", hp=180, label="Guardián de la Oscuridad", color="dark_aqua",
+        att={"attack_damage": 10, "knockback_resistance": 1}),
+    "espectro_alfa": dict(eid="phantom", hp=100, label="Espectro Alfa", color="dark_gray", att={"scale": 3},
+        extra=FX("fire_resistance")),
+    "guardian_anciano": dict(eid="elder_guardian", hp=120, label="Guardián Anciano", color="aqua"),
+    "bruja_madre": dict(eid="witch", hp=150, label="Gran Bruja Madre", color="dark_purple", att={"scale": 1.5},
+        extra=FX("resistance")),
+    "senor_llamas": dict(eid="blaze", hp=160, label="Señor de las Llamas", color="gold", att={"scale": 2.5}),
+    "bestia_nether": dict(eid="zoglin", hp=180, label="Bestia del Nether", color="red", att={"scale": 1.8}),
+    "invocador": dict(eid="evoker", hp=120, label="Invocador Supremo", color="dark_red", mount="ravager"),
 }
 for n, kw in BOSSES.items():
     boss(n, **kw)
@@ -187,6 +220,12 @@ LOOT = {
     "reward_small": [2, [item("emerald", 8, 4, 10), item("iron_ingot", 4, 4, 8), item("experience_bottle", 4, 4, 8), item("golden_carrot", 3, 4, 8), item("diamond", 1)]],
     "reward_big": [3, [item("emerald", 8, 10, 24), item("diamond", 4, 1, 4), item("golden_apple", 3, 1, 2), item("experience_bottle", 4, 8, 16),
                        item("netherite_scrap", 1), item("ender_pearl", 3, 2, 4), item("totem_of_undying", 1)]],
+    # v3: extra por nivel de invasion
+    "reward_t2": [2, [item("iron_ingot", 6, 8, 16), item("gold_ingot", 5, 6, 12), item("diamond", 4, 2, 4), item("emerald", 6, 12, 20)]],
+    "reward_t3": [3, [item("diamond", 6, 3, 6), item("emerald", 6, 20, 32), item("netherite_scrap", 3, 1, 2), item("golden_apple", 3, 2, 3),
+                      item("enchanted_golden_apple", 1), item("totem_of_undying", 2)]],
+    # v3: eventos activos
+    "runner": [4, [item("emerald", 8, 8, 16), item("experience_bottle", 8, 8, 16), item("gold_ingot", 3, 4, 8), item("diamond", 1, 1, 2)]],
 }
 for n, (rolls, entries) in LOOT.items():
     W(f"data/{NS}/loot_table/{n}.json", {"type": "minecraft:chest", "pools": [{"rolls": rolls, "entries": entries}]})
