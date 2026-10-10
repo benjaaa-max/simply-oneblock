@@ -1,639 +1,826 @@
 #!/usr/bin/env python3
-"""Generador de so_arenas v1 — el Coliseo VorNeX (lo donde pasa).
+"""Generador de so_arenas v2 — el Coliseo VorNeX (lo donde pasa).
 
-Construye: coliseo ovalado 84x100 (exterior) con gradas, arcadas, 8 torres (80 de alto),
-lobby/tunel, NPCs; sistemas: viaje (/trigger arena, /trigger volver), practica por tiers
-con kit prestado, contratos con rangos ocultos (/trigger levelrank), anti-camping,
-mecanica de abandono y fuegos artificiales de victoria.
-Los enemigos vienen de so_events:api (mob/boss), retageados a so_ar_mob dentro del coliseo.
-Salida: datapacks/so-arenas + /mnt/documents/so_arenas-v1.zip (raiz limpia).
+Unica fuente del datapack datapacks/so-arenas (no editar los .mcfunction a mano).
+- Coliseo ovalado 84x100 centrado en -5000 96 -5000: foso, muro del foso, 8 filas de gradas
+  macizas, muralla con ventanas, 8 torres hasta y=170, tunel con reja y lobby cerrado.
+- Construccion blindada: forceload del area + pasos programados (schedule) para que cada
+  /fill caiga sobre chunks cargados, sin depender de la distancia de renderizado.
+- Viaje como so_crates: /trigger arena (guarda donde estabas) y /trigger volver (te devuelve).
+- Menu por 4 vias: aldeanos con hitbox de interaccion (Java), carteles con clic (Java y
+  Bedrock), placas del piso (Java y Bedrock), dialogos y menu del chat.
+- Mercaderes reales en el lobby (comercio vanilla, funciona en Java y Bedrock).
+- Enemigos de so_events:api/mob, retageados al instante a so_ar_mob (sin so_ev_mob) para que
+  la limpieza de eventos de la isla no los toque y viceversa.
+Salida: datapacks/so-arenas + /mnt/documents/so_arenas-v2.zip (raiz limpia).
 """
 import json, os, shutil, zipfile, math, random
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "datapacks", "so-arenas")
 NS = "so_arenas"
-CX, CZ, FLOOR = -5000, -5000, 96   # piso del foso (gradas arrancan en 97)
-AX, BZ = 42, 50                    # semiejes: exterior 84 x 100
-TOP_Y = 170                        # torres
+CX, CZ = -5000, -5000
+G = 95                 # bloque del piso; se camina en y=96
+AX, BZ = 42, 50        # semiejes exteriores: 84 x 100
+TOP_Y = 170
+R_PIT, R_PITWALL, R_GRADA, R_WALL = 0.62, 0.65, 0.93, 1.0
+LZ0, LZ1 = CZ + BZ + 10, CZ + BZ + 30      # lobby: muro norte / muro sur
+LX = 11                                   # lobby: medio ancho (muros en CX±11)
+ARR = (CX, 96, LZ1 - 6)                   # punto de llegada
+PIT_IN = (CX, 96, CZ + 14)                # entrada al foso
+# caja del foso (participantes) y de la zona completa (coliseo + lobby)
+PIT_BOX = f"x={CX - 27},y=90,z={CZ - 32},dx=54,dy=50,dz=64"
+ZONE_BOX = f"x={CX - 50},y=80,z={CZ - 58},dx=100,dy=130,dz={LZ1 - (CZ - 58) + 4}"
+MOB_BOX = f"x={CX - 32},y=88,z={CZ - 38},dx=64,dy=60,dz=76"
 shutil.rmtree(ROOT, ignore_errors=True)
 random.seed(7)
+
 
 def W(rel, obj):
     p = os.path.join(ROOT, rel); os.makedirs(os.path.dirname(p), exist_ok=True)
     with open(p, "w", encoding="utf-8") as f:
         f.write(obj if isinstance(obj, str) else json.dumps(obj, ensure_ascii=False, indent=2))
 
+
 def F(name, lines):
     W(f"data/{NS}/function/{name}.mcfunction", "\n".join(lines) + "\n")
+
 
 def T(*parts):
     return json.dumps(list(parts) if len(parts) > 1 else parts[0], ensure_ascii=False)
 
+
 PFX = {"text": "[Arena] ", "color": "gold", "bold": True}
+
+
 def say(sel, text, color="yellow"):
     return f"tellraw {sel} {T(PFX, {'text': text, 'color': color, 'bold': False})}"
 
-IN = "@a[tag=so_ar_in]"
-def norm(dx, dz): return (dx / AX) ** 2 + (dz / BZ) ** 2
-def dzmax(dx, r):
-    a = 1 - (dx / AX) ** 2 / (r ** 2)
-    return int(BZ * r * math.sqrt(a)) if a > 0 else 0
 
-FLOOR_MIX = ["minecraft:sandstone", "minecraft:packed_mud", "minecraft:coarse_dirt",
-             "minecraft:polished_tuff", "minecraft:sandstone_bricks"]
-GRAD_MIX = ["minecraft:stone_bricks", "minecraft:polished_deepslate", "minecraft:sandstone_bricks"]
+IN = "@a[tag=so_ar_in]"
+ZONE = "@a[tag=so_ar_zone]"
+LOAN = "*[minecraft:custom_data~{so_arena_loan:1b}]"
 
 # ---------------------------------------------------------------- pack
-W("pack.mcmeta", {"pack": {"description": "Simply OneBlock Expansion - Arenas (coliseo, practica y contratos)",
+W("pack.mcmeta", {"pack": {"description": "Simply OneBlock Expansion - Arenas v2 (/trigger arena)",
                            "min_format": [107, 1], "max_format": [107, 1]}})
 W("data/minecraft/tags/function/load.json", {"replace": False, "values": [f"{NS}:load"]})
 W("data/minecraft/tags/function/tick.json", {"replace": False, "values": [f"{NS}:tick"]})
+
 
 # ---------------------------------------------------------------- loot
 def item(name, w, lo=1, hi=1):
     e = {"type": "minecraft:item", "name": f"minecraft:{name}", "weight": w}
     if hi > 1: e["functions"] = [{"function": "minecraft:set_count", "count": {"min": lo, "max": hi}}]
     return e
+
+
 W(f"data/{NS}/loot_table/practice.json", {"type": "minecraft:chest", "pools": [{"rolls": 2, "entries": [
     item("experience_bottle", 6, 4, 8), item("emerald", 5, 2, 6), item("bread", 4, 2, 6), item("iron_ingot", 3, 1, 4)]}]})
 FRAG = {"type": "minecraft:item", "name": "minecraft:echo_shard", "weight": 1,
-        "functions": [{"function": "minecraft:set_name", "name": {"text": "Fragmento de Victoria", "color": "gold", "italic": False}}]}
+        "functions": [{"function": "minecraft:set_name", "target": "item_name",
+                       "name": {"text": "Fragmento de Victoria", "color": "gold"}}]}
 W(f"data/{NS}/loot_table/contract.json", {"type": "minecraft:chest", "pools": [{"rolls": 3, "entries": [
     item("experience_bottle", 6, 8, 16), item("emerald", 6, 8, 18), item("diamond", 2, 1, 2), FRAG]}]})
 
-# ---------------------------------------------------------------- load
+# ---------------------------------------------------------------- load / tick
+TRIGGERS = ["arena", "volver", "arena_pr", "arena_con", "levelrank"]
 F("load", [
     "scoreboard objectives add so_ar dummy",
-    "scoreboard objectives add arena trigger",
-    "scoreboard objectives add arena_pr trigger",
-    "scoreboard objectives add arena_con trigger",
-    "scoreboard objectives add levelrank trigger",
+    *[f"scoreboard objectives add {t} trigger" for t in TRIGGERS],
     "scoreboard objectives add so_ar_air dummy",
     "scoreboard objectives add so_ar_rank dummy",
+    "scoreboard objectives add so_ar_x dummy", "scoreboard objectives add so_ar_y dummy",
+    "scoreboard objectives add so_ar_z dummy", "scoreboard objectives add so_ar_saved dummy",
     "execute unless score #enabled so_ar matches 0..1 run scoreboard players set #enabled so_ar 1",
-    "execute unless score #mode so_ar matches 0..4 run scoreboard players set #mode so_ar 0",
-    "execute unless score #beat so_ar matches 0.. run scoreboard players set #beat so_ar 0",
+    "execute unless score #mode so_ar matches 0..3 run scoreboard players set #mode so_ar 0",
+    "scoreboard players set #beat so_ar 0",
+    "scoreboard players set #twentyfive so_ar 25",
+    "scoreboard players set #anticamp so_ar 1",
     f"bossbar add {NS}:fight {T({'text': 'Coliseo'})}",
-    f"bossbar set {NS}:fight color red", f"bossbar set {NS}:fight max 100",
-    f"bossbar set {NS}:fight visible false",
-    f"tellraw @a[tag=oneblock_admin] {T({'text': '[SO Arenas] ', 'color': 'gold'}, {'text': 'cargado. Ayuda: /function so_arenas:admin/help', 'color': 'gray'})}",
+    f"bossbar set {NS}:fight max 100", f"bossbar set {NS}:fight visible false",
+    f"tellraw @a[tag=oneblock_admin] {T({'text': '[SO Arenas] ', 'color': 'gold'}, {'text': 'v2 cargado. Ayuda: /function so_arenas:admin/help', 'color': 'gray'})}",
 ])
 F("tick", [
     "scoreboard players add #beat so_ar 1",
-    f"execute as @a[scores={{arena=1..}}] run function {NS}:lib/dispatch",
+    f"execute as @a[scores={{arena=1..}}] at @s run function {NS}:lib/go",
+    f"execute as @a[scores={{volver=1..}}] at @s run function {NS}:lib/volver",
+    f"execute as @a[scores={{arena_pr=1..}}] at @s run function {NS}:lib/start_pr",
+    f"execute as @a[scores={{arena_con=1..}}] at @s run function {NS}:lib/start_con",
+    f"execute as @a[scores={{levelrank=1..}}] run function {NS}:lib/rank",
+    *[f"scoreboard players reset @a {t}" for t in TRIGGERS],
+    *[f"scoreboard players enable @a {t}" for t in TRIGGERS],
+    f"execute if score #beat so_ar matches 10 run function {NS}:lib/pads",
+    f"execute if score #beat so_ar matches 20.. run function {NS}:lib/pads",
     f"execute if score #beat so_ar matches 20.. run function {NS}:lib/second",
     "execute if score #beat so_ar matches 20.. run scoreboard players set #beat so_ar 0",
 ])
 F("lib/second", [
-    "# Marca de presencia dentro del coliseo (por segundo).",
-    "tag @a[tag=so_ar_in] remove so_ar_in",
-    f"execute as @a[x={CX - AX - 4},y={FLOOR - 2},z={CZ - BZ - 4},dx={2 * AX + 8},dy={TOP_Y - FLOOR},dz={2 * BZ + 8}] run tag @s add so_ar_in",
-    "# Retagea los mobs de so_events que quedaron dentro del coliseo para no pisar eventos de la isla.",
-    f'execute as @e[tag=so_ev_mob,tag=!so_ar_mob,x={CX - AX},y={FLOOR - 1},z={CZ - BZ},dx={2 * AX},dy={TOP_Y - FLOOR},dz={2 * BZ}] run tag @s add so_ar_mob',
-    "execute as @a[scores={levelrank=1..}] run function so_arenas:lib/rank",
-    "scoreboard players reset @a levelrank", "scoreboard players enable @a levelrank",
+    "# Zona: quien sale (o muere y reaparece afuera) pierde marcas y kit; quien entra volando queda marcado.",
+    f"execute as {ZONE} at @s unless dimension minecraft:overworld run function {NS}:lib/leave",
+    f"execute as {ZONE} at @s unless entity @s[{ZONE_BOX}] run function {NS}:lib/leave",
+    f"execute as @a[tag=!so_ar_zone,{ZONE_BOX}] at @s if dimension minecraft:overworld run function {NS}:lib/enter_zone",
+    "# Participantes: quienes están dentro del foso.",
+    "tag @a remove so_ar_in",
+    f"execute as @a[tag=so_ar_zone,{PIT_BOX}] run tag @s add so_ar_in",
+    "# Kits prestados tirados al piso: se borran (no se exportan).",
+    f"kill @e[type=minecraft:item,{ZONE_BOX},nbt={{Item:{{components:{{\"minecraft:custom_data\":{{so_arena_loan:1b}}}}}}}}]",
     f"execute if score #mode so_ar matches 1 run function {NS}:mode/practice/second",
     f"execute if score #mode so_ar matches 2 run function {NS}:mode/caza/second",
+    f"execute if score #mode so_ar matches 4 run function {NS}:mode/caza2/second",
     f"execute if score #mode so_ar matches 3 run function {NS}:mode/defensa/second",
-    f"execute if score #mode so_ar matches 1..3 run function {NS}:lib/watch",
-    f"execute unless score #mode so_ar matches 1..3 run function {NS}:lib/idle",
+    f"execute if score #mode so_ar matches 1.. if score #anticamp so_ar matches 1 run function {NS}:lib/anticamp",
+    f"execute if score #mode so_ar matches 1.. unless entity {IN} run function {NS}:lib/vacio",
+    f"execute if score #mode so_ar matches 0 as @a[tag=so_ar_zone,tag=!so_ar_in] run title @s actionbar {T({'text': 'Menú: aldeanos, carteles, placas del piso o /trigger arena', 'color': 'gray'})}",
 ])
 
-# ---------------------------------------------------------------- viaje
+# ---------------------------------------------------------------- viaje (igual que so_crates)
 F("lib/go", [
+    f"execute if score @s arena matches 2 run return run function {NS}:lib/volver",
     f'execute if score #enabled so_ar matches 0 run return run {say("@s", "La arena está desactivada por un administrador.", "red")}',
-    f"execute if entity @s[tag=so_ar_in] run return run dialog show @s {NS}:main",
-    f'tp @s {CX} {FLOOR + 2} {CZ + 62}',
+    f"execute if entity @s[tag=so_ar_zone] run return run function {NS}:lib/menu",
+    f'execute unless dimension minecraft:overworld run return run {say("@s", "Solo podés viajar desde el mundo normal (no desde el Nether, el End ni las fases).", "red")}',
+    "execute store result score @s so_ar_x run data get entity @s Pos[0]",
+    "execute store result score @s so_ar_y run data get entity @s Pos[1]",
+    "execute store result score @s so_ar_z run data get entity @s Pos[2]",
+    "scoreboard players set @s so_ar_saved 1",
+    f"tp @s {ARR[0]} {ARR[1]} {ARR[2]} 180 0",
+    f"function {NS}:lib/enter_zone",
     "effect give @s minecraft:resistance 3 4 true",
     f'title @s title {T({"text": "Coliseo VorNeX", "color": "gold", "bold": True})}',
-    f'subtitle @s subtitle {T({"text": "Habla con los aldeanos o abre el menú.", "color": "gray"})}',
+    f'title @s subtitle {T({"text": "Aldeanos, carteles o placas del piso", "color": "gray"})}',
     "playsound minecraft:entity.enderman.teleport master @s ~ ~ ~ 1 1",
-    f"dialog show @s {NS}:main",
+    f"function {NS}:lib/menu",
+])
+F("lib/enter_zone", [
+    "tag @s add so_ar_zone",
+    "execute unless entity @s[tag=oneblock_admin] if entity @s[gamemode=survival] run tag @s add so_ar_gm",
+    "execute if entity @s[tag=so_ar_gm] run gamemode adventure @s",
+])
+F("lib/leave", [
+    "tag @s remove so_ar_zone", "tag @s remove so_ar_in", "tag @s remove so_ar_pad",
+    f"clear @s {LOAN}",
+    "tag @s remove so_ar_loan",
+    "execute if entity @s[tag=so_ar_gm,gamemode=adventure] run gamemode survival @s",
+    "tag @s remove so_ar_gm",
+    "scoreboard players reset @s so_ar_air",
 ])
 F("lib/volver", [
-    f'execute if score #mode so_ar matches 1..3 if entity @s[tag=so_ar_in] run return run function {NS}:lib/abandono',
-    f'tp @s 0 70 2',
+    f'execute unless entity @s[tag=so_ar_zone] run return run {say("@s", "Este comando solo funciona dentro del Coliseo. Para ir: /trigger arena", "red")}',
+    f"execute if score #mode so_ar matches 1.. if entity @s[tag=so_ar_in] run function {NS}:lib/abandono",
+    f"function {NS}:lib/leave",
+    "execute store result storage so_arenas:tmp x int 1 run scoreboard players get @s so_ar_x",
+    "execute store result storage so_arenas:tmp y int 1 run scoreboard players get @s so_ar_y",
+    "execute store result storage so_arenas:tmp z int 1 run scoreboard players get @s so_ar_z",
+    f"execute if score @s so_ar_saved matches 1 run function {NS}:lib/back_tp with storage so_arenas:tmp",
+    "execute unless score @s so_ar_saved matches 1 in minecraft:overworld run tp @s 0 65 0",
+    "scoreboard players reset @s so_ar_saved",
     "effect give @s minecraft:slow_falling 5 0 true",
-    "effect give @s minecraft:resistance 3 4 true",
+    "execute at @s run playsound minecraft:entity.enderman.teleport master @s ~ ~ ~ 1 1",
     f"title @s actionbar {T({'text': 'De vuelta a la isla.', 'color': 'green'})}",
 ])
+F("lib/back_tp", ["$execute in minecraft:overworld run tp @s $(x) $(y) $(z)"])
 F("lib/abandono", [
-    "# El jugador huyó en pleno desafío.",
-    f"function {NS}:lib/end",
+    "# Huyó en pleno desafío: pierde recompensa y kit. El resto sigue peleando.",
     f'title @s title {T({"text": "¡ABANDONASTE,", "color": "red", "bold": True}, {"text": " CAGÓN!", "color": "dark_red", "bold": True})}',
     "title @s times 0 60 20",
-    "playsound minecraft:entity.villager.no hostile @s ~ ~ ~ 1 0.7",
-    "playsound minecraft:ui.toast.challenge_failed master @s ~ ~ ~ 1 0.9",
-    f'execute positioned {CX} {FLOOR} {CZ} run summon minecraft:wind_charge ~ ~2 ~',
-    f'execute positioned {CX} {FLOOR} {CZ} as @s run tellraw @s {T(PFX, {"text": "Ya podés volver a la isla con ", "color": "gray", "bold": False}, {"text": "/trigger volver", "color": "yellow", "bold": True})}',
+    "playsound minecraft:entity.villager.no master @s ~ ~ ~ 1 0.7",
+    say("@a[tag=so_ar_zone]", "Un gladiador abandonó el desafío.", "red"),
 ])
-F("lib/end", [
-    "# Fin de desafio: limpia mobs del coliseo, núcleo, barras y kits prestados.",
-    "tp @e[tag=so_ar_mob] -5000 -300 -5000",
-    "kill @e[tag=so_ar_mob]",
-    f'setblock {CX} {FLOOR} {CZ} minecraft:air',
-    f"bossbar set {NS}:fight visible false",
-    "tag @a[tag=so_ar_loan] remove so_ar_loan",
-    "execute as @a[tag=so_ar_loan] run clear @s stone_sword[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s leather_helmet[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s leather_chestplate[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s leather_leggings[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s leather_boots[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s iron_chestplate[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s bow[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s arrow[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s bread[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s crossbow[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s iron_sword[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s diamond_sword[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s golden_apple[minecraft:custom_data={so_arena_loan:1b}]",
-    "execute as @a[tag=so_ar_loan] run clear @s splash_potion[minecraft:custom_data={so_arena_loan:1b}]",
-    "tag @a[tag=so_ar_loan] remove so_ar_loan",
-    "scoreboard players set #mode so_ar 0", "scoreboard players set #wave so_ar 0",
-    "scoreboard players set #t so_ar 0", "scoreboard players set #anticamp so_ar 1",
-    "scoreboard players reset @a so_ar_air",
+F("lib/menu", [
+    f"dialog show @s {NS}:main",
+    f"function {NS}:lib/chat_main",
 ])
-F("lib/watch", [
-    "# Nadie vivo dentro del coliseo con desafío activo = fin sin recompensa.",
-    f"execute unless entity {IN} run function {NS}:lib/vacio",
+
+
+# ---------------------------------------------------------------- menú del chat (Java)
+def link(label, cmd, color, tip):
+    return {"text": label, "color": color, "click_event": {"action": "run_command", "command": cmd},
+            "hover_event": {"action": "show_text", "value": tip}}
+
+
+F("lib/chat_main", [
+    f"tellraw @s {T({'text': '━━━ Coliseo VorNeX ━━━', 'color': 'gold', 'bold': True})}",
+    f"tellraw @s {T({'text': ' Práctica: ', 'color': 'gray'}, *[x for t in range(1, 5) for x in (link(f'[T{t}]', f'/trigger arena_pr set {t}', 'yellow', f'Tier {t} con kit prestado'), link(f'[T{t}+propio] ', f'/trigger arena_pr set {t + 10}', 'gold', f'Tier {t} con tu equipo'))])}",
+    f"tellraw @s {T({'text': ' Contratos: ', 'color': 'gray'}, link('[Caza] ', '/trigger arena_con set 1', 'aqua', '15 bajas objetivo (400+)'), link('[Oleadas] ', '/trigger arena_con set 2', 'aqua', '3 oleadas (400+)'), link('[Defensa] ', '/trigger arena_con set 3', 'aqua', 'Proteger el Núcleo (2.501+)'))}",
+    f"tellraw @s {T({'text': ' ', 'color': 'gray'}, link('[Unirse al desafío] ', '/trigger arena_con set 9', 'green', 'Entrar al foso si hay un desafío en curso'), link('[Mi rango] ', '/trigger levelrank', 'gray', 'Rango oculto'), link('[Volver a la isla]', '/trigger volver', 'red', 'Salir (si hay desafío: abandono)'))}",
 ])
-F("lib/vacio", [
-    f"function {NS}:lib/end",
-    say("@a", "El desafío terminó: ya no quedaba nadie en el coliseo.", "gray"),
+
+# ---------------------------------------------------------------- placas del piso (Java y Bedrock)
+PADS = [  # (x, acción, etiqueta, color de concreto)
+    (CX - 3, "pad_pr", "Práctica", "yellow"),
+    (CX - 1, "pad_con", "Contratos", "light_blue"),
+    (CX + 1, "pad_join", "Unirse", "lime"),
+    (CX + 3, "pad_back", "Volver", "red"),
+]
+PAD_Z = LZ0 + 9
+F("lib/pads", [
+    f"execute as @a[tag=so_ar_pad] at @s unless block ~ ~ ~ minecraft:light_weighted_pressure_plate run tag @s remove so_ar_pad",
+    *[f"execute as @a[tag=so_ar_zone,tag=!so_ar_pad,x={x},y=96,z={PAD_Z},dx=0,dy=0,dz=0] run function {NS}:lib/{fn}" for x, fn, _, _ in PADS],
 ])
-F("lib/idle", [
-    "# Pista en el lobby.",
-    f'execute as @a[x={CX - 7},y={FLOOR - 1},z={CZ + 60},dx=14,dy=8,dz=20] run title @s actionbar {T({"text": "Aldeanos del lobby: menú táctil o /trigger arena", "color": "gray"})}',
-])
+F("lib/pad_pr", ["tag @s add so_ar_pad", f"dialog show @s {NS}:practice", f"function {NS}:lib/chat_main",
+                 "playsound minecraft:block.note_block.pling master @s ~ ~ ~ 1 1.4"])
+F("lib/pad_con", ["tag @s add so_ar_pad", f"dialog show @s {NS}:contracts", f"function {NS}:lib/chat_main",
+                  "playsound minecraft:block.note_block.pling master @s ~ ~ ~ 1 1.4"])
+F("lib/pad_join", ["tag @s add so_ar_pad", f"function {NS}:lib/join"])
+F("lib/pad_back", ["tag @s add so_ar_pad", f"function {NS}:lib/volver"])
+
+# ---------------------------------------------------------------- aldeanos con menú (hitbox de interacción)
+NPCS = [  # (id, nombre, color, x, z, acción)
+    ("main", "Guía del Coliseo", "gold", CX, LZ1 - 2, [f"function {NS}:lib/menu"]),
+    ("pr", "Maestro de Armas", "yellow", CX - 7, LZ0 + 4, [f"dialog show @s {NS}:practice", f"function {NS}:lib/chat_main"]),
+    ("con", "Comandante de Contratos", "aqua", CX + 7, LZ0 + 4, [f"dialog show @s {NS}:contracts", f"function {NS}:lib/chat_main"]),
+]
+for nid, _, _, _, _, acts in NPCS:
+    W(f"data/{NS}/advancement/npc/{nid}.json", {
+        "criteria": {"click": {"trigger": "minecraft:player_interacted_with_entity", "conditions": {
+            "entity": [{"condition": "minecraft:entity_properties", "entity": "this",
+                        "predicate": {"nbt": f"{{Tags:[\"so_ar_npc_{nid}\"]}}"}}]}}},
+        "rewards": {"function": f"{NS}:npc/{nid}"}})
+    F(f"npc/{nid}", [f"advancement revoke @s only {NS}:npc/{nid}",
+                     "playsound minecraft:entity.villager.yes master @s ~ ~ ~ 1 1", *acts])
+
+# mercaderes reales: comercio vanilla
+def offer(cost, sid, count=1, comp=None, uses=999999):
+    s = f'{{id:"minecraft:{sid}",count:{count}' + (f",components:{{{comp}}}" if comp else "") + "}"
+    return f'{{buy:{{id:"minecraft:emerald",count:{cost}}},sell:{s},maxUses:{uses},rewardExp:0b}}'
+
+
+def potion(cost, item_id, p):
+    return offer(cost, item_id, 1, f'"minecraft:potion_contents":{{potion:"minecraft:{p}"}}')
+
+
+TRADERS = [
+    ("Intendente del Coliseo", "green", CX - 7, LZ1 - 4, [
+        offer(2, "arrow", 16), offer(3, "spectral_arrow", 8), offer(2, "cooked_beef", 8),
+        offer(8, "golden_apple", 2), potion(4, "splash_potion", "strong_healing"),
+        potion(5, "splash_potion", "regeneration"), potion(6, "splash_potion", "strength"),
+        potion(4, "splash_potion", "fire_resistance"), potion(4, "splash_potion", "swiftness"),
+    ]),
+    ("Armero del Coliseo", "red", CX + 7, LZ1 - 4, [
+        offer(4, "shield"), offer(24, "totem_of_undying"), offer(20, "iron_golem_spawn_egg"),
+        offer(8, "snow_golem_spawn_egg"), offer(8, "ender_pearl"), offer(3, "firework_rocket", 8),
+        offer(6, "crossbow"), offer(5, "bow"), offer(1, "snowball", 16),
+    ]),
+]
+
+
+def npc_summons():
+    out = [f"kill @e[tag=so_ar_npc,{ZONE_BOX}]"]
+    for nid, name, color, x, z, _ in NPCS:
+        out.append(f'summon minecraft:villager {x} 96 {z} {{Tags:["so_ar_npc"],NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Silent:1b,CustomNameVisible:1b,CustomName:{{text:"{name}",color:"{color}",bold:true}}}}')
+        out.append(f'summon minecraft:interaction {x} 96 {z} {{Tags:["so_ar_npc","so_ar_npc_{nid}"],width:1.0f,height:2.1f,response:1b}}')
+    for name, color, x, z, offers in TRADERS:
+        out.append(f'summon minecraft:wandering_trader {x} 96 {z} {{Tags:["so_ar_npc"],NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,DespawnDelay:0,CustomNameVisible:1b,CustomName:{{text:"{name}",color:"{color}",bold:true}},Offers:{{Recipes:[{",".join(offers)}]}}}}')
+    return out
+
+
+# ---------------------------------------------------------------- rango
 F("lib/rank", [
     "# Rangos ocultos: solo se ven con /trigger levelrank.",
-    'scoreboard players operation #c so_ar = @s so_ar_rank',
-    f'execute if score #c so_ar matches ..2 run tellraw @s {T(PFX, {"text": "Rango: ", "color": "gray", "bold": False}, {"text": "Recluta (C)", "color": "white", "bold": True}, {"text": " · Contratos completados: ", "color": "gray"}, {"score": {"name": "@s", "objective": "so_ar_rank"}, "color": "white"})}',
-    f'execute if score #c so_ar matches 3..5 run tellraw @s {T(PFX, {"text": "Rango: ", "color": "gray", "bold": False}, {"text": "Veterano (B)", "color": "green", "bold": True}, {"text": " · Contratos completados: ", "color": "gray"}, {"score": {"name": "@s", "objective": "so_ar_rank"}, "color": "white"})}',
-    f'execute if score #c so_ar matches 6..9 run tellraw @s {T(PFX, {"text": "Rango: ", "color": "gray", "bold": False}, {"text": "Élite (A)", "color": "aqua", "bold": True}, {"text": " · Contratos completados: ", "color": "gray"}, {"score": {"name": "@s", "objective": "so_ar_rank"}, "color": "white"})}',
-    f'execute if score #c so_ar matches 10.. run tellraw @s {T(PFX, {"text": "Rango: ", "color": "gray", "bold": False}, {"text": "Leyenda (S)", "color": "gold", "bold": True}, {"text": " · Contratos completados: ", "color": "gray"}, {"score": {"name": "@s", "objective": "so_ar_rank"}, "color": "white"})}',
-    say("@s", "Próximo rango: 3 / 6 / 10 contratos completados según el nivel.", "gray"),
+    "scoreboard players operation #c so_ar = @s so_ar_rank",
+    "execute unless score #c so_ar matches 0.. run scoreboard players set #c so_ar 0",
+    *[f'execute if score #c so_ar matches {rng} run tellraw @s {T(PFX, {"text": "Rango: ", "color": "gray", "bold": False}, {"text": n, "color": c, "bold": True}, {"text": " · Contratos cumplidos: ", "color": "gray", "bold": False}, {"score": {"name": "#c", "objective": "so_ar"}, "color": "white"})}'
+      for rng, n, c in [("..2", "Recluta (C)", "white"), ("3..5", "Veterano (B)", "green"), ("6..9", "Élite (A)", "aqua"), ("10..", "Leyenda (S)", "gold")]],
+    say("@s", "Próximos rangos: 3 / 6 / 10 contratos cumplidos.", "gray"),
 ])
 
-# ---------------------------------------------------------------- despacho de triggers
-F("lib/dispatch", [
-    f"execute if score @s arena matches 1 run function {NS}:lib/go",
-    f"execute if score @s arena matches 2 run function {NS}:lib/volver",
-    f"execute if score @s arena_pr matches 1..14 run function {NS}:lib/start_pr",
-    f"execute if score @s arena_con matches 1..3 run function {NS}:lib/start_con",
-    "scoreboard players reset @a arena", "scoreboard players reset @a arena_pr", "scoreboard players reset @a arena_con",
-    "scoreboard players enable @a arena", "scoreboard players enable @a arena_pr",
-    "scoreboard players enable @a arena_con", "scoreboard players enable @a levelrank",
-])
-
-# ---------------------------------------------------------------- lectores de progreso
+# ---------------------------------------------------------------- progreso
 F("lib/blocks", [
     "scoreboard players set #blk so_ar 0",
     "execute if score fake_player ib_minedcount matches -2147483648.. run scoreboard players operation #blk so_ar = fake_player ib_minedcount",
     "execute if score #blocks so_core matches -2147483648.. run scoreboard players operation #blk so_ar = #blocks so_core",
 ])
-TIERS = [  # tier: (nombre, mobs de oleada, bloques minimos, kit)
-    (1, "Novato", ["zombie", "skeleton", "spider", "husk"], 0, "cuero"),
-    (2, "Veterano", ["zombie_armor", "skeleton_armor", "piglin", "cave_spider", "slime_big"], 3334, "hierro"),
-    (3, "Élite", ["vindicator", "pillager", "witch", "drowned_trident", "spider_big"], 7501, "diamante"),
-    (4, "Maestro", ["enderman", "breeze", "zombie_ominous", "skeleton_ominous", "bogged", "wither_skeleton"], 15000, "avanzado"),
+TIERS = [  # (tier, nombre, mobs, bloques mínimos)
+    (1, "Novato", ["zombie", "skeleton", "spider", "husk"], 0),
+    (2, "Veterano", ["zombie_armor", "skeleton_armor", "piglin", "cave_spider", "slime_big"], 3334),
+    (3, "Élite", ["vindicator", "pillager", "witch", "drowned_trident", "spider_big"], 7501),
+    (4, "Maestro", ["enderman", "breeze", "zombie_ominous", "skeleton_ominous", "bogged", "wither_skeleton"], 15000),
 ]
-def mob_fn(m): return f'so_events:api/mob {{id:"{m}"}}'
+
+
+def spawn(m, t=0):
+    return f'function {NS}:lib/spawn {{m:"{m}",t:{t}}}'
+
+
+def busy_guard():
+    return [
+        f'execute unless entity @s[tag=so_ar_zone] run return run {say("@s", "Primero entrá al Coliseo con /trigger arena.", "red")}',
+        f'execute unless score #mode so_ar matches 0 run return run {say("@s", "Ya hay un desafío en curso. Podés unirte con el botón Unirse.", "red")}',
+    ]
+
 
 F("lib/start_pr", [
-    f"execute unless score #mode so_ar matches 0 run return run {say('@s', 'Ya hay un desafío en curso en el coliseo.', 'red')}",
+    *busy_guard(),
     f"function {NS}:lib/blocks",
-    f"execute unless score #blk so_ar matches 3334.. if score @s arena_pr matches 2.. if score @s arena_pr matches 12.. run return run {say('@s', 'Tier Veterano se desbloquea a los 3.334 bloques.', 'red')}",
-    f"execute unless score #blk so_ar matches 7501.. if score @s arena_pr matches 3..13 run return run {say('@s', 'Tier Élite se desbloquea a los 7.501 bloques.', 'red')}",
-    f"execute unless score #blk so_ar matches 15000.. if score @s arena_pr matches 4..14 run return run {say('@s', 'Tier Maestro se desbloquea en el After Phase (15.000).', 'red')}",
-    "# Identifica tier (1-4) y si usa kit prestado (1-4) o equipo propio (11-14).",
     "scoreboard players operation #tier so_ar = @s arena_pr",
-    "execute if score @s arena_pr matches 11..14 run scoreboard players remove #tier so_ar 10",
+    "execute if score #tier so_ar matches 11..14 run scoreboard players remove #tier so_ar 10",
+    "scoreboard players set #loan so_ar 1",
     "execute if score @s arena_pr matches 11..14 run scoreboard players set #loan so_ar 0",
-    "execute unless score @s arena_pr matches 11..14 run scoreboard players set #loan so_ar 1",
-    "scoreboard players reset @s arena_pr",
-    f'execute if score #loan so_ar matches 1 run function {NS}:lib/kit',
-    f'execute positioned {CX} {FLOOR} {CZ} run function {NS}:lib/enter',
-    f"scoreboard players set #mode so_ar 1",
-    "scoreboard players set #wave so_ar 0", "scoreboard players set #t so_ar 0",
+    f'execute unless score #tier so_ar matches 1..4 run return run {say("@s", "Opción de práctica inválida.", "red")}',
+    *[f'execute if score #tier so_ar matches {t} unless score #blk so_ar matches {thr}.. run return run {say("@s", f"El Tier {n} se desbloquea a los {thr:,} bloques.".replace(",", "."), "red")}'
+      for t, n, _, thr in TIERS if thr > 0],
+    f"execute if score #loan so_ar matches 1 run function {NS}:lib/kit",
+    f'execute if score #loan so_ar matches 0 run {say("@s", "Entrás con tu propio equipo: si morís, tus cosas quedan en el foso.", "yellow")}',
+    f"function {NS}:lib/enter_pit",
+    "scoreboard players set #mode so_ar 1",
+    "scoreboard players set #wave so_ar 0", "scoreboard players set #t so_ar 0", "scoreboard players set #anticamp so_ar 1",
     f'bossbar set {NS}:fight name {T({"text": "Práctica", "color": "yellow"})}',
     f"bossbar set {NS}:fight color yellow", f"bossbar set {NS}:fight max 2", f"bossbar set {NS}:fight value 0",
     f"bossbar set {NS}:fight players {IN}", f"bossbar set {NS}:fight visible true",
-    f'execute as {IN} run title @s title {T({"text": "¡Práctica!", "color": "yellow", "bold": True})}',
-    say("@a", "La práctica comienza: 2 oleadas. ¡Golpe, esquiva y sobreviví!", "yellow"),
+    f'title @s title {T({"text": "¡Práctica!", "color": "yellow", "bold": True})}',
+    say(ZONE, "La práctica comienza: 2 oleadas. ¡Golpeá, esquivá y sobreviví!", "yellow"),
     f"function {NS}:mode/practice/wave",
 ])
+KIT = {
+    1: ["stone_sword", "leather_helmet", "leather_chestplate", "leather_leggings", "leather_boots", ("bread", 8)],
+    2: ["iron_sword", "iron_chestplate", "leather_helmet", "leather_leggings", "bow", ("arrow", 24), ("bread", 8)],
+    3: ["diamond_sword", "iron_helmet", "iron_chestplate", "iron_leggings", "iron_boots", "shield", "bow", ("arrow", 32), ("golden_apple", 2)],
+    4: ["diamond_sword", "diamond_helmet", "diamond_chestplate", "iron_leggings", "iron_boots", "shield", "crossbow", ("arrow", 48), ("golden_apple", 3)],
+}
 F("lib/kit", [
-    "# Kit prestado según tier. Todos los ítems llevan marca so_arena_loan (no salen del coliseo).",
-    f'execute if score #tier so_ar matches 1 run give @s stone_sword[minecraft:custom_data={{so_arena_loan:1b}},minecraft:custom_name={{text:"Kit de Práctica",color:"yellow",italic:false}}]',
-    f'execute if score #tier so_ar matches 1 run give @s leather_helmet[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 1 run give @s leather_chestplate[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 1 run give @s leather_leggings[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 1 run give @s leather_boots[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 1 run give @s bread[minecraft:custom_data={{so_arena_loan:1b}}] 8',
-    f'execute if score #tier so_ar matches 2 run give @s iron_sword[minecraft:custom_data={{so_arena_loan:1b}},minecraft:custom_name={{text:"Kit de Práctica",color:"yellow",italic:false}}]',
-    f'execute if score #tier so_ar matches 2 run give @s iron_chestplate[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 2 run give @s leather_helmet[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 2 run give @s bread[minecraft:custom_data={{so_arena_loan:1b}}] 8',
-    f'execute if score #tier so_ar matches 2 run give @s bow[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 2 run give @s arrow[minecraft:custom_data={{so_arena_loan:1b}}] 24',
-    f'execute if score #tier so_ar matches 3 run give @s diamond_sword[minecraft:custom_data={{so_arena_loan:1b}},minecraft:custom_name={{text:"Kit de Práctica",color:"yellow",italic:false}}]',
-    f'execute if score #tier so_ar matches 3 run give @s iron_chestplate[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 3 run give @s iron_helmet[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 3 run give @s bow[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 3 run give @s arrow[minecraft:custom_data={{so_arena_loan:1b}}] 32',
-    f'execute if score #tier so_ar matches 3 run give @s golden_apple[minecraft:custom_data={{so_arena_loan:1b}}] 2',
-    f'execute if score #tier so_ar matches 4 run give @s diamond_sword[minecraft:custom_data={{so_arena_loan:1b}},minecraft:custom_name={{text:"Kit de Práctica",color:"yellow",italic:false}}]',
-    f'execute if score #tier so_ar matches 4 run give @s golden_apple[minecraft:custom_data={{so_arena_loan:1b}}] 2',
-    f'execute if score #tier so_ar matches 4 run give @s crossbow[minecraft:custom_data={{so_arena_loan:1b}}]',
-    f'execute if score #tier so_ar matches 4 run give @s arrow[minecraft:custom_data={{so_arena_loan:1b}}] 48',
+    "# Kit prestado: todo lleva so_arena_loan y se borra al salir, terminar o tirarlo.",
+    *[f'execute if score #tier so_ar matches {t} run give @s {(i if isinstance(i, str) else i[0])}[minecraft:custom_data={{so_arena_loan:1b}},minecraft:lore=[{{text:"Prestado por el Coliseo",color:"gray",italic:false}}]] {1 if isinstance(i, str) else i[1]}'
+      for t, items in KIT.items() for i in items],
     "tag @s add so_ar_loan",
-    f'execute if score #loan so_ar matches 1 run {say("@s", "Kit prestado entregado. Vuelve con el botón o /trigger volver al terminar (se retira solo).", "yellow")}',
-    f'execute if score #loan so_ar matches 0 run {say("@s", "Entrás con tu propio equipo: si morís, lo recuperás al volver a la isla.", "yellow")}',
+    say("@s", "Kit prestado entregado. Se retira solo al terminar o salir.", "yellow"),
 ])
-F("lib/enter", [
-    "# Coloca a los participantes en el foso.",
-    f'tp @a[tag=so_ar_loan] {CX} {FLOOR + 1} {CZ}',
-    f'tp @a[tag=!so_ar_loan,scores={{arena_pr=1..}}] {CX} {FLOOR + 1} {CZ}',
-    "effect give @s minecraft:resistance 2 3 true",
+F("lib/enter_pit", [
+    f"tp @s {PIT_IN[0]} {PIT_IN[1]} {PIT_IN[2]} 180 0",
+    "tag @s add so_ar_in",
+    "effect give @s minecraft:resistance 3 3 true",
+    "playsound minecraft:item.trident.thunder master @s ~ ~ ~ 0.6 1.2",
 ])
-# dejo tags limpios tras tp: los participantes ya llevan so_ar_loan o eran quienes iniciaron
+F("lib/join", [
+    f'execute unless entity @s[tag=so_ar_zone] run return run {say("@s", "Primero entrá al Coliseo con /trigger arena.", "red")}',
+    f'execute if score #mode so_ar matches 0 run return run {say("@s", "No hay ningún desafío en curso. Elegí una práctica o un contrato.", "gray")}',
+    f'execute if entity @s[tag=so_ar_in] run return run {say("@s", "Ya estás en el foso.", "gray")}',
+    f"function {NS}:lib/enter_pit",
+    f"bossbar set {NS}:fight players {IN}",
+    say(ZONE, "¡Un gladiador más se suma al desafío!", "green"),
+])
+
 F("mode/practice/wave", [
     "scoreboard players add #wave so_ar 1",
     f"execute store result bossbar {NS}:fight value run scoreboard players get #wave so_ar",
-    *[f"execute if score #tier so_ar matches {t} if score #wave so_ar matches {w} as {IN} at @s run function {NS}:lib/spawn_near {{m:\"{m}\"}}"
-      for t, _, mobs, _, _ in TIERS for w, reps in ((1, 1), (2, 2)) for m in mobs for _ in range(reps)],
-    f"playsound minecraft:entity.zombie.ambient hostile {IN} ~ ~ ~ 1 0.8",
+    *[f"execute if score #tier so_ar matches {t} if score #wave so_ar matches {w} run {spawn(m)}"
+      for t, _, mobs, _ in TIERS for w, reps in ((1, 1), (2, 2)) for m in mobs for _ in range(reps)],
+    f"execute as {IN} at @s run playsound minecraft:event.raid.horn master @s ~ ~ ~ 0.6 1.3",
 ])
 F("mode/practice/second", [
     "scoreboard players add #t so_ar 1",
     "execute store result score #alive so_ar if entity @e[tag=so_ar_mob]",
-    f"title {IN} actionbar {T({'text': 'Oleada ', 'color': 'yellow', 'bold': True}, {'score': {'name': '#wave', 'objective': 'so_ar'}, 'color': 'white'}, {'text': ' · enemigos: ', 'color': 'gray'}, {'score': {'name': '#alive', 'objective': 'so_ar'}, 'color': 'white'})}",
-    f"execute if score #alive so_ar matches 0 if score #wave so_ar matches 1 run function {NS}:mode/practice/wave",
-    f"execute if score #alive so_ar matches 0 if score #wave so_ar matches 2.. run function {NS}:lib/win_practice",
-    f"execute if score #t so_ar matches 300.. run function {NS}:lib/fail_practice",
+    f"title {IN} actionbar {T({'text': 'Oleada ', 'color': 'yellow', 'bold': True}, {'score': {'name': '#wave', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '/2 · enemigos: ', 'color': 'gray'}, {'score': {'name': '#alive', 'objective': 'so_ar'}, 'color': 'white'})}",
+    f"execute if score #t so_ar matches 3.. if score #alive so_ar matches 0 if score #wave so_ar matches 2.. run return run function {NS}:lib/win_practice",
+    f"execute if score #t so_ar matches 3.. if score #alive so_ar matches 0 if score #wave so_ar matches 1 run function {NS}:mode/practice/wave",
+    f"execute if score #t so_ar matches 300.. run function {NS}:lib/fail",
 ])
 F("lib/win_practice", [
     f"execute as {IN} run loot give @s loot {NS}:practice",
     f"title {IN} title {T({'text': '¡Victoria!', 'color': 'green', 'bold': True})}",
-    say("@a", "Práctica superada. La recompensa ya es de ustedes.", "green"),
+    say(ZONE, "Práctica superada. La recompensa ya es de ustedes.", "green"),
     f"function {NS}:lib/celebrar",
     f"function {NS}:lib/end",
-    say("@a", "Ya podés volver a la isla con /trigger volver.", "gray"),
 ])
-F("lib/fail_practice", [
-    say("@a", "La práctica se canceló por tiempo.", "gray"),
+F("lib/fail", [
+    say(ZONE, "Se acabó el tiempo: desafío cancelado sin recompensa.", "gray"),
+    f"function {NS}:lib/end",
+])
+F("lib/vacio", [
+    say(ZONE, "El desafío terminó: ya no quedaba nadie en el foso.", "gray"),
     f"function {NS}:lib/end",
 ])
 
-# ---------------------------------------------------------------- caza (contratos 1 y 2)
+# ---------------------------------------------------------------- contratos
+PHASES = [  # bloques mínimos: (objetivos, apoyo)
+    (0, ["zombie", "husk", "skeleton", "spider"], ["skeleton", "spider"]),
+    (3334, ["zombie_armor", "piglin", "bogged", "cave_spider"], ["witch", "skeleton_armor"]),
+    (7501, ["vindicator", "pillager", "witch", "drowned_trident"], ["spider_big", "skeleton_ominous"]),
+    (15000, ["zombie_ominous", "breeze", "bogged", "enderman"], ["wither_skeleton", "skeleton_ominous"]),
+]
+
+
+def by_phase(build):
+    """Genera líneas condicionadas por la fase (#blk)."""
+    out = []
+    for i, (thr, tg, sup) in enumerate(PHASES):
+        cond = f"execute if score #blk so_ar matches {thr}.."
+        if i < len(PHASES) - 1:
+            cond += f" unless score #blk so_ar matches {PHASES[i + 1][0]}.."
+        out += [f"{cond} run {c}" for c in build(tg, sup)]
+    return out
+
+
 F("lib/start_con", [
-    f"execute unless score #mode so_ar matches 0 run return run {say('@s', 'Ya hay un desafío en curso en el coliseo.', 'red')}",
+    f"execute if score @s arena_con matches 9 run return run function {NS}:lib/join",
+    *busy_guard(),
     f"function {NS}:lib/blocks",
-    f"execute unless score #blk so_ar matches 400.. run return run {say('@s', 'Los contratos se abren a los 400 bloques: preparate en la isla o entrá a la práctica.', 'red')}",
-    f"execute unless score #blk so_ar matches 2501.. if score @s arena_con matches 3 run return run {say('@s', 'El contrato de defensa se desbloquea a los 2.501 bloques.', 'red')}",
+    f'execute unless score #blk so_ar matches 400.. run return run {say("@s", "Los contratos se abren a los 400 bloques. Mientras, probá la práctica.", "red")}',
+    f'execute if score @s arena_con matches 3 unless score #blk so_ar matches 2501.. run return run {say("@s", "La Defensa del Núcleo se desbloquea a los 2.501 bloques.", "red")}',
     "scoreboard players operation #con so_ar = @s arena_con",
-    "scoreboard players reset @s arena_con",
+    f"execute unless score #con so_ar matches 1..3 run return run {say('@s', 'Contrato inválido.', 'red')}",
+    f"function {NS}:lib/enter_pit",
+    "scoreboard players set #t so_ar 0", "scoreboard players set #wave so_ar 0",
+    "scoreboard players set #spawned so_ar 0", "scoreboard players set #anticamp so_ar 1",
+    f"bossbar set {NS}:fight players {IN}", f"bossbar set {NS}:fight visible true",
     f"execute if score #con so_ar matches 1 run function {NS}:mode/caza/start",
     f"execute if score #con so_ar matches 2 run function {NS}:mode/caza2/start",
     f"execute if score #con so_ar matches 3 run function {NS}:mode/defensa/start",
 ])
-CAZA = {  # bloques minimos: (objetivos x5 = 18, apoyo)
-    0: (["zombie", "husk", "skeleton", "spider"], ["skeleton", "spider"]),
-    3334: (["zombie_armor", "piglin", "bogged", "cave_spider"], ["witch", "skeleton_armor"]),
-    7501: (["vindicator", "pillager", "witch", "drowned_trident"], ["spider_big", "skeleton_ominous"]),
-    15000: (["zombie_ominous", "breeze", "bogged", "enderman"], ["shulker", "skeleton_ominous"]),
-}
-def caza_targets():
-    thrs = list(CAZA)
-    out = []
-    for i, thr in enumerate(thrs):
-        cond = f"execute if score #blk so_ar matches {thr}.."
-        if i < len(thrs) - 1:
-            cond += f" unless score #blk so_ar matches {thrs[i + 1]}.."
-        for m in CAZA[thr][0] * 5:
-            out.append(f'{cond} as @a[tag=so_ar_in,limit=1,sort=random] at @s run function {NS}:lib/spawn_near {{m:"{m}"}}')
-    return out
-F("mode/caza/start", [f"function {NS}:lib/enter_con",
-    "scoreboard players set #mode so_ar 2", "scoreboard players set #t so_ar 0",
-    f'bossbar set {NS}:fight name {T({"text": "Caza: 15 bajas", "color": "aqua"})}',
-    f"bossbar set {NS}:fight color aqua", f"bossbar set {NS}:fight max 15", f"bossbar set {NS}:fight value 0",
-    f"bossbar set {NS}:fight players {IN}", f"bossbar set {NS}:fight visible true",
-    f'execute as {IN} run title @s title {T({"text": "¡Caza de monstruos!", "color": "aqua", "bold": True})}',
-    say("@a", "Contrato: 15 bajas objetivo. Los molestos de apoyo son extra.", "aqua"),
-    *caza_targets(),
+# caza: 15 objetivos en tandas de 5
+F("mode/caza/start", [
+    "scoreboard players set #mode so_ar 2",
+    f'bossbar set {NS}:fight name {T({"text": "Caza: objetivos restantes", "color": "aqua"})}',
+    f"bossbar set {NS}:fight color blue", f"bossbar set {NS}:fight max 15", f"bossbar set {NS}:fight value 15",
+    f'title {IN} title {T({"text": "¡Caza de monstruos!", "color": "aqua", "bold": True})}',
+    say(ZONE, "Contrato: 15 bajas objetivo (en tandas de 5). Los de apoyo son extra.", "aqua"),
+    f"function {NS}:mode/caza/batch",
 ])
-F("mode/caza2/start", [f"function {NS}:lib/enter_con",
-    "scoreboard players set #mode so_ar 2", "scoreboard players set #t so_ar 0", "scoreboard players set #wave so_ar 0",
+F("mode/caza/batch", [
+    "scoreboard players add #spawned so_ar 5",
+    *by_phase(lambda tg, sup: [spawn(m, 1) for m in tg + tg[:1]]),
+    f"execute as {IN} at @s run playsound minecraft:event.raid.horn master @s ~ ~ ~ 0.6 1.1",
+])
+F("mode/caza/second", [
+    "scoreboard players add #t so_ar 1",
+    "execute store result score #alive so_ar if entity @e[tag=so_ar_target]",
+    "scoreboard players set #left so_ar 15",
+    "scoreboard players operation #left so_ar -= #spawned so_ar",
+    "scoreboard players operation #left so_ar += #alive so_ar",
+    f"execute store result bossbar {NS}:fight value run scoreboard players get #left so_ar",
+    f"title {IN} actionbar {T({'text': 'Caza · quedan ', 'color': 'aqua'}, {'score': {'name': '#left', 'objective': 'so_ar'}, 'color': 'white', 'bold': True}, {'text': ' objetivos', 'color': 'gray'})}",
+    f"execute if score #t so_ar matches 3.. if score #left so_ar matches ..0 run return run function {NS}:lib/win_contract",
+    f"execute if score #alive so_ar matches ..1 if score #spawned so_ar matches ..10 run function {NS}:mode/caza/batch",
+    "scoreboard players operation #m so_ar = #t so_ar", "scoreboard players operation #m so_ar %= #twentyfive so_ar",
+    f"execute if score #m so_ar matches 0 run function {NS}:lib/blocks",
+    *[l.replace("execute if score #blk", "execute if score #m so_ar matches 0 if score #blk") for l in by_phase(lambda tg, sup: [spawn(m) for m in sup])],
+    f"execute if score #t so_ar matches 420.. run function {NS}:lib/fail",
+])
+# oleadas dobles: 3 oleadas por fase
+F("mode/caza2/start", [
+    "scoreboard players set #mode so_ar 4",
     f'bossbar set {NS}:fight name {T({"text": "Oleadas dobles", "color": "aqua"})}',
-    f"bossbar set {NS}:fight color aqua", f"bossbar set {NS}:fight max 3", f"bossbar set {NS}:fight value 0",
-    f"bossbar set {NS}:fight players {IN}", f"bossbar set {NS}:fight visible true",
-    f'execute as {IN} run title @s title {T({"text": "¡Oleadas dobles!", "color": "aqua", "bold": True})}',
-    say("@a", "Contrato: superá 3 oleadas mixtas.", "aqua"),
+    f"bossbar set {NS}:fight color blue", f"bossbar set {NS}:fight max 3", f"bossbar set {NS}:fight value 0",
+    f'title {IN} title {T({"text": "¡Oleadas dobles!", "color": "aqua", "bold": True})}',
+    say(ZONE, "Contrato: superá 3 oleadas, cada una más dura.", "aqua"),
     f"function {NS}:mode/caza2/wave",
 ])
 F("mode/caza2/wave", [
     "scoreboard players add #wave so_ar 1",
     f"execute store result bossbar {NS}:fight value run scoreboard players get #wave so_ar",
-    *[f"execute if score #wave so_ar matches {w} as {IN} at @s run function {NS}:lib/spawn_near {{m:\"{m}\"}}"
-      for m, reps in [("zombie_armor", 2), ("skeleton_armor", 2), ("pillager", 1), ("vindicator", 1), ("witch", 1), ("spider_big", 1)]
-      for w in (1, 2, 3) for _ in range(reps)],
-    f"playsound minecraft:entity.zombie.ambient hostile {IN} ~ ~ ~ 1 0.8",
-])
-F("mode/caza/second", [
-    "scoreboard players add #t so_ar 1",
-    f"execute unless entity @e[tag=so_ar_target,limit=3] run function {NS}:lib/win_contract",
-    f"execute if score #t so_ar matches 420.. run function {NS}:lib/fail_contract",
-    f"title {IN} actionbar {T({'text': 'Caza en curso: quedan ', 'color': 'aqua'}, {'score': {'name': '#alive', 'objective': 'so_ar'}, 'color': 'white', 'bold': True}, {'text': ' bajas objetivo', 'color': 'gray'})}",
-    f"execute store result score #alive so_ar if entity @e[tag=so_ar_target,limit=4]",
-    "execute unless entity @e[tag=so_ar_target,limit=4] run scoreboard players set #alive so_ar 3",
-    f"execute store result bossbar {NS}:fight value run scoreboard players get #alive so_ar",
-    "scoreboard players operation #m so_ar = #t so_ar", "scoreboard players operation #m so_ar %= #twentyfive so_ar",
-    f'execute if score #m so_ar matches 1 as {IN.replace("]", ",limit=1,sort=random]")} at @s run function {NS}:lib/spawn_near {{m:"skeleton"}}',
-    f'execute if score #m so_ar matches 1 as {IN.replace("]", ",limit=1,sort=random]")} at @s run function {NS}:lib/spawn_near {{m:"spider"}}',
+    *[l.replace("execute if score #blk", f"execute if score #wave so_ar matches {w}.. if score #blk")
+      for w in (1, 2, 3) for l in by_phase(lambda tg, sup: [spawn(m) for m in tg + sup[:1]])],
+    f"execute as {IN} at @s run playsound minecraft:event.raid.horn master @s ~ ~ ~ 0.6 1.0",
 ])
 F("mode/caza2/second", [
     "scoreboard players add #t so_ar 1",
     "execute store result score #alive so_ar if entity @e[tag=so_ar_mob]",
-    f"title {IN} actionbar {T({'text': 'Oleada ', 'color': 'aqua', 'bold': True}, {'score': {'name': '#wave', 'objective': 'so_ar'}, 'color': 'white'}, {'text': ' · enemigos: ', 'color': 'gray'}, {'score': {'name': '#alive', 'objective': 'so_ar'}, 'color': 'white'})}",
-    f"execute if score #alive so_ar matches 0 if score #wave so_ar matches 1..2 run function {NS}:mode/caza2/wave",
-    f"execute if score #alive so_ar matches 0 if score #wave so_ar matches 3.. run function {NS}:lib/win_contract",
-    f"execute if score #t so_ar matches 480.. run function {NS}:lib/fail_contract",
+    f"title {IN} actionbar {T({'text': 'Oleada ', 'color': 'aqua', 'bold': True}, {'score': {'name': '#wave', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '/3 · enemigos: ', 'color': 'gray'}, {'score': {'name': '#alive', 'objective': 'so_ar'}, 'color': 'white'})}",
+    f"execute if score #t so_ar matches 3.. if score #alive so_ar matches 0 if score #wave so_ar matches 3.. run return run function {NS}:lib/win_contract",
+    f"execute if score #t so_ar matches 3.. if score #alive so_ar matches 0 if score #wave so_ar matches 1..2 run function {NS}:mode/caza2/wave",
+    f"execute if score #t so_ar matches 480.. run function {NS}:lib/fail",
 ])
-F("lib/win_contract", [
-    f"execute as {IN} run loot give @s loot {NS}:contract",
-    "scoreboard players add @a[tag=so_ar_in] so_ar_rank 1",
-    f"title {IN} title {T({'text': '¡Contrato cumplido!', 'color': 'green', 'bold': True})}",
-    say("@a", "¡Contrato cumplido! Esmeraldas, botellas de XP y un Fragmento de Victoria.", "green"),
-    f"function {NS}:lib/celebrar", f"function {NS}:lib/end",
-    say("@a", "Ya podés volver a la isla con /trigger volver.", "gray"),
-])
-F("lib/fail_contract", [
-    say("@a", "El contrato se canceló por tiempo. Sin recompensa.", "gray"),
-    f"function {NS}:lib/end",
-])
-
-# ---------------------------------------------------------------- defensa (contrato 3)
-F("mode/defensa/start", [f"function {NS}:lib/enter_con",
-    f"setblock {CX} {FLOOR} {CZ} minecraft:crying_obsidian",
-    "scoreboard players set #mode so_ar 3", "scoreboard players set #t so_ar 0", "scoreboard players set #wave so_ar 0",
-    "scoreboard players set #hp so_ar 100", "scoreboard players set #anticamp so_ar 0",
+# defensa del núcleo
+F("mode/defensa/start", [
+    f"setblock {CX} 96 {CZ} minecraft:crying_obsidian",
+    "scoreboard players set #mode so_ar 3", "scoreboard players set #hp so_ar 100", "scoreboard players set #anticamp so_ar 0",
     f"bossbar set {NS}:fight color purple", f"bossbar set {NS}:fight max 100", f"bossbar set {NS}:fight value 100",
-    f"bossbar set {NS}:fight players {IN}", f"bossbar set {NS}:fight visible true",
-    f"execute as {IN} run title @s title {T({'text': '¡Defendan el Núcleo!', 'color': 'dark_purple', 'bold': True})}",
-    say("@a", "Contrato: protegí el Núcleo 2 minutos. Aquí sí se puede usar la altura.", "dark_purple"),
+    f'bossbar set {NS}:fight name {T({"text": "Núcleo", "color": "dark_purple"})}',
+    f"title {IN} title {T({'text': '¡Defiendan el Núcleo!', 'color': 'dark_purple', 'bold': True})}",
+    say(ZONE, "Contrato: protegé el Núcleo (obsidiana llorosa del centro) 2 minutos. Acá la altura está permitida.", "dark_purple"),
     f"function {NS}:mode/defensa/wave",
 ])
 F("mode/defensa/wave", [
     "scoreboard players add #wave so_ar 1",
-    *[f"execute if score #wave so_ar matches {w} as {IN} at @s run function {NS}:lib/spawn_near {{m:\"{m}\"}}"
-      for m, reps in [("zombie_armor", 2), ("skeleton_armor", 1), ("cave_spider", 1), ("bogged", 1), ("witch", 1)]
-      for w in (1, 2, 3, 4, 5) for _ in range(reps)],
+    *by_phase(lambda tg, sup: [spawn(m) for m in tg[:3] + sup[:1]]),
 ])
 F("mode/defensa/second", [
     "scoreboard players add #t so_ar 1",
-    f"execute positioned {CX} {FLOOR} {CZ} store result score #near so_ar if entity @e[tag=so_ar_mob,distance=..6]",
-    f"execute if score #hp so_ar matches 1.. run scoreboard players operation #hp so_ar -= #near so_ar",
-    f"execute if score #hp so_ar matches ..0 run function {NS}:lib/fail_contract",
-    f"execute if score #hp so_ar matches 1.. run bossbar set {NS}:fight name {T({'text': 'Núcleo: ', 'color': 'dark_purple'}, {'score': {'name': '#hp', 'objective': 'so_ar'}, 'color': 'white', 'bold': True}, {'text': '%', 'color': 'gray'})}",
-    f"execute if score #hp so_ar matches 1.. store result bossbar {NS}:fight value run scoreboard players get #hp so_ar",
+    f"execute positioned {CX} 96 {CZ} store result score #near so_ar if entity @e[tag=so_ar_mob,distance=..5]",
+    "scoreboard players operation #hp so_ar -= #near so_ar",
+    f"execute store result bossbar {NS}:fight value run scoreboard players get #hp so_ar",
+    f"title {IN} actionbar {T({'text': 'Núcleo: ', 'color': 'dark_purple'}, {'score': {'name': '#hp', 'objective': 'so_ar'}, 'color': 'white', 'bold': True}, {'text': '% · tiempo: ', 'color': 'gray'}, {'score': {'name': '#t', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '/120 s', 'color': 'gray'})}",
+    f"execute if score #hp so_ar matches ..0 run return run function {NS}:lib/fail",
+    f"execute if score #t so_ar matches 120.. run return run function {NS}:lib/win_contract",
     "scoreboard players operation #m so_ar = #t so_ar", "scoreboard players operation #m so_ar %= #twentyfive so_ar",
-    f"execute if score #m so_ar matches 1 if score #wave so_ar matches ..5 run function {NS}:mode/defensa/wave",
-    f"execute if score #t so_ar matches 120.. run function {NS}:lib/win_contract",
+    f"execute if score #m so_ar matches 0 run function {NS}:mode/defensa/wave",
+])
+F("lib/win_contract", [
+    f"execute as {IN} run loot give @s loot {NS}:contract",
+    f"scoreboard players add {IN} so_ar_rank 1",
+    f"title {IN} title {T({'text': '¡Contrato cumplido!', 'color': 'green', 'bold': True})}",
+    say(ZONE, "¡Contrato cumplido! Esmeraldas, botellas de XP y Fragmentos de Victoria.", "green"),
+    f"function {NS}:lib/celebrar",
+    f"function {NS}:lib/end",
+])
+F("lib/end", [
+    "# Fin de desafío: limpia mobs, núcleo, barra y kits; a los 3 s devuelve el foso al lobby.",
+    "tp @e[tag=so_ar_mob] -5000 -300 -5000",
+    "kill @e[tag=so_ar_mob]",
+    f"setblock {CX} 96 {CZ} minecraft:air",
+    f"bossbar set {NS}:fight visible false",
+    "scoreboard players set #mode so_ar 0", "scoreboard players set #wave so_ar 0",
+    "scoreboard players set #t so_ar 0", "scoreboard players set #anticamp so_ar 1",
+    "scoreboard players reset @a so_ar_air",
+    f"schedule function {NS}:lib/to_lobby 60t",
+])
+F("lib/to_lobby", [
+    f"execute as @a[tag=so_ar_zone] run clear @s {LOAN}",
+    "tag @a remove so_ar_loan",
+    f"execute as @a[tag=so_ar_zone,{PIT_BOX}] run tp @s {ARR[0]} {ARR[1]} {ARR[2]} 180 0",
+    "tag @a remove so_ar_in",
+    say(ZONE, "De vuelta en el lobby. Otro desafío, o /trigger volver para ir a la isla.", "gray"),
 ])
 
-# ---------------------------------------------------------------- spawn, entrada y festejo
-F("lib/spawn_near", [
-    "# $(m): id de mob de so_events. Spawnea cerca del jugador sobre suelo firme.",
-    "scoreboard players set #ok so_ar 0",
+# ---------------------------------------------------------------- spawn de enemigos
+F("lib/spawn", [
+    "# $(m): id de so_events:api/mob · $(t): 1 = objetivo de caza. Punto al azar dentro del foso.",
     "$data modify storage so_arenas:tmp m set value \"$(m)\"",
-    *(["function so_arenas:lib/spawn_roll", "execute if score #ok so_ar matches 0 run function so_arenas:lib/spawn_try with storage so_arenas:tmp"] * 4),
-    "execute if score #ok so_ar matches 0 run function so_arenas:lib/spawn_here with storage so_arenas:tmp",
-])
-F("lib/spawn_roll", [
     "execute store result storage so_arenas:tmp a int 1 run random value 0..359",
-    "execute store result storage so_arenas:tmp d int 1 run random value 6..14",
+    "execute store result storage so_arenas:tmp d int 1 run random value 5..20",
+    f"function {NS}:lib/spawn_at with storage so_arenas:tmp",
+    "$scoreboard players set #tg so_ar $(t)",
+    f"execute as @e[tag=so_ev_mob,{MOB_BOX}] run function {NS}:lib/claim",
 ])
-F("lib/spawn_try", ["$execute rotated $(a) 0 positioned ^ ^ ^$(d) if block ~ ~ ~ #minecraft:air unless block ~ ~-1 ~ #minecraft:air run function so_events:api/mob {id:$(m)}"])
-F("lib/spawn_here", ["$execute run function so_events:api/mob {id:$(m)}"])
-F("lib/enter_con", [
-    "tp @s -5000 97 -5000",
-    "effect give @s minecraft:resistance 2 3 true",
-    "scoreboard players set #loan so_ar 0",
+F("lib/spawn_at", [f'$execute positioned {CX} 96 {CZ} rotated $(a) 0 positioned ^ ^ ^$(d) run function so_events:api/mob {{id:"$(m)"}}'])
+F("lib/claim", [
+    "tag @s add so_ar_mob",
+    "tag @s remove so_ev_mob",
+    "execute if score #tg so_ar matches 1 run tag @s add so_ar_target",
 ])
+
+
+# ---------------------------------------------------------------- torres / festejo / anticamping
+TOWERS = []
+for k in range(8):
+    ang = math.pi / 8 + k * math.pi / 4
+    TOWERS.append((CX + round(AX * 0.965 * math.cos(ang)), CZ + round(BZ * 0.965 * math.sin(ang))))
+FW = '{{LifeTime:{lt},FireworksItem:{{id:"minecraft:firework_rocket",count:1,components:{{"minecraft:fireworks":{{flight_duration:1b,explosions:[{{shape:"large_ball",colors:[I;16750848,16711680,16776960],has_trail:1b,has_twinkle:1b}}]}}}}}}}}'
 F("lib/celebrar", [
     "# Fuegos artificiales desde las 8 torres.",
-    *[f'summon minecraft:firework_rocket {x} 172 {z} {{LifeTime:20,FireworksItem:{{id:"minecraft:firework_rocket",count:1,components:{{"minecraft:fireworks":{{flight_duration:1,explosions:[{{shape:"large_ball",colors:[I;16750848,16711680,16776960],flicker:1b,trail:1b}}]}}}}}}}}'
-      for x, z in [(CX + AX, CZ), (CX - AX, CZ), (CX, CZ + BZ), (CX, CZ - BZ),
-                   (CX + 30, CZ + 35), (CX - 30, CZ + 35), (CX + 30, CZ - 35), (CX - 30, CZ - 35)]],
-    "playsound minecraft:ui.toast.challenge_complete master @a ~ ~ ~ 1 1",
-    "playsound minecraft:block.note_block.chime master @a ~ ~ ~ 1 1.2",
+    *[f"summon minecraft:firework_rocket {x} {TOP_Y + 3} {z} {FW.format(lt=20 + 4 * i)}" for i, (x, z) in enumerate(TOWERS)],
+    f"execute as {ZONE} at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1",
+    f"execute as {ZONE} at @s run playsound minecraft:entity.player.levelup master @s ~ ~ ~ 1 0.8",
 ])
 F("lib/anticamp", [
-    "# Anti-camping por altura: 3 s sobre el foso (6 s en defensa) y el viento te baja.",
-    f'execute as @a[tag=so_ar_in,scores={{so_ar_air=6..}}] at @s if score #anticamp so_ar matches 1 run summon minecraft:wind_charge ~ ~2 ~',
-    f'execute as @a[tag=so_ar_in,scores={{so_ar_air=6..}}] at @s run title @s actionbar {T({"text": "¡El viento del coliseo te empuja al piso!", "color": "red", "bold": True})}',
-    f'execute as @a[tag=so_ar_in,scores={{so_ar_air=6..}}] run scoreboard players set @s so_ar_air 0',
-    "execute as @a[tag=so_ar_in] at @s if entity @s[y=104..] run scoreboard players add @s so_ar_air 1",
-    "execute as @a[tag=so_ar_in] at @s unless entity @s[y=104..] run scoreboard players set @s so_ar_air 0",
+    "# Anti-camping: 3 s por encima del muro del foso y te baja al centro.",
+    f"execute as {IN} at @s if entity @s[y=101,dy=80] run scoreboard players add @s so_ar_air 1",
+    f"execute as {IN} at @s unless entity @s[y=101,dy=80] run scoreboard players set @s so_ar_air 0",
+    f'execute as @a[tag=so_ar_in,scores={{so_ar_air=3..}}] run title @s actionbar {T({"text": "¡Nada de campear en las gradas!", "color": "red", "bold": True})}',
+    f"execute as @a[tag=so_ar_in,scores={{so_ar_air=3..}}] run tp @s {PIT_IN[0]} 96 {PIT_IN[2]}",
+    "scoreboard players set @a[scores={so_ar_air=3..}] so_ar_air 0",
 ])
 
-# ---------------------------------------------------------------- dialogs
-def act(cmd, label, tip=None, color=None, w=150):
+
+# ---------------------------------------------------------------- diálogos
+def act(cmd, label, tip=None, color=None, w=170):
     a = {"label": {"text": label} | ({"color": color} if color else {}), "width": w,
          "action": {"type": "minecraft:run_command", "command": cmd}}
     if tip: a["tooltip"] = {"text": tip, "color": "gray"}
     return a
-def back(label="« Volver"):
-    return {"label": {"text": label}, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:main"}}
+
+
+BACK = {"label": {"text": "« Volver"}, "width": 170, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:main"}}
 W(f"data/{NS}/dialog/main.json", {
     "type": "minecraft:multi_action", "title": {"text": "Coliseo VorNeX", "color": "gold", "bold": True},
     "external_title": {"text": "Arena"},
-    "body": [{"type": "minecraft:plain_message", "contents": {"text": "Practicá, cumplí contratos y volvé con botín. El rango se consulta con /trigger levelrank.", "color": "gray"}}],
+    "body": [{"type": "minecraft:plain_message", "contents": {"text": "Practicá, cumplí contratos y volvé con botín. Los mercaderes del lobby venden flechas, pociones, tótems y más.", "color": "gray"}}],
     "columns": 2, "can_close_with_escape": True, "pause": False,
     "actions": [
-        act(f"/dialog show @s {NS}:practice", "Práctica por tiers", "Kit prestado o tu propio equipo. Recompensa chico.", "yellow"),
-        act(f"/dialog show @s {NS}:contracts", "Contratos de caza y defensa", "Esmeraldas, botellas de XP y Fragmentos de Victoria.", "aqua"),
+        {"label": {"text": "Práctica por tiers", "color": "yellow"}, "width": 170, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:practice"}},
+        {"label": {"text": "Contratos", "color": "aqua"}, "width": 170, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:contracts"}},
+        act("/trigger arena_con set 9", "Unirse al desafío", "Entrar al foso si ya hay un desafío en curso.", "green"),
         act("/trigger levelrank", "Ver mi rango", "Se muestra en el chat.", "gray"),
-        act("/trigger volver", "Volver a la isla", "Sale del coliseo. Si hay desafío activo, se considera abandono.", "red"),
+        act("/trigger volver", "Volver a la isla", "Si hay desafío activo, cuenta como abandono.", "red"),
     ]})
 W(f"data/{NS}/dialog/practice.json", {
     "type": "minecraft:multi_action", "title": {"text": "Práctica por tiers", "color": "yellow", "bold": True},
-    "body": [{"type": "minecraft:plain_message", "contents": {"text": "El kit prestado se retira solo al terminar. Con tu propio equipo, si morís aparecés en la isla.", "color": "gray"}}],
+    "body": [{"type": "minecraft:plain_message", "contents": {"text": "El kit prestado se retira solo al terminar. Con equipo propio, si morís tus cosas quedan en el foso.", "color": "gray"}}],
     "columns": 2, "can_close_with_escape": True, "pause": False,
-    "actions": [
-        act("/trigger arena_pr set 1", "Tier I · Novato (kit)", "Zombis, esqueletos y arañas. Libres desde el inicio.", "yellow"),
-        act("/trigger arena_pr set 11", "Tier I · Novato (equipo propio)", "Con tu propio equipo.", "yellow"),
-        act("/trigger arena_pr set 2", "Tier II · Veterano (kit)", "Mobs acorazados y Nether. Desde 3.334 bloques.", "yellow"),
-        act("/trigger arena_pr set 12", "Tier II · Veterano (equipo propio)", "Desde 3.334 bloques.", "yellow"),
-        act("/trigger arena_pr set 3", "Tier III · Élite (kit)", "Illagers, brujas y drowned. Desde 7.501 bloques.", "yellow"),
-        act("/trigger arena_pr set 13", "Tier III · Élite (equipo propio)", "Desde 7.501 bloques.", "yellow"),
-        act("/trigger arena_pr set 4", "Tier IV · Maestro (kit)", "Ominosos y breezes. After Phase (15.000).", "yellow"),
-        act("/trigger arena_pr set 14", "Tier IV · Maestro (equipo propio)", "After Phase (15.000).", "yellow"),
-        {"label": {"text": "« Volver"}, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:main"}},
-    ]})
+    "actions": [x for t, n, mobs, thr in TIERS for x in (
+        act(f"/trigger arena_pr set {t}", f"Tier {t} · {n} (kit)", f"Desde {thr:,} bloques.".replace(",", "."), "yellow"),
+        act(f"/trigger arena_pr set {t + 10}", f"Tier {t} · {n} (propio)", f"Desde {thr:,} bloques.".replace(",", "."), "gold"))] + [BACK]})
 W(f"data/{NS}/dialog/contracts.json", {
-    "type": "minecraft:multi_action", "title": {"text": "Contratos de Caza", "color": "aqua", "bold": True},
-    "body": [{"type": "minecraft:plain_message", "contents": {"text": "1 contrato por vez. Cumplilo y cobrás esmeraldas, botellas de XP y un Fragmento de Victoria.", "color": "gray"}}],
-    "columns": 2, "can_close_with_escape": True, "pause": False,
+    "type": "minecraft:multi_action", "title": {"text": "Contratos", "color": "aqua", "bold": True},
+    "body": [{"type": "minecraft:plain_message", "contents": {"text": "Un contrato por vez. Los enemigos escalan con tu fase. Cumplirlo sube tu rango oculto.", "color": "gray"}}],
+    "columns": 1, "can_close_with_escape": True, "pause": False,
     "actions": [
-        act("/trigger arena_con set 1", "Caza: 15 bajas objetivo", "Mobs de tu fase como objetivo, apoyo molesto extra. Desde 400 bloques.", "aqua"),
-        act("/trigger arena_con set 2", "Oleadas dobles", "3 oleadas mixtas cada vez más duras. Desde 400 bloques.", "aqua"),
-        act("/trigger arena_con set 3", "Defensa del Núcleo", "Proteger el núcleo 2 minutos. Desde 2.501 bloques. Altura permitida.", "aqua"),
-        {"label": {"text": "« Volver"}, "action": {"type": "minecraft:show_dialog", "dialog": f"{NS}:main"}},
+        act("/trigger arena_con set 1", "Caza: 15 bajas objetivo", "Desde 400 bloques.", "aqua", 250),
+        act("/trigger arena_con set 2", "Oleadas dobles", "3 oleadas. Desde 400 bloques.", "aqua", 250),
+        act("/trigger arena_con set 3", "Defensa del Núcleo", "2 minutos. Desde 2.501 bloques. Altura permitida.", "aqua", 250),
+        BACK | {"width": 250},
     ]})
 
-# ---------------------------------------------------------------- construccion del coliseo
-build_cmds = []
-# 1) base y piso del foso (bandas por dx para respetar el óvalo)
-for dx in range(-AX, AX + 1):
-    zmax = dzmax(dx, 1.0)
-    if zmax <= 0: continue
-    z1, z2 = CZ - zmax, CZ + zmax
-    x = CX + dx
-    build_cmds.append(f"fill {x} 90 {z1} {x} 94 {z2} minecraft:deepslate")
-    build_cmds.append(f"fill {x} 95 {z1} {x} 95 {z2} {random.choice(FLOOR_MIX)}")
-    build_cmds.append(f"fill {x} 96 {z1} {x} 179 {z2} minecraft:air")
-# anillo decorativo del foso (borde de arena pulida)
-for dx in range(-AX, AX + 1):
-    for r0, r1 in ((0.86, 0.90), (0.90, 0.94)):
-        za, zb = dzmax(dx, r0), dzmax(dx, r1)
-        if zb <= za: continue
-        x = CX + dx
-        build_cmds.append(f"fill {x} 95 {CZ - zb} {x} 95 {CZ - za - 1} minecraft:sandstone")
-        build_cmds.append(f"fill {x} 95 {CZ + za + 1} {x} 95 {CZ + zb} minecraft:sandstone")
-# 2) gradas: 8 bandas subiendo de 96 a 103
-for i in range(8):
-    r0, r1 = 0.86 + i * 0.018, 0.878 + i * 0.018
-    y = FLOOR + i + 1
-    blk = GRAD_MIX[i % 3]
-    for dx in range(-AX, AX + 1):
-        za, zb = dzmax(dx, r0), dzmax(dx, r1)
-        if zb <= za: continue
-        x = CX + dx
-        build_cmds.append(f"fill {x} {y} {CZ - zb} {x} {y} {CZ - za - 1} {blk}")
-        build_cmds.append(f"fill {x} {y} {CZ + za + 1} {x} {y} {CZ + zb} {blk}")
-# 3) muralla romana con arcos (banda 0.94..1.0, y 104..145)
-for dx in range(-AX, AX + 1):
-    za, zb = dzmax(dx, 0.94), dzmax(dx, 1.0)
-    if zb <= za: continue
-    x = CX + dx
-    arch = (abs(dx) % 14) in (6, 7)
-    blk = "minecraft:sandstone_bricks" if (dx // 6) % 2 == 0 else "minecraft:stone_bricks"
-    if arch:
-        build_cmds.append(f"fill {x} 104 {CZ - zb} {x} 112 {CZ - za - 1} {blk}")
-        build_cmds.append(f"fill {x} 104 {CZ + za + 1} {x} 112 {CZ + zb} {blk}")
-        build_cmds.append(f"fill {x} 120 {CZ - zb} {x} 145 {CZ - za - 1} {blk}")
-        build_cmds.append(f"fill {x} 120 {CZ + za + 1} {x} 145 {CZ + zb} {blk}")
-    else:
-        build_cmds.append(f"fill {x} 104 {CZ - zb} {x} 145 {CZ - za - 1} {blk}")
-        build_cmds.append(f"fill {x} 104 {CZ + za + 1} {x} 145 {CZ + zb} {blk}")
-    build_cmds.append(f"fill {x} 141 {CZ - zb} {x} 146 {CZ - za - 1} minecraft:polished_deepslate")
-    build_cmds.append(f"fill {x} 141 {CZ + za + 1} {x} 146 {CZ + zb} minecraft:polished_deepslate")
-# 4) 8 torres perimetrales hasta y=170
-towers = []
-for k in range(8):
-    ang = k * math.pi / 4
-    tx = CX + round(AX * 0.96 * math.cos(ang))
-    tz = CZ + round(BZ * 0.96 * math.sin(ang))
-    towers.append((tx, tz))
-    build_cmds.append(f"fill {tx - 2} 96 {tz - 2} {tx + 2} {TOP_Y} {tz + 2} minecraft:polished_tuff")
-    build_cmds.append(f"fill {tx - 1} 96 {tz - 1} {tx + 1} {TOP_Y} {tz + 1} minecraft:air")
-    build_cmds.append(f"fill {tx - 3} {TOP_Y + 1} {tz - 3} {tx + 3} {TOP_Y + 1} {tz + 3} minecraft:sandstone_bricks")
-    build_cmds.append(f"fill {tx - 1} {TOP_Y + 2} {tz - 1} {tx + 1} {TOP_Y + 2} {tz + 1} minecraft:glowstone")
-# 5) tunel de gladiadores + lobby (lado sur, z hacia +)
-build_cmds.append(f"fill {CX - 3} 96 {CZ + BZ} {CX + 3} 99 {CZ + BZ + 12} minecraft:air")
-build_cmds.append(f"fill {CX - 4} 95 {CZ + BZ} {CX + 4} 95 {CZ + BZ + 12} minecraft:polished_deepslate")
-build_cmds.append(f"fill {CX - 4} 96 {CZ + BZ} {CX - 4} 99 {CZ + BZ + 12} minecraft:stone_bricks")
-build_cmds.append(f"fill {CX + 4} 96 {CZ + BZ} {CX + 4} 99 {CZ + BZ + 12} minecraft:stone_bricks")
-build_cmds.append(f"fill {CX - 4} 100 {CZ + BZ} {CX + 4} 100 {CZ + BZ + 12} minecraft:polished_deepslate")
-build_cmds.append(f"setblock {CX} 99 {CZ + BZ + 4} minecraft:lantern")
-# lobby (sala de preparacion, z 108..122)
-build_cmds.append(f"fill {CX - 7} 90 {CZ + BZ + 12} {CX + 7} 104 {CZ + BZ + 26} minecraft:air")
-build_cmds.append(f"fill {CX - 8} 94 {CZ + BZ + 12} {CX + 8} 94 {CZ + BZ + 26} minecraft:polished_deepslate")
-build_cmds.append(f"fill {CX - 8} 95 {CZ + BZ + 12} {CX + 8} 103 {CZ + BZ + 12} minecraft:sandstone_bricks")
-build_cmds.append(f"fill {CX - 8} 95 {CZ + BZ + 26} {CX + 8} 103 {CZ + BZ + 26} minecraft:sandstone_bricks")
-build_cmds.append(f"fill {CX - 8} 95 {CZ + BZ + 12} {CX - 8} 103 {CZ + BZ + 26} minecraft:stone_bricks")
-build_cmds.append(f"fill {CX + 8} 95 {CZ + BZ + 12} {CX + 8} 103 {CZ + BZ + 26} minecraft:stone_bricks")
-build_cmds.append(f"fill {CX - 8} 104 {CZ + BZ + 12} {CX + 8} 106 {CZ + BZ + 26} minecraft:chiseled_sandstone")
-build_cmds.append(f"fill {CX - 3} 95 {CZ + BZ + 24} {CX - 3} 95 {CZ + BZ + 24} minecraft:red_carpet")
-build_cmds.append(f"fill {CX + 3} 95 {CZ + BZ + 24} {CX + 3} 95 {CZ + BZ + 24} minecraft:red_carpet")
-for lz in (CZ + BZ + 16, CZ + BZ + 24):
-    build_cmds.append(f"setblock {CX - 7} 103 {lz} minecraft:lantern")
-    build_cmds.append(f"setblock {CX + 7} 103 {lz} minecraft:lantern")
-# reja del tunel (se cierra? decorativa: barras en el tunel)
-build_cmds.append(f"setblock {CX - 2} 96 {CZ + BZ + 6} minecraft:iron_bars")
-build_cmds.append(f"setblock {CX + 2} 96 {CZ + BZ + 6} minecraft:iron_bars")
+# ---------------------------------------------------------------- construcción
+GRAD_MIX = ["minecraft:stone_bricks", "minecraft:polished_deepslate", "minecraft:cut_sandstone", "minecraft:smooth_sandstone"]
+FLOOR_MIX = ["minecraft:sandstone", "minecraft:smooth_sandstone", "minecraft:coarse_dirt", "minecraft:packed_mud"]
 
-# trocea en archivos de <=220 comandos
-CHUNK = 220
-chunks = [build_cmds[i:i + CHUNK] for i in range(0, len(build_cmds), CHUNK)]
-F("admin/build_dispatch", [f"function {NS}:admin/build_{i + 1:02d}" for i in range(len(chunks))] + [
-    f'summon minecraft:villager {CX - 3} 95 {CZ + BZ + 21} {{NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Silent:1b,CustomNameVisible:1b,CustomName:{{text:"Comandante de Contratos",color:"aqua",bold:true}}}}',
-    f'summon minecraft:villager {CX + 3} 95 {CZ + BZ + 21} {{NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Silent:1b,CustomNameVisible:1b,CustomName:{{text:"Maestro de Armas",color:"yellow",bold:true}}}}',
-    f'execute positioned {CX} {FLOOR} {CZ} run setblock ~ 96 ~ minecraft:crying_obsidian',
-    f'execute positioned {CX} {FLOOR} {CZ} run setblock ~ 96 ~ minecraft:air',
-    say("@a", "¡El Coliseo VorNeX está listo!", "green"),
-    "playsound minecraft:ui.toast.challenge_complete master @a ~ ~ ~ 1 1",
+
+def zr(dx, r):
+    """Mitad del largo en z del óvalo de radio r en la columna dx (-1 si no lo toca)."""
+    a = 1 - (dx / (AX * r)) ** 2
+    return int(BZ * r * math.sqrt(a)) if a >= 0 else -1
+
+
+def band(x, dx, r0, r1, y0, y1, blk):
+    """Rellena las celdas de la columna x con r0 < r <= r1 (dos tramos, o uno si la columna no toca r0)."""
+    za, zb = zr(dx, r0), zr(dx, r1)
+    if zb < 0: return []
+    if za < 0:
+        return [f"fill {x} {y0} {CZ - zb} {x} {y1} {CZ + zb} {blk}"]
+    if zb <= za: return []
+    return [f"fill {x} {y0} {CZ - zb} {x} {y1} {CZ - za - 1} {blk}",
+            f"fill {x} {y0} {CZ + za + 1} {x} {y1} {CZ + zb} {blk}"]
+
+
+steps = []  # cada paso = un archivo admin/build_NN (se ejecutan con 10 ticks de separación)
+# paso 1-2: limpiar el aire y la base
+cur = []
+for dx in range(-AX, AX + 1):
+    x, zb = CX + dx, zr(dx, 1.0)
+    if zb < 0: continue
+    cur.append(f"fill {x} 96 {CZ - zb} {x} {TOP_Y + 4} {CZ + zb} minecraft:air")
+    cur.append(f"fill {x} 90 {CZ - zb} {x} 94 {CZ - zb + 2 * zb} minecraft:deepslate_bricks")
+    cur.append(f"fill {x} {G} {CZ - zb} {x} {G} {CZ + zb} {FLOOR_MIX[(dx // 3) % len(FLOOR_MIX)]}")
+steps += [cur[:len(cur) // 2], cur[len(cur) // 2:]]
+# paso 3: muro del foso + anillo
+cur = []
+for dx in range(-AX, AX + 1):
+    cur += band(CX + dx, dx, R_PIT - 0.03, R_PIT, G, G, "minecraft:chiseled_sandstone")
+    cur += band(CX + dx, dx, R_PIT, R_PITWALL, G, 99, "minecraft:polished_blackstone_bricks")
+steps.append(cur)
+# pasos 4-5: gradas macizas (8 filas, cada una 1 más alta)
+cur = []
+n = 8
+for i in range(n):
+    r0 = R_PITWALL + (R_GRADA - R_PITWALL) * i / n
+    r1 = R_PITWALL + (R_GRADA - R_PITWALL) * (i + 1) / n
+    for dx in range(-AX, AX + 1):
+        cur += band(CX + dx, dx, r0, r1, G, 100 + i, GRAD_MIX[i % len(GRAD_MIX)])
+steps += [cur[:len(cur) // 2], cur[len(cur) // 2:]]
+# paso 6: muralla exterior con ventanas y almenas
+cur = []
+for dx in range(-AX, AX + 1):
+    x = CX + dx
+    blk = "minecraft:cut_sandstone" if (dx // 6) % 2 == 0 else "minecraft:stone_bricks"
+    cur += band(x, dx, R_GRADA, R_WALL, G, 125, blk)
+    cur += band(x, dx, R_GRADA, R_WALL, 126, 127, "minecraft:polished_deepslate")
+    if dx % 2 == 0:
+        cur += band(x, dx, R_GRADA, R_WALL, 128, 128, "minecraft:polished_deepslate_wall")
+    if abs(dx) % 10 in (4, 5):
+        cur += band(x, dx, R_GRADA, R_WALL, 110, 116, "minecraft:air")
+steps.append(cur)
+# paso 7: torres
+cur = []
+for tx, tz in TOWERS:
+    cur += [f"fill {tx - 2} {G} {tz - 2} {tx + 2} {TOP_Y} {tz + 2} minecraft:polished_tuff",
+            f"fill {tx - 1} 96 {tz - 1} {tx + 1} {TOP_Y - 1} {tz + 1} minecraft:air",
+            f"fill {tx - 3} {TOP_Y + 1} {tz - 3} {tx + 3} {TOP_Y + 1} {tz + 3} minecraft:cut_sandstone",
+            f"fill {tx - 1} {TOP_Y + 2} {tz - 1} {tx + 1} {TOP_Y + 2} {tz + 1} minecraft:glowstone"]
+steps.append(cur)
+
+
+# paso 8: túnel, lobby, carteles, placas
+def sign_snbt(lines, cmd=None):
+    msgs = []
+    for i in range(4):
+        t = lines[i] if i < len(lines) else ("", "black")
+        if isinstance(t, str): t = (t, "black")
+        comp = f'{{text:"{t[0]}",color:"{t[1]}",bold:{"true" if i == 1 else "false"}'
+        if i == 1 and cmd:
+            comp += f',click_event:{{action:"run_command",command:"{cmd}"}}'
+        msgs.append(comp + "}")
+    return f'{{is_waxed:1b,front_text:{{messages:[{",".join(msgs)}]}}}}'
+
+
+cur = []
+TZ0 = CZ + int(R_PIT * BZ) + 1
+cur += [f"fill {CX - 4} {G} {TZ0} {CX + 4} 101 {LZ0} minecraft:stone_bricks",
+        f"fill {CX - 3} 96 {TZ0} {CX + 3} 100 {LZ0} minecraft:air",
+        f"fill {CX - 3} {G} {TZ0} {CX + 3} {G} {LZ0} minecraft:polished_deepslate",
+        f"fill {CX - 3} 96 {TZ0} {CX + 3} 100 {TZ0} minecraft:iron_bars",
+        f"setblock {CX} 100 {TZ0 + 8} minecraft:lantern[hanging=true]",
+        f"setblock {CX} 100 {TZ0 + 16} minecraft:lantern[hanging=true]",
+        # lobby cerrado
+        f"fill {CX - LX} {G} {LZ0} {CX + LX} 105 {LZ1} minecraft:stone_bricks hollow",
+        f"fill {CX - LX + 1} {G} {LZ0 + 1} {CX + LX - 1} {G} {LZ1 - 1} minecraft:polished_deepslate",
+        f"fill {CX - LX + 1} 105 {LZ0 + 1} {CX + LX - 1} 105 {LZ1 - 1} minecraft:chiseled_sandstone",
+        f"fill {CX - 3} 96 {LZ0} {CX + 3} 100 {LZ0} minecraft:air",
+        f"fill {CX - 3} 96 {LZ0} {CX + 3} 100 {LZ0} minecraft:iron_bars",
+        f"fill {CX} {G} {LZ0 + 1} {CX} {G} {LZ1 - 1} minecraft:red_terracotta"]
+for lx in (CX - 6, CX, CX + 6):
+    for lz in (LZ0 + 5, LZ0 + 12, LZ1 - 4):
+        cur.append(f"setblock {lx} 104 {lz} minecraft:lantern[hanging=true]")
+for x, fn, label, col in PADS:
+    cur += [f"setblock {x} {G} {PAD_Z} minecraft:{col}_concrete",
+            f"setblock {x} 96 {PAD_Z} minecraft:light_weighted_pressure_plate",
+            f"setblock {x} 96 {PAD_Z - 1} minecraft:oak_sign[rotation=0]{sign_snbt(['Pisá la placa', (label, 'dark_blue'), '(o tocá el cartel)'], {'pad_pr': f'/trigger arena_pr set 0', 'pad_con': '/trigger arena_con set 0', 'pad_join': '/trigger arena_con set 9', 'pad_back': '/trigger volver'}[fn])}"]
+# carteles: muro oeste = práctica (fila alta kit, fila baja equipo propio); muro este = contratos
+for idx, (t, n, _, thr) in enumerate(TIERS):
+    z = LZ0 + 6 + idx * 3
+    cur.append(f"setblock {CX - LX + 1} 98 {z} minecraft:oak_wall_sign[facing=east]{sign_snbt([f'Práctica T{t}', (n, 'dark_green'), 'kit prestado', f'{thr} bloques+'], f'/trigger arena_pr set {t}')}")
+    cur.append(f"setblock {CX - LX + 1} 97 {z} minecraft:oak_wall_sign[facing=east]{sign_snbt([f'Práctica T{t}', (n, 'dark_red'), 'equipo propio', ''], f'/trigger arena_pr set {t + 10}')}")
+EAST = [("Contrato", ("Caza 15 bajas", "dark_aqua"), "400 bloques+", "/trigger arena_con set 1"),
+        ("Contrato", ("Oleadas dobles", "dark_aqua"), "400 bloques+", "/trigger arena_con set 2"),
+        ("Contrato", ("Defensa Núcleo", "dark_purple"), "2501 bloques+", "/trigger arena_con set 3"),
+        ("Desafío en curso", ("Unirse", "dark_green"), "", "/trigger arena_con set 9")]
+for idx, (a, b, c, cmd) in enumerate(EAST):
+    cur.append(f"setblock {CX + LX - 1} 98 {LZ0 + 6 + idx * 3} minecraft:oak_wall_sign[facing=west]{sign_snbt([a, b, c], cmd)}")
+EAST2 = [("Tu rango", ("Ver rango", "dark_gray"), "(oculto)", "/trigger levelrank"),
+         ("Salir", ("Volver a la isla", "dark_red"), "", "/trigger volver"),
+         ("Menú", ("Abrir menú", "gold"), "", "/trigger arena")]
+for idx, (a, b, c, cmd) in enumerate(EAST2):
+    cur.append(f"setblock {CX + LX - 1} 97 {LZ0 + 6 + idx * 3} minecraft:oak_wall_sign[facing=west]{sign_snbt([a, b, c], cmd)}")
+# carteles bajo cada aldeano de menú (por si la hitbox no responde en Bedrock)
+for nid, name, color, x, z, _ in NPCS:
+    cmd = {"main": "/trigger arena", "pr": "/trigger arena_pr set 0", "con": "/trigger arena_con set 0"}[nid]
+    rot = 8 if z > LZ0 + 10 else 0
+    dz = -1 if rot == 8 else 1
+    cur.append(f"setblock {x} 96 {z + dz} minecraft:oak_sign[rotation={rot}]{sign_snbt([name[:15], ('Tocá acá', 'dark_blue'), 'o al aldeano'], cmd)}")
+steps.append(cur)
+
+# arena_pr/arena_con = 0 desde carteles: abrir el submenú correspondiente (para Bedrock)
+# (trigger set 0 no dispara el tick, así que los carteles usan valores 20 y 20 dedicados)
+for i, s in enumerate(steps):
+    steps[i] = [l.replace("/trigger arena_pr set 0", "/trigger arena_pr set 20").replace("/trigger arena_con set 0", "/trigger arena_con set 20") for l in s]
+
+N = len(steps)
+for i, s in enumerate(steps):
+    F(f"admin/build_{i + 1:02d}", [f"# coliseo: paso {i + 1}/{N}"] + s)
+FL = f"{CX - AX - 6} {CZ - BZ - 6} {CX + AX + 6} {LZ1 + 4}"
+F("admin/build", [
+    f"forceload add {FL}",
+    "scoreboard players set #bstep so_ar 0",
+    say("@a", f"Construyendo el Coliseo en {N} pasos (~{2 + N // 2} s). Cargando chunks...", "yellow"),
+    f"schedule function {NS}:admin/build_step 40t",
 ])
-for i, c in enumerate(chunks):
-    F(f"admin/build_{i + 1:02d}", [f"# coliseo: parte {i + 1}/{len(chunks)}"] + c)
+F("admin/build_dispatch", [f"function {NS}:admin/build"])
+F("admin/build_step", [
+    "scoreboard players add #bstep so_ar 1",
+    *[f"execute if score #bstep so_ar matches {i + 1} run function {NS}:admin/build_{i + 1:02d}" for i in range(N)],
+    f'title @a[tag=so_ar_zone] actionbar [{{"text":"Construyendo paso ","color":"yellow"}},{{"score":{{"name":"#bstep","objective":"so_ar"}},"color":"white"}},{{"text":"/{N}","color":"yellow"}}]',
+    f"execute if score #bstep so_ar matches ..{N - 1} run schedule function {NS}:admin/build_step 10t",
+    f"execute if score #bstep so_ar matches {N} run function {NS}:admin/build_finish",
+])
+F("admin/build_finish", [
+    *npc_summons(),
+    f"forceload remove {FL}",
+    say("@a", "¡El Coliseo VorNeX está listo! Entrá con /trigger arena.", "green"),
+    "execute as @a at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1",
+])
+F("admin/npcs", [*npc_summons(), say("@s", "Aldeanos del lobby recolocados.", "green")])
+
+# submenús desde carteles (valor 20)
+_pr = open(os.path.join(ROOT, f"data/{NS}/function/lib/start_pr.mcfunction"), encoding="utf-8").read().splitlines()
+F("lib/start_pr", [f"execute if score @s arena_pr matches 20 run return run function {NS}:npc_menu_pr"] + _pr)
+_con = open(os.path.join(ROOT, f"data/{NS}/function/lib/start_con.mcfunction"), encoding="utf-8").read().splitlines()
+F("lib/start_con", [f"execute if score @s arena_con matches 20 run return run function {NS}:npc_menu_con"] + _con)
+F("npc_menu_pr", [f"dialog show @s {NS}:practice", f"function {NS}:lib/chat_main"])
+F("npc_menu_con", [f"dialog show @s {NS}:contracts", f"function {NS}:lib/chat_main"])
 
 # ---------------------------------------------------------------- admin
 F("admin/help", [f"tellraw @s {T({'text': h, 'color': 'gold' if i == 0 else 'gray'})}" for i, h in enumerate([
-    "SO Arenas v1 — ayuda admin",
-    "Construcción: /function so_arenas:admin/build_dispatch  (parate en el lobby: /trigger arena)",
+    "SO Arenas v2 — ayuda admin",
+    "Construir: /trigger arena (o volá a -5000 100 -5000) y /function so_arenas:admin/build",
+    "Recolocar aldeanos: /function so_arenas:admin/npcs",
     "/function so_arenas:admin/status | stop | enable | disable",
-    "Jugadores: /trigger arena (menú), /trigger volver (salida o abandono), /trigger levelrank",
-    "Los mobs y jefes vienen de so_events:api (mismo motor, sin duplicar nada).",
+    "Jugadores: /trigger arena (ir/menú), /trigger volver (salir o abandono), /trigger levelrank",
 ])])
 F("admin/status", [f"function {NS}:lib/blocks",
-    f"tellraw @s {T(PFX, {'text': 'modo=', 'color': 'gray', 'bold': False}, {'score': {'name': '#mode', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '  bloques=', 'color': 'gray'}, {'score': {'name': '#blk', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '  rango mediador=', 'color': 'gray'}, {'score': {'name': '@s', 'objective': 'so_ar_rank'}, 'color': 'white'})}"])
+    f"tellraw @s {T(PFX, {'text': 'modo=', 'color': 'gray', 'bold': False}, {'score': {'name': '#mode', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '  bloques=', 'color': 'gray'}, {'score': {'name': '#blk', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '  activo=', 'color': 'gray'}, {'score': {'name': '#enabled', 'objective': 'so_ar'}, 'color': 'white'})}"])
 F("admin/stop", [f"function {NS}:lib/end", say("@a", "Desafío del coliseo detenido por un administrador.", "gray")])
 F("admin/enable", ["scoreboard players set #enabled so_ar 1", say("@s", "Arena activada.", "green")])
 F("admin/disable", [f"function {NS}:lib/end", "scoreboard players set #enabled so_ar 0", say("@s", "Arena desactivada.", "red")])
 F("uninstall", [f"function {NS}:lib/end", f"bossbar remove {NS}:fight",
-    "scoreboard objectives remove so_ar", "scoreboard objectives remove arena",
-    "scoreboard objectives remove arena_pr", "scoreboard objectives remove arena_con",
-    "scoreboard objectives remove levelrank", "scoreboard objectives remove so_ar_air", "scoreboard objectives remove so_ar_rank",
-    say("@s", "so_arenas desinstalado (el coliseo construido queda en el mundo). Quitá el datapack y hacé /reload.", "gray")])
-F("load", lines := open(os.path.join(ROOT, f"data/{NS}/function/load.mcfunction"), encoding="utf-8").read().splitlines() + [
-    "scoreboard players set #twentyfive so_ar 25",
-    f'function {NS}:admin/build_dispatch' and f"function {NS}:lib/dispatch" and "",
-    "function so_arenas:load2",
-])
-W(f"data/{NS}/function/load.mcfunction", "\n".join(l for l in lines if l) + "\n")
-F("load2", ["scoreboard players set #twentyfive so_ar 25"])
+    *[f"scoreboard objectives remove {o}" for o in ["so_ar", *TRIGGERS, "so_ar_air", "so_ar_rank", "so_ar_x", "so_ar_y", "so_ar_z", "so_ar_saved"]],
+    say("@s", "so_arenas desinstalado (el coliseo queda en el mundo). Quitá el datapack y hacé /reload.", "gray")])
 
-W("README.md", """# so_arenas v1 — el Coliseo VorNeX (dónde pasa)
+W("README.md", f"""# so_arenas v2 — el Coliseo VorNeX
 
-Zona aislada en **-5000 100 -5000** (Overworld). Enemigos del motor `so_events:api` (sin duplicar mobs ni bosses).
+Zona en **-5000 100 -5000** (Overworld). Enemigos de `so_events:api/mob` (sin duplicar mobs).
 
-## Viaje
-- Entrada: `/trigger arena` (teletransporta al lobby y abre el menú).
-- Salida: `/trigger volver` (si hay desafío activo cuenta como **abandono**: pierde recompensa, kits y suena el cartel de derrota).
-- Rango de cazador: `/trigger levelrank` (oculto por diseño).
+## Construcción (admin)
+1. `/trigger arena` (o volá hasta -5000 100 -5000).
+2. `/function so_arenas:admin/build` → fuerza la carga del área y construye en {N} pasos (~{2 + N // 2} s). Al final aparecen los aldeanos y se libera la carga forzada.
+3. Si algún aldeano se pierde: `/function so_arenas:admin/npcs`.
 
-## Construcción
-1. `/trigger arena` para viajar (carga los chunks).
-2. Parate en el lobby y corré `/function so_arenas:admin/build_dispatch`.
-3. El coliseo oval (84x100 exterior, gradas de 8 niveles, muralla con arcos, 8 torres de 80 de alto, tunel y lobby con NPC) se levanta por partes (~7 funciones).
+## Jugadores
+- `/trigger arena`: viaja al lobby (guarda dónde estabas). Dentro, vuelve a abrir el menú.
+- `/trigger volver`: vuelve al lugar de donde viniste. En pleno desafío = abandono.
+- `/trigger levelrank`: rango oculto.
+- Menú por 4 vías: aldeanos (Guía, Maestro de Armas, Comandante), carteles de los muros, placas de colores del piso y menú del chat (Java).
+- Mercaderes: Intendente (flechas, pociones arrojadizas, manzanas doradas, comida) y Armero (escudos, tótems, huevos de gólem de hierro y de nieve, perlas, cohetes, arcos).
 
-## Sistemas
-- **Práctica por tiers** (menú táctil del lobby): Tier I (0), II (3.334), III (7.501), IV (15.000). Kit prestado marcado `so_arena_loan` (se retira al terminar) o tu propio equipo.
-- **Contratos**: Caza 15 bajas (400+), Oleadas dobles (400+), Defensa del Núcleo (2.501+, altura permitida, anti-camping desactivado).
-- **Anti-camping por altura**: 3 s por encima del foso y un wind charge te baja. En defensa está desactivado.
-- **Victoria**: fuegos artificiales desde las 8 torres, fanfarria y recompensa (botellas de XP, esmeraldas y Fragmento de Victoria = echo shard renombrada).
-- **Abandono/muerte**: limpieza total, sin recompensa, título `¡ABANDONASTE, CAGÓN!` y luego el aviso de `/trigger volver`.
-
-Ayuda admin: `/function so_arenas:admin/help`. Los NPC del lobby dan pistas; el menú táctil es la forma de entrar a retos (compatible Bedrock).
+## Desafíos
+- Práctica Tier I–IV (0 / 3.334 / 7.501 / 15.000 bloques), con kit prestado o equipo propio.
+- Contratos: Caza 15 bajas (400+), Oleadas dobles (400+), Defensa del Núcleo (2.501+).
+- Otros jugadores pueden sumarse con "Unirse". Victoria: cohetes en las 8 torres y recompensa.
 """)
 
-# ---------------------------------------------------------------- zip (raiz limpia)
+# ---------------------------------------------------------------- zip
 os.makedirs("/mnt/documents", exist_ok=True)
-out = "/mnt/documents/so_arenas-v1.zip"
+out = "/mnt/documents/so_arenas-v2.zip"
 with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
     for d, _, files in os.walk(ROOT):
         for f in files:
             full = os.path.join(d, f); z.write(full, os.path.relpath(full, ROOT))
-print("ok", out)
+print("ok", out, "pasos", N)

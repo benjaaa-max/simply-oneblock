@@ -17,7 +17,6 @@
 - Generate `so_events` only from `tools/build_so_events.py`; it owns mobs, bosses and world events and exposes `so_events:api/*` (boss, mob, cleanup) so `so_arenas` reuses enemies without duplicating them.
 
 ## Estructura
-- Generar so_arenas solo desde tools/build_so_arenas.py (como so_events). Arena usa /trigger arena (entrada) y /trigger volver (salida/abandono); los mobs entran por so_events:api y se retagean a so_ar_mob dentro del coliseo para no pisar eventos de la isla.
 
 ## Estructura
-- Generar so_arenas solo desde tools/build_so_arenas.py (como so_events). Arena usa /trigger arena (entrada) y /trigger volver (salida/abandono); los mobs entran por so_events:api y se retagean a so_ar_mob dentro del coliseo para no pisar eventos de la isla.
+- Generate so_arenas only from tools/build_so_arenas.py and validate block/entity IDs against a real server jar; the build forceloads the area and runs scheduled steps so every /fill lands on loaded chunks. Travel uses /trigger arena and /trigger volver; so_events:api mobs are claimed as so_ar_mob (so_ev_mob removed) right after spawning so island cleanup never touches arena mobs.

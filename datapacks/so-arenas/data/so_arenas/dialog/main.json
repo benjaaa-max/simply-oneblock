@@ -12,7 +12,7 @@
     {
       "type": "minecraft:plain_message",
       "contents": {
-        "text": "Practicá, cumplí contratos y volvé con botín. El rango se consulta con /trigger levelrank.",
+        "text": "Practicá, cumplí contratos y volvé con botín. Los mercaderes del lobby venden flechas, pociones, tótems y más.",
         "color": "gray"
       }
     }
@@ -26,28 +26,35 @@
         "text": "Práctica por tiers",
         "color": "yellow"
       },
-      "width": 150,
+      "width": 170,
       "action": {
-        "type": "minecraft:run_command",
-        "command": "/dialog show @s so_arenas:practice"
-      },
-      "tooltip": {
-        "text": "Kit prestado o tu propio equipo. Recompensa chico.",
-        "color": "gray"
+        "type": "minecraft:show_dialog",
+        "dialog": "so_arenas:practice"
       }
     },
     {
       "label": {
-        "text": "Contratos de caza y defensa",
+        "text": "Contratos",
         "color": "aqua"
       },
-      "width": 150,
+      "width": 170,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_arenas:contracts"
+      }
+    },
+    {
+      "label": {
+        "text": "Unirse al desafío",
+        "color": "green"
+      },
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
-        "command": "/dialog show @s so_arenas:contracts"
+        "command": "/trigger arena_con set 9"
       },
       "tooltip": {
-        "text": "Esmeraldas, botellas de XP y Fragmentos de Victoria.",
+        "text": "Entrar al foso si ya hay un desafío en curso.",
         "color": "gray"
       }
     },
@@ -56,7 +63,7 @@
         "text": "Ver mi rango",
         "color": "gray"
       },
-      "width": 150,
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
         "command": "/trigger levelrank"
@@ -71,13 +78,13 @@
         "text": "Volver a la isla",
         "color": "red"
       },
-      "width": 150,
+      "width": 170,
       "action": {
         "type": "minecraft:run_command",
         "command": "/trigger volver"
       },
       "tooltip": {
-        "text": "Sale del coliseo. Si hay desafío activo, se considera abandono.",
+        "text": "Si hay desafío activo, cuenta como abandono.",
         "color": "gray"
       }
     }
