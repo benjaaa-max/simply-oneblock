@@ -1,0 +1,13 @@
+{
+  "pack": {
+    "description": "Simply OneBlock Expansion - Events (eventos, oleadas y jefes)",
+    "min_format": [
+      107,
+      1
+    ],
+    "max_format": [
+      107,
+      1
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 # Roadmap
 
-- [x] Corregir sidebar y bossbar de so_status.
-- [x] Agregar comandos por rango sin trigger warp.
-- [x] Integrar crates/isla sin duplicar so_crates.
-- [x] Validar, documentar y empaquetar so_status actualizado.
+- [x] so_status v2 (sidebar, bossbar, comandos por rango).
+- [x] so_events v1 (6 eventos, invasiones con jefes, API para arenas).
+- [ ] so_quests v3.1: categorías estáticas, progreso coloreado en chat y /trigger pendientes (pausado, falta terminar y probar).
+- [ ] so_arenas: lobby, arena, dungeons, PvP y mercader de contratos (usa so_events:api).
