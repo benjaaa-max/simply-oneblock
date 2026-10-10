@@ -1,0 +1,2 @@
+function so_arenas:lib/blocks
+tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "modo=", "color": "gray", "bold": false}, {"score": {"name": "#mode", "objective": "so_ar"}, "color": "white"}, {"text": "  bloques=", "color": "gray"}, {"score": {"name": "#blk", "objective": "so_ar"}, "color": "white"}, {"text": "  rango mediador=", "color": "gray"}, {"score": {"name": "@s", "objective": "so_ar_rank"}, "color": "white"}]

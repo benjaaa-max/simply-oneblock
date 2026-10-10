@@ -1,0 +1,11 @@
+# Fuegos artificiales desde las 8 torres.
+summon minecraft:firework_rocket -4958 172 -5000 {LifeTime:20,FireworksItem:{id:"minecraft:firework_rocket",count:1,components:{"minecraft:fireworks":{flight_duration:1,explosions:[{shape:"large_ball",colors:[I;16750848,16711680,16776960],flicker:1b,trail:1b}]}}}}
+summon minecraft:firework_rocket -5042 172 -5000 {LifeTime:20,FireworksItem:{id:"minecraft:firework_rocket",count:1,components:{"minecraft:fireworks":{flight_duration:1,explosions:[{shape:"large_ball",colors:[I;16750848,16711680,16776960],flicker:1b,trail:1b}]}}}}
+summon minecraft:firework_rocket -5000 172 -4950 {LifeTime:20,FireworksItem:{id:"minecraft:firework_rocket",count:1,components:{"minecraft:fireworks":{flight_duration:1,explosions:[{shape:"large_ball",colors:[I;16750848,16711680,16776960],flicker:1b,trail:1b}]}}}}
+summon minecraft:firework_rocket -5000 172 -5050 {LifeTime:20,FireworksItem:{id:"minecraft:firework_rocket",count:1,components:{"minecraft:fireworks":{flight_duration:1,explosions:[{shape:"large_ball",colors:[I;16750848,16711680,16776960],flicker:1b,trail:1b}]}}}}
+summon minecraft:firework_rocket -4970 172 -4965 {LifeTime:20,FireworksItem:{id:"minecraft:firework_rocket",count:1,components:{"minecraft:fireworks":{flight_duration:1,explosions:[{shape:"large_ball",colors:[I;16750848,16711680,16776960],flicker:1b,trail:1b}]}}}}
+summon minecraft:firework_rocket -5030 172 -4965 {LifeTime:20,FireworksItem:{id:"minecraft:firework_rocket",count:1,components:{"minecraft:fireworks":{flight_duration:1,explosions:[{shape:"large_ball",colors:[I;16750848,16711680,16776960],flicker:1b,trail:1b}]}}}}
+summon minecraft:firework_rocket -4970 172 -5035 {LifeTime:20,FireworksItem:{id:"minecraft:firework_rocket",count:1,components:{"minecraft:fireworks":{flight_duration:1,explosions:[{shape:"large_ball",colors:[I;16750848,16711680,16776960],flicker:1b,trail:1b}]}}}}
+summon minecraft:firework_rocket -5030 172 -5035 {LifeTime:20,FireworksItem:{id:"minecraft:firework_rocket",count:1,components:{"minecraft:fireworks":{flight_duration:1,explosions:[{shape:"large_ball",colors:[I;16750848,16711680,16776960],flicker:1b,trail:1b}]}}}}
+playsound minecraft:ui.toast.challenge_complete master @a ~ ~ ~ 1 1
+playsound minecraft:block.note_block.chime master @a ~ ~ ~ 1 1.2
