@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
-"""Generador de so_arenas v3 — el Coliseo VorNeX (donde pasa).
+"""Generador de so_arenas v4 — el Coliseo VorNeX y Las Catacumbas.
 
 Unica fuente del datapack datapacks/so-arenas (no editar los .mcfunction a mano).
-v3:
-- Flujo de combate: menú -> túnel de preparación (DJ + mutadores) -> campana/placa/cartel
-  (o 30 s) -> saludo de jueces + música -> foso. Victoria: portones abiertos 60 s, cofre
-  de recompensa variable en el lobby, salida a pie o por la placa del túnel.
-- Limpieza quirúrgica: solo ítems/flechas del foso y bloques dentro del óvalo interior
-  (R_RESET). Nunca toca muros, gradas, lobby, tocadiscos ni terraza.
-- Contratos: Caza, Oleadas, Defensa (cebo vivo + barricadas), Rey de la Colina,
-  Asedio Volador, Duelo de Campeones, Desafío de Jefes. PvP amistoso aparte.
-- Racha, mutadores, médica, tribunas (espectador), cestas de donación, cohetes en gradas,
-  tablero en vivo, palco de jueces, público, terraza con jardines e iluminación integrada.
-Salida: datapacks/so-arenas + /mnt/documents/so_arenas-v3.zip (raiz limpia).
+v3 (base): túnel con DJ y mutadores, campana, jueces, portones, cofre de recompensa variable,
+limpieza quirúrgica, 7 contratos, PvP, racha, médica, tribunas, cestas, cohetes, terraza.
+v4:
+- Música: el tocadiscos del túnel se lee con data (disco puesto > menú > azar). 16 temas de batalla
+  (sin 11, 13, 5 ni discos raros).
+- Cestas de apoyo: en combate llegan al luchador; fuera de combate se devuelven al espectador.
+- Rey de la Colina sobre una colina física (captura 90 s dentro de 120 s, sin anti-camping).
+- Arañas, endermans y wardens con aggro forzado al jugador más cercano.
+- Limpieza de barricadas también en labio y gradas (solo bloques de jugador).
+- Defensa: aldeano "Núcleo Vivo" que recibe golpes reales; el daño baja la vida del núcleo.
+- Botín: llaves de so_crates (12 de Simply OneBlock + 6 propias) por rareza y Fragmento de Llave.
+- Las Catacumbas (y=60 bajo el coliseo): Cripta (0), Mina (3.000), Templo (6.000); 4 salas con rejas
+  que se cierran, llave de sala, cofres, jefe, récord de tiempo y reinicio limpio.
+Salida: datapacks/so-arenas + /mnt/documents/so_arenas-v4.zip (raiz limpia).
 """
 import json, os, shutil, zipfile, math, random
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "datapacks", "so-arenas")
 NS = "so_arenas"
-VER = "v3"
+VER = "v4"
 CX, CZ = -5000, -5000
 G = 95                 # bloque del piso; se camina en y=96
 AX, BZ = 42, 50        # semiejes exteriores: 84 x 100
@@ -44,7 +47,9 @@ JUDGE_Z = CZ - 44
 PIT_BOX = f"x={CX - 27},y=90,z={CZ - 32},dx=54,dy=50,dz=64"
 PIT_FLOOR_BOX = f"x={CX - 27},y=94,z={CZ - 33},dx=54,dy=5,dz=66"
 TUNNEL_BOX = f"x={CX - 3},y=95,z={TZ0},dx=6,dy=6,dz={LZ0 - TZ0}"
-ZONE_BOX = f"x={CX - 56},y=80,z={CZ - 66},dx=112,dy=130,dz={LZ1 + 12 - (CZ - 66)}"
+ZONE_BOX = f"x={CX - 56},y=50,z={CZ - 66},dx=112,dy=160,dz={LZ1 + 12 - (CZ - 66)}"  # incluye Las Catacumbas (y 54-71)
+DG_PLATE = (CX, 96, LZ1 + 5)              # entrada a Las Catacumbas (plaza sur)
+DG_OUT = (CX, 96, LZ1 + 2)                # salida de Las Catacumbas
 MOB_BOX = f"x={CX - 32},y=88,z={CZ - 38},dx=64,dy=60,dz=76"
 shutil.rmtree(ROOT, ignore_errors=True)
 random.seed(7)
@@ -80,6 +85,7 @@ ZONE = "@a[tag=so_ar_zone]"
 LOAN = "*[minecraft:custom_data~{so_arena_loan:1b}]"
 LOAN_C = 'minecraft:custom_data={so_arena_loan:1b},minecraft:lore=[{text:"Prestado por el Coliseo",color:"gray",italic:false}]'
 ANYBLOCK = "minecraft:can_place_on=[{}]"
+DGKEY = "*[minecraft:custom_data~{so_ar_dgkey:1b}]"
 
 # ---------------------------------------------------------------- pack
 W("pack.mcmeta", {"pack": {"description": f"Simply OneBlock Expansion - Arenas {VER} (/trigger arena)",
@@ -88,40 +94,140 @@ W("data/minecraft/tags/function/load.json", {"replace": False, "values": [f"{NS}
 W("data/minecraft/tags/function/tick.json", {"replace": False, "values": [f"{NS}:tick"]})
 
 
-# ---------------------------------------------------------------- loot
-def item(name, w, lo=1, hi=1):
+# ---------------------------------------------------------------- loot (v4: mucha variedad, cantidades chicas)
+def item(name, w, lo=1, hi=1, fn=None):
     e = {"type": "minecraft:item", "name": f"minecraft:{name}", "weight": w}
-    if hi > 1: e["functions"] = [{"function": "minecraft:set_count", "count": {"min": lo, "max": hi}}]
+    fs = list(fn or [])
+    if hi > 1: fs.insert(0, {"function": "minecraft:set_count", "count": {"min": lo, "max": hi}})
+    if fs: e["functions"] = fs
     return e
+
+
+def ench(name, w, lv):
+    return item(name, w, fn=[{"function": "minecraft:enchant_with_levels", "levels": lv}])
+
+
+def book(w, lv):
+    return ench("book", w, lv)
+
+
+def pot(name, p, w, lo=1, hi=1):
+    return item(name, w, lo, hi, fn=[{"function": "minecraft:set_potion", "id": f"minecraft:{p}"}])
+
+
+def named(name, w, label, color, lv):
+    return item(name, w, fn=[{"function": "minecraft:enchant_with_levels", "levels": lv},
+                             {"function": "minecraft:set_name", "target": "item_name", "name": {"text": label, "color": color}}])
 
 
 FRAG = {"type": "minecraft:item", "name": "minecraft:echo_shard", "weight": 1,
         "functions": [{"function": "minecraft:set_name", "target": "item_name",
                        "name": {"text": "Fragmento de Victoria", "color": "gold"}}]}
-PR_LOOT = {
-    1: [item("experience_bottle", 6, 4, 8), item("bread", 4, 3, 6), item("emerald", 4, 2, 5), item("iron_ingot", 3, 1, 3), item("arrow", 3, 8, 16)],
-    2: [item("experience_bottle", 6, 6, 12), item("emerald", 5, 3, 8), item("iron_ingot", 4, 2, 5), item("golden_carrot", 3, 3, 6), item("gold_ingot", 2, 1, 4)],
-    3: [item("experience_bottle", 6, 10, 18), item("emerald", 5, 5, 12), item("diamond", 2, 1, 2), item("golden_apple", 2, 1, 2), item("ender_pearl", 2, 1, 3)],
-    4: [item("experience_bottle", 6, 14, 24), item("emerald", 5, 8, 16), item("diamond", 3, 1, 3), item("golden_apple", 3, 1, 3), item("netherite_scrap", 1)],
-}
-for t, entries in PR_LOOT.items():
-    W(f"data/{NS}/loot_table/practice_t{t}.json", {"type": "minecraft:chest", "pools": [{"rolls": 2 + t // 2, "entries": entries}]})
-W(f"data/{NS}/loot_table/contract.json", {"type": "minecraft:chest", "pools": [{"rolls": 4, "entries": [
-    item("experience_bottle", 6, 10, 20), item("emerald", 6, 8, 18), item("diamond", 2, 1, 3), item("golden_apple", 2, 1, 2), FRAG]}]})
-W(f"data/{NS}/loot_table/boss.json", {"type": "minecraft:chest", "pools": [{"rolls": 6, "entries": [
-    item("experience_bottle", 6, 16, 32), item("emerald", 5, 12, 24), item("diamond", 3, 2, 4), item("enchanted_golden_apple", 1),
-    item("netherite_scrap", 1, 1, 2), item("totem_of_undying", 1), FRAG]}]})
-W(f"data/{NS}/loot_table/streak.json", {"type": "minecraft:chest", "pools": [{"rolls": 3, "entries": [
-    item("experience_bottle", 5, 16, 32), item("diamond", 3, 2, 4), item("golden_apple", 3, 2, 4), item("totem_of_undying", 1), FRAG]}]})
+# Fragmento de Llave: para la futura forja de so_crates (se detecta por custom_data).
+KFRAG = {"type": "minecraft:item", "name": "minecraft:echo_shard", "weight": 1, "functions": [
+    {"function": "minecraft:set_components", "components": {
+        "minecraft:custom_name": {"text": "Fragmento de Llave", "color": "light_purple", "italic": False},
+        "minecraft:lore": [{"text": "Juntá varios para forjar una llave de crate", "color": "gray", "italic": False}],
+        "minecraft:custom_data": "{so_key_frag:1b}"}}]}
+
+
+def EMPTY(w):
+    return {"type": "minecraft:empty", "weight": w}
+
+
+# Llaves de so_crates: componentes EXACTOS (las bóvedas comparan el custom_name completo).
+def skey(name, item, w=1):
+    return {"type": "minecraft:item", "name": f"minecraft:{item}", "weight": w,
+            "functions": [{"function": "minecraft:set_components", "components": {"minecraft:custom_name": name}}]}
+
+
+def okey(name, color, item, crate, w=1):
+    return {"type": "minecraft:item", "name": f"minecraft:{item}", "weight": w,
+            "functions": [{"function": "minecraft:set_components", "components": {
+                "minecraft:custom_name": {"text": name, "color": color, "italic": False},
+                "minecraft:lore": [{"text": f"Abre: {crate}", "color": "gray", "italic": False}]}}]}
+
+
+K_T1 = [skey(n, "trial_key") for n in ("Cemetery Key", "Graveyard Key", "Ossuary Key", "Old Tower Key")]
+K_T2 = [skey(n, "trial_key") for n in ("Pyramid Key", "Rusty Mineshaft Key", "Treasure Room", "Deep_Key")]
+K_BASIC = [okey("Llave del Arquitecto", "aqua", "trial_key", "Crate del Constructor"),
+           okey("Llave Silvestre", "green", "trial_key", "Crate de la Naturaleza")]
+K_RARE = [skey("Elder Guardian Key", "ominous_trial_key"), skey("To the End", "trial_key"),
+          okey("Llave Subterránea", "gray", "trial_key", "Crate del Minero"),
+          okey("Llave de Batalla", "red", "trial_key", "Crate de Combate")]
+K_LEG = [skey("Warden_Key", "ominous_trial_key"), skey("Wither Arena", "ominous_trial_key"),
+         okey("Llave Abisal", "dark_purple", "ominous_trial_key", "Crate Místico"),
+         okey("Llave del Vacío", "gold", "ominous_trial_key", "Crate Legendario")]
+L_COMMON = [item("experience_bottle", 6, 3, 6), item("bread", 3, 3, 6), item("cooked_beef", 3, 2, 5), item("arrow", 4, 8, 16),
+            item("emerald", 5, 2, 4), item("iron_ingot", 4, 1, 3), item("gold_ingot", 3, 1, 3), item("copper_ingot", 3, 3, 8),
+            item("lapis_lazuli", 3, 3, 8), item("redstone", 3, 3, 8), item("torch", 2, 4, 12), item("lead", 2), item("name_tag", 2),
+            item("saddle", 1), item("shield", 2), item("wind_charge", 2, 2, 5), item("firework_rocket", 2, 2, 5),
+            pot("potion", "healing", 3), pot("splash_potion", "swiftness", 2), pot("potion", "night_vision", 2),
+            ench("bow", 2, 10), ench("stone_sword", 2, 10), ench("iron_pickaxe", 1, 10), book(2, 10), item("honey_bottle", 2),
+            item("glow_berries", 2, 2, 5), item("pumpkin_pie", 2, 1, 3), item("amethyst_shard", 2, 2, 5)]
+L_MID = [item("experience_bottle", 5, 5, 10), item("emerald", 5, 3, 7), item("golden_carrot", 3, 2, 4), item("ender_pearl", 3, 1, 2),
+         item("diamond", 2), item("golden_apple", 2), item("spectral_arrow", 3, 6, 12), item("blaze_rod", 2, 1, 2),
+         item("slime_ball", 2, 2, 4), item("glowstone_dust", 2, 3, 6), item("quartz", 2, 4, 8), item("obsidian", 2, 1, 3),
+         pot("potion", "strength", 3), pot("potion", "regeneration", 2), pot("splash_potion", "strong_healing", 2),
+         pot("potion", "fire_resistance", 2), pot("potion", "slow_falling", 2), item("wind_charge", 2, 4, 8),
+         ench("iron_sword", 2, 15), ench("crossbow", 2, 15), ench("iron_chestplate", 2, 15), ench("iron_axe", 1, 15),
+         book(3, 20), item("saddle", 1), item("name_tag", 2), item("trident", 1), item("music_disc_pigstep", 1),
+         item("bundle", 1), item("spyglass", 1), item("goat_horn", 1), item("cake", 1)]
+L_HIGH = [item("experience_bottle", 4, 8, 16), item("emerald", 4, 5, 10), item("diamond", 4, 1, 3), item("golden_apple", 3, 1, 2),
+          item("totem_of_undying", 1), item("netherite_scrap", 1), item("shulker_shell", 1, 1, 2), item("heart_of_the_sea", 1),
+          item("nautilus_shell", 2, 1, 2), item("ghast_tear", 2, 1, 2), item("crying_obsidian", 2, 2, 4), item("ender_eye", 2, 1, 3),
+          item("echo_shard", 1), item("enchanted_golden_apple", 1), pot("potion", "strong_strength", 3),
+          pot("potion", "strong_regeneration", 2), pot("potion", "strong_swiftness", 2), pot("potion", "strong_turtle_master", 1),
+          pot("lingering_potion", "strong_healing", 1), ench("diamond_sword", 2, 30), ench("diamond_pickaxe", 2, 30),
+          ench("diamond_helmet", 1, 30), ench("diamond_boots", 1, 30), ench("bow", 2, 30), book(4, 30),
+          named("diamond_axe", 1, "Hacha del Campeón", "gold", 30), named("trident", 1, "Tridente del Coliseo", "aqua", 30),
+          item("netherite_upgrade_smithing_template", 1), item("sentry_armor_trim_smithing_template", 1),
+          item("coast_armor_trim_smithing_template", 1), item("wild_armor_trim_smithing_template", 1),
+          item("dune_armor_trim_smithing_template", 1), item("breeze_rod", 2, 1, 3), item("blaze_powder", 2, 2, 4),
+          item("sponge", 1, 1, 2), item("music_disc_otherside", 1), item("music_disc_relic", 1)]
+L_EPIC = [item("netherite_ingot", 1), item("nether_star", 1), item("elytra", 1), item("trident", 1, fn=[{"function": "minecraft:enchant_with_levels", "levels": 30}]),
+          item("enchanted_golden_apple", 2), item("totem_of_undying", 2), item("netherite_upgrade_smithing_template", 2),
+          item("silence_armor_trim_smithing_template", 1), item("eye_armor_trim_smithing_template", 1), item("ward_armor_trim_smithing_template", 1),
+          item("heavy_core", 1), item("shulker_shell", 2, 2, 2), item("beacon", 1), item("dragon_breath", 1, 2, 4),
+          named("netherite_sword", 1, "Espada del Campeón Eterno", "light_purple", 30)]
+# Llaves por rareza: Simply T1/T2 frecuentes; básicas de so_crates y raras en pools medios/altos; legendarias solo en épico.
+L_COMMON += K_T1 + K_T2
+L_MID += K_T1 + K_T2 + K_BASIC
+L_HIGH += K_T2 + K_BASIC + K_RARE
+L_EPIC += K_LEG + [dict(KFRAG, weight=2)]
+
+
+def table(name, *pools):
+    W(f"data/{NS}/loot_table/{name}.json", {"type": "minecraft:chest", "pools": [{"rolls": r, "entries": e} for r, e in pools]})
+
+
+table("practice_t1", (4, L_COMMON))
+table("practice_t2", (4, L_COMMON), (2, L_MID))
+table("practice_t3", (3, L_COMMON), (3, L_MID), (1, L_HIGH))
+table("practice_t4", (2, L_COMMON), (3, L_MID), (3, L_HIGH))
+table("contract", (3, L_COMMON), (3, L_MID), (2, L_HIGH), (1, [FRAG]), (1, [KFRAG, EMPTY(2)]))
+table("boss", (2, L_MID), (5, L_HIGH), (1, L_EPIC), (1, [FRAG]), (1, [KFRAG]))
+table("streak", (2, L_MID), (2, L_HIGH), (1, L_EPIC + [FRAG]))
+table("dg_room", (3, L_COMMON), (2, L_MID))
+table("dg_room_hi", (2, L_COMMON), (2, L_MID), (1, L_HIGH))
+table("dg_secret", (2, L_HIGH), (1, L_EPIC))
+table("dg_boss1", (3, L_MID), (3, L_HIGH), (1, [FRAG]), (1, [KFRAG]))
+table("dg_boss2", (2, L_MID), (4, L_HIGH), (1, L_EPIC), (1, [FRAG]), (1, [KFRAG]))
+table("dg_boss3", (5, L_HIGH), (2, L_EPIC), (1, [FRAG]), (1, [KFRAG]), (1, K_LEG + [EMPTY(4)]))
 
 # ---------------------------------------------------------------- música
-SONGS = [  # (n, id, nombre, duración en s)
+SONGS = [  # (n, id, nombre, duración en s) — temas de batalla; sin 11, 13, 5, mellohi ni cajas de música
     (1, "pigstep", "Pigstep", 148), (2, "otherside", "Otherside", 195), (3, "creator", "Creator", 176),
     (4, "relic", "Relic", 218), (5, "precipice", "Precipice", 299), (6, "strad", "Strad", 188), (7, "chirp", "Chirp", 185),
+    (8, "blocks", "Blocks", 345), (9, "cat", "Cat", 185), (10, "far", "Far", 174), (11, "mall", "Mall", 197),
+    (12, "stal", "Stal", 150), (13, "ward", "Ward", 251), (14, "wait", "Wait", 238), (15, "tears", "Tears", 175),
+    (16, "lava_chicken", "Lava Chicken", 134),
 ]
+NSONG = len(SONGS)
+RAND = 99  # /trigger arena_dj set 99 = tema al azar
 
 # ---------------------------------------------------------------- load / tick
-TRIGGERS = ["arena", "volver", "arena_pr", "arena_con", "levelrank", "arena_dj", "arena_mut", "arena_ver", "arena_pvp"]
+TRIGGERS = ["arena", "volver", "arena_pr", "arena_con", "levelrank", "arena_dj", "arena_mut", "arena_ver", "arena_pvp", "arena_dg"]
 OBJS = ["so_ar_air", "so_ar_rank", "so_ar_x", "so_ar_y", "so_ar_z", "so_ar_saved", "so_ar_streak", "so_ar_hp"]
 F("load", [
     "scoreboard objectives add so_ar dummy",
@@ -132,16 +238,19 @@ F("load", [
     "execute unless score #mode so_ar matches 0..10 run scoreboard players set #mode so_ar 0",
     "execute unless score #exit so_ar matches 0..1 run scoreboard players set #exit so_ar 0",
     *[f"execute unless score #{m} so_ar matches 0..1 run scoreboard players set #{m} so_ar 0" for m in ("mut_n", "mut_f", "mut_v", "playing")],
-    "execute unless score #song so_ar matches 0..7 run scoreboard players set #song so_ar 0",
+    f"execute unless score #song so_ar matches 0..{NSONG} run scoreboard players set #song so_ar 0",
+    "execute unless score #dg so_ar matches 0..3 run scoreboard players set #dg so_ar 0",
     "scoreboard players set #beat so_ar 0",
-    "scoreboard players set #twentyfive so_ar 25",
-    "scoreboard players set #ten so_ar 10",
-    "scoreboard players set #fifteen so_ar 15",
+    *[f"scoreboard players set #{k} so_ar {v}" for k, v in (("two", 2), ("three", 3), ("six", 6), ("seven", 7), ("ten", 10),
+                                                              ("fifteen", 15), ("twentyfive", 25))],
     "scoreboard players set #anticamp so_ar 1",
     f"bossbar add {NS}:fight {T({'text': 'Coliseo'})}",
     f"bossbar set {NS}:fight max 100", f"bossbar set {NS}:fight visible false",
+    f"bossbar add {NS}:dg {T({'text': 'Catacumbas'})}",
+    f"bossbar set {NS}:dg color purple", f"bossbar set {NS}:dg visible false",
     f"tellraw @a[tag=oneblock_admin] {T({'text': '[SO Arenas] ', 'color': 'gold'}, {'text': VER + ' cargado. Ayuda: /function so_arenas:admin/help', 'color': 'gray'})}",
 ])
+W(f"data/{NS}/tags/entity_type/aggro.json", {"values": ["minecraft:spider", "minecraft:cave_spider", "minecraft:enderman", "minecraft:warden"]})
 F("tick", [
     "scoreboard players add #beat so_ar 1",
     f"execute as @a[scores={{arena=1..}}] at @s run function {NS}:lib/go",
@@ -153,6 +262,7 @@ F("tick", [
     f"execute as @a[scores={{arena_mut=1..}}] run function {NS}:lib/mut",
     f"execute as @a[scores={{arena_ver=1..}}] at @s run function {NS}:lib/ver",
     f"execute as @a[scores={{arena_pvp=1..}}] at @s run function {NS}:lib/pvp",
+    f"execute as @a[scores={{arena_dg=1..}}] at @s run function {NS}:dg/trigger",
     *[f"scoreboard players reset @a {t}" for t in TRIGGERS],
     *[f"scoreboard players enable @a {t}" for t in TRIGGERS],
     "# duelo: vida chequeada cada tick (se corta antes de morir)",
@@ -193,7 +303,15 @@ F("lib/second", [
     f"execute if score #mode so_ar matches {FIGHT} run function {NS}:lib/board",
     f"execute if score #playing so_ar matches 1 run function {NS}:lib/music_second",
     f"execute if score #exit so_ar matches 1 run function {NS}:lib/exit_second",
-    f"execute if score #mode so_ar matches 0 if score #exit so_ar matches 0 as @a[tag=so_ar_zone,tag=!so_ar_in,tag=!so_ar_spec] run title @s actionbar {T({'text': 'Menú: aldeanos, carteles, placas del piso o /trigger arena', 'color': 'gray'})}",
+    "# Las Catacumbas",
+    f"execute if score #dg so_ar matches 1.. run function {NS}:dg/second",
+    "execute if score #dg so_ar matches 0 run tag @a remove so_ar_dgp",
+    "# Aggro forzado (arañas, endermans, wardens): golpe invisible a nombre del jugador más cercano, cada 2 s.",
+    "scoreboard players add #sec so_ar 1",
+    "scoreboard players operation #m2 so_ar = #sec so_ar",
+    "scoreboard players operation #m2 so_ar %= #two so_ar",
+    f"execute if score #m2 so_ar matches 0 as @e[tag=so_ar_aggro,{ZONE_BOX}] at @s if entity @p[tag=so_ar_zone,distance=..40] run damage @s 0.01 minecraft:player_attack by @p[tag=so_ar_zone,distance=..40]",
+    f"execute if score #mode so_ar matches 0 if score #exit so_ar matches 0 as @a[tag=so_ar_zone,tag=!so_ar_in,tag=!so_ar_spec,tag=!so_ar_dgp] run title @s actionbar {T({'text': 'Menú: aldeanos, carteles, placas del piso o /trigger arena', 'color': 'gray'})}",
 ])
 F("lib/died", [
     "scoreboard players reset @s so_ar_death",
@@ -227,8 +345,9 @@ F("lib/enter_zone", [
 ])
 F("lib/leave", [
     "tag @s remove so_ar_zone", "tag @s remove so_ar_in", "tag @s remove so_ar_pad",
-    "tag @s remove so_ar_ready", "tag @s remove so_ar_win", "tag @s remove so_ar_pvpw",
+    "tag @s remove so_ar_ready", "tag @s remove so_ar_win", "tag @s remove so_ar_pvpw", "tag @s remove so_ar_dgp",
     f"clear @s {LOAN}",
+    f"clear @s {DGKEY}",
     "tag @s remove so_ar_loan",
     "execute if entity @s[tag=so_ar_spec] run effect clear @s minecraft:invisibility",
     "tag @s remove so_ar_spec",
@@ -274,7 +393,7 @@ CONTRACTS = [  # (n, nombre corto, nombre, bloques mínimos, descripción)
     (1, "Caza", "Caza: 15 bajas objetivo", 400, "15 objetivos en tandas, con apoyo mixto según tu fase."),
     (2, "Oleadas", "Oleadas dobles", 400, "3 oleadas, cada una más dura."),
     (3, "Defensa", "Defensa del Núcleo", 2501, "2 minutos. Cebo vivo: todos van al núcleo. Te damos barricadas."),
-    (4, "Rey", "Rey de la Colina", 400, "Aguantá 90 s dentro del círculo de luz central."),
+    (4, "Rey", "Rey de la Colina", 400, "Dominá 90 s la cima de la colina central (límite 120 s)."),
     (5, "Asedio", "Asedio Volador", 2501, "Phantoms y vexes: arco, ballesta y escudo."),
     (6, "Duelo", "Duelo de Campeones", 3334, "3 minijefes seguidos, 10 s de respiro entre cada uno."),
     (7, "Jefes", "Desafío de Jefes", 6667, "5 jefes de tu fase en cadena. Botín de jefe."),
@@ -289,9 +408,9 @@ F("lib/chat_main", [
     f"tellraw @s {T({'text': '━━━ Coliseo VorNeX ━━━', 'color': 'gold', 'bold': True})}",
     f"tellraw @s {T({'text': ' Práctica: ', 'color': 'gray'}, *[x for t in range(1, 5) for x in (link(f'[T{t}]', f'/trigger arena_pr set {t}', 'yellow', f'Tier {t} con kit prestado'), link(f'[T{t}+propio] ', f'/trigger arena_pr set {t + 10}', 'gold', f'Tier {t} con tu equipo'))])}",
     f"tellraw @s {T({'text': ' Contratos: ', 'color': 'gray'}, *[link(f'[{s}] ', f'/trigger arena_con set {n}', 'aqua', f'{name} ({fmt(b)}+): {d}') for n, s, name, b, d in CONTRACTS])}",
-    f"tellraw @s {T({'text': ' Música: ', 'color': 'gray'}, *[link(f'[{name}] ', f'/trigger arena_dj set {n}', 'light_purple', f'Tema de entrada: {name}') for n, _, name, _ in SONGS], link('[Azar]', '/trigger arena_dj set 8', 'dark_purple', 'Tema al azar'))}",
+    f"tellraw @s {T({'text': ' Música: ', 'color': 'gray'}, *[link(f'[{name}] ', f'/trigger arena_dj set {n}', 'light_purple', f'Tema de entrada: {name}') for n, _, name, _ in SONGS], link('[Azar]', f'/trigger arena_dj set {RAND}', 'dark_purple', 'Tema al azar'))}",
     f"tellraw @s {T({'text': ' Mutadores (x2 botín): ', 'color': 'gray'}, link('[Niebla] ', '/trigger arena_mut set 1', 'dark_gray', 'Oscuridad constante'), link('[Furia] ', '/trigger arena_mut set 2', 'red', 'Monstruos con Velocidad II'), link('[Vampirismo] ', '/trigger arena_mut set 3', 'dark_red', 'Monstruos con Regeneración II'), link('[Quitar]', '/trigger arena_mut set 4', 'gray', 'Sin mutadores'))}",
-    f"tellraw @s {T({'text': ' ', 'color': 'gray'}, link('[Unirse] ', '/trigger arena_con set 9', 'green', 'Entrar al desafío en curso'), link('[Tribunas] ', '/trigger arena_ver', 'aqua', 'Mirar desde las gradas (invisible)'), link('[Duelo PvP] ', '/trigger arena_pvp set 1', 'red', 'Retar o aceptar un duelo amistoso'), link('[Mi rango] ', '/trigger levelrank', 'gray', 'Rango y racha'), link('[Volver a la isla]', '/trigger volver', 'red', 'Salir (si hay desafío: abandono)'))}",
+    f"tellraw @s {T({'text': ' ', 'color': 'gray'}, link('[Unirse] ', '/trigger arena_con set 9', 'green', 'Entrar al desafío en curso'), link('[Tribunas] ', '/trigger arena_ver', 'aqua', 'Mirar desde las gradas (invisible)'), link('[Duelo PvP] ', '/trigger arena_pvp set 1', 'red', 'Retar o aceptar un duelo amistoso'), link('[Mi rango] ', '/trigger levelrank', 'gray', 'Rango y racha'), link('[Catacumbas] ', '/trigger arena_dg set 20', 'dark_purple', 'Mazmorras bajo el coliseo'), link('[Volver a la isla]', '/trigger volver', 'red', 'Salir (si hay desafío: abandono)'))}",
 ])
 
 # ---------------------------------------------------------------- placas del piso
@@ -309,7 +428,9 @@ F("lib/pads", [
     *[f"execute as @a[tag=so_ar_zone,tag=!so_ar_pad,x={x},y=96,z={PAD_Z},dx=0,dy=0,dz=0] run function {NS}:lib/{fn}" for x, fn, _, _ in PADS],
     f"execute if score #mode so_ar matches 9 as @a[tag=so_ar_ready,tag=!so_ar_pad,{at_cell(START_PLATE)}] run function {NS}:lib/pad_start",
     f"execute if score #mode so_ar matches 0 as @a[tag=so_ar_zone,tag=!so_ar_pad,{at_cell(EXIT_PLATE)}] run function {NS}:lib/pad_exit",
+    f"execute as @a[tag=so_ar_zone,tag=!so_ar_pad,{at_cell(DG_PLATE)}] run function {NS}:lib/pad_dg",
 ])
+F("lib/pad_dg", ["tag @s add so_ar_pad", f"function {NS}:dg/menu", "playsound minecraft:block.chest.locked master @s ~ ~ ~ 1 0.6"])
 F("lib/pad_pr", ["tag @s add so_ar_pad", f"dialog show @s {NS}:practice", f"function {NS}:lib/chat_main", "playsound minecraft:block.note_block.pling master @s ~ ~ ~ 1 1.4"])
 F("lib/pad_con", ["tag @s add so_ar_pad", f"dialog show @s {NS}:contracts", f"function {NS}:lib/chat_main", "playsound minecraft:block.note_block.pling master @s ~ ~ ~ 1 1.4"])
 F("lib/pad_join", ["tag @s add so_ar_pad", f"function {NS}:lib/join"])
@@ -494,7 +615,7 @@ F("lib/stage_in", [
     f'title @s title {T({"text": "Túnel de gladiadores", "color": "gold", "bold": True})}',
     f'title @s subtitle {T({"text": "Elegí tu tema y tocá la campana", "color": "yellow"})}',
     say("@s", "Elegí la música (carteles, tocadiscos o chat), activá mutadores si querés y tocá la CAMPANA o pisá la placa del portón. En 30 s arranca sola.", "yellow"),
-    f"tellraw @s {T({'text': ' Música: ', 'color': 'gray'}, *[link(f'[{name}] ', f'/trigger arena_dj set {n}', 'light_purple', name) for n, _, name, _ in SONGS], link('[Azar] ', '/trigger arena_dj set 8', 'dark_purple', 'Al azar'), link('[¡COMENZAR!]', '/trigger arena_con set 30', 'green', 'Tocar la campana'))}",
+    f"tellraw @s {T({'text': ' Música: ', 'color': 'gray'}, *[link(f'[{name}] ', f'/trigger arena_dj set {n}', 'light_purple', name) for n, _, name, _ in SONGS], link('[Azar] ', f'/trigger arena_dj set {RAND}', 'dark_purple', 'Al azar'), link('[¡COMENZAR!]', '/trigger arena_con set 30', 'green', 'Tocar la campana'))}",
 ])
 F("lib/stage_second", [
     "scoreboard players add #st so_ar 1",
@@ -570,18 +691,20 @@ F("lib/board_idle", [
 # ---------------------------------------------------------------- música
 F("lib/dj", [
     f'execute unless entity @s[tag=so_ar_zone] run return run {say("@s", "La música se elige dentro del Coliseo.", "red")}',
-    "execute if score @s arena_dj matches 1..7 run scoreboard players operation #song so_ar = @s arena_dj",
-    "execute if score @s arena_dj matches 8 run scoreboard players set #song so_ar 0",
+    f"execute if score @s arena_dj matches 1..{NSONG} run scoreboard players operation #song so_ar = @s arena_dj",
+    f"execute if score @s arena_dj matches {RAND} run scoreboard players set #song so_ar 0",
     *[f'execute if score @s arena_dj matches {n} run {say(ZONE, f"♪ Tema elegido: {name}", "light_purple")}' for n, _, name, _ in SONGS],
-    f'execute if score @s arena_dj matches 8 run {say(ZONE, "♪ Tema al azar: la campana tira los dados.", "light_purple")}',
+    f'execute if score @s arena_dj matches {RAND} run {say(ZONE, "♪ Tema al azar: la campana tira los dados.", "light_purple")}',
     "execute at @s run playsound minecraft:block.note_block.chime master @s ~ ~ ~ 1 1.5",
     f"execute if score #playing so_ar matches 1 if score #song so_ar matches 1.. run function {NS}:lib/music_play",
 ])
 F("lib/music_pick", [
     "# Disco puesto en el tocadiscos del túnel > elección por cartel/menú > azar (solo temas épicos).",
-    *[f'execute if block {P(JUKE)} minecraft:jukebox{{RecordItem:{{id:"minecraft:music_disc_{sid}"}}}} run scoreboard players set #song so_ar {n}' for n, sid, _, _ in SONGS],
+    "scoreboard players set #dsc so_ar 0",
+    *[f'execute if block {P(JUKE)} minecraft:jukebox{{RecordItem:{{id:"minecraft:music_disc_{sid}"}}}} store success score #dsc so_ar run scoreboard players set #song so_ar {n}' for n, sid, _, _ in SONGS],
+    f'execute if data block {P(JUKE)} RecordItem if score #dsc so_ar matches 0 run {say(ZONE, "Ese disco no suena en el Coliseo (solo temas de batalla): va otro tema.", "gray")}',
     f"execute if data block {P(JUKE)} RecordItem run function {NS}:lib/juke_pop",
-    "execute unless score #song so_ar matches 1..7 store result score #song so_ar run random value 1..7",
+    f"execute unless score #song so_ar matches 1..{NSONG} store result score #song so_ar run random value 1..{NSONG}",
 ])
 F("lib/juke_pop", [
     "# Devuelve el disco al piso del túnel (no desaparece) y apaga el tocadiscos para no duplicar la música.",
@@ -595,7 +718,7 @@ F("lib/music_play", [
     "stopsound @a[tag=so_ar_zone] record",
     "scoreboard players set #mt so_ar 0",
     "scoreboard players set #playing so_ar 1",
-    f"execute as {ZONE} run function {NS}:lib/music_one",
+    f"execute as @a[tag=so_ar_zone,tag=!so_ar_dgp] run function {NS}:lib/music_one",
     *[f'execute if score #song so_ar matches {n} run title @a[tag=so_ar_zone] actionbar {T({"text": f"♪ Suena: {name}", "color": "light_purple"})}' for n, _, name, _ in SONGS],
 ])
 F("lib/music_one", [
@@ -663,9 +786,9 @@ PHASES = [
 ]
 # Defensa: solo mobs que van a pegar cuerpo a cuerpo (los esqueletos no persiguen aldeanos)
 DEF_MOBS = [["zombie", "husk", "zombie", "baby_zombie", "zombie_villager"],
-            ["zombie_armor", "husk", "piglin", "zombie_escort", "baby_zombie", "zombified_piglin"],
-            ["vindicator", "zombie_armor", "vindicator", "zombie_escort", "piglin_brute", "baby_zombie"],
-            ["zombie_ominous", "vindicator", "piglin_brute", "zombie_ominous", "zoglin", "vindicator"]]
+            ["zombie_armor", "husk", "zombie_escort", "baby_zombie", "vindicator", "zombie_villager"],
+            ["vindicator", "zombie_armor", "vindicator", "zombie_escort", "drowned_trident", "baby_zombie"],
+            ["zombie_ominous", "vindicator", "elite_zombie", "zombie_ominous", "zoglin", "vindicator"]]
 AIR_MOBS = [["phantom", "phantom", "vex"], ["phantom", "phantom", "phantom_big", "vex"],
             ["phantom_big", "phantom_big", "vex", "vex", "phantom"], ["phantom_big", "phantom_big", "vex", "vex", "breeze", "phantom"]]
 AIR_BOSS = [None, "espectro_alfa", "espectro_alfa", "espectro_alfa"]
@@ -779,14 +902,23 @@ F("mode/caza2/second", [
 # defensa del núcleo: cebo vivo + barricadas
 F("mode/defensa/start", [
     f"setblock {CX} 96 {CZ} minecraft:crying_obsidian",
-    f'summon minecraft:villager {CX}.5 97 {CZ}.5 {{Tags:["so_ar_bait","so_ar_mob_keep"],NoAI:1b,Invulnerable:1b,Silent:1b,PersistenceRequired:1b,active_effects:[{{id:"minecraft:invisibility",amplifier:0b,duration:-1,show_particles:0b}}]}}',
+    f'summon minecraft:villager {CX + 0.5} 97 {CZ + 0.5} {{Tags:["so_ar_bait"],NoAI:1b,Silent:1b,PersistenceRequired:1b,CustomNameVisible:1b,'
+    f'CustomName:{{text:"Núcleo Vivo",color:"dark_purple",bold:true}},VillagerData:{{profession:"minecraft:cleric",level:5,type:"minecraft:plains"}},'
+    f'attributes:[{{id:"minecraft:max_health",base:1024d}},{{id:"minecraft:knockback_resistance",base:1d}}],Health:1024f,'
+    f'active_effects:[{{id:"minecraft:glowing",amplifier:0b,duration:-1,show_particles:0b}}]}}',
     "scoreboard players set #mode so_ar 3", "scoreboard players set #hp so_ar 100", "scoreboard players set #anticamp so_ar 0",
     f"bossbar set {NS}:fight color purple", f"bossbar set {NS}:fight max 100", f"bossbar set {NS}:fight value 100",
     f'bossbar set {NS}:fight name {T({"text": "Núcleo", "color": "dark_purple"})}',
     f"execute as {IN} run function {NS}:lib/kit_def",
-    say(ZONE, "Contrato: protegé el Núcleo 2 minutos. ¡Los monstruos van directo a él! Usá las barricadas. Acá la altura está permitida.", "dark_purple"),
+    say(ZONE, "Contrato: protegé al Núcleo Vivo 2 minutos. Cada golpe que recibe baja la vida del núcleo (no le pegues vos). Usá las barricadas; acá la altura está permitida.", "dark_purple"),
     f"function {NS}:mode/defensa/wave",
 ])
+W(f"data/{NS}/advancement/bait_hit.json", {"criteria": {"hit": {"trigger": "minecraft:player_hurt_entity", "conditions": {
+    "entity": [{"condition": "minecraft:entity_properties", "entity": "this", "predicate": {"nbt": "{Tags:[\"so_ar_bait\"]}"}}]}}},
+    "rewards": {"function": f"{NS}:lib/bait_hit"}})
+F("lib/bait_hit", [f"advancement revoke @s only {NS}:bait_hit",
+                   "execute as @e[tag=so_ar_bait] run data modify entity @s Health set value 1024f",
+                   f"title @s actionbar {T({'text': '¡No le pegues al Núcleo Vivo! Defendelo.', 'color': 'red', 'bold': True})}"])
 F("mode/defensa/wave", [
     "scoreboard players add #wave so_ar 1",
     "execute store result score #alive so_ar if entity @e[tag=so_ar_mob]",
@@ -798,10 +930,16 @@ F("mode/defensa/wave", [
 ])
 F("mode/defensa/second", [
     "scoreboard players add #t so_ar 1",
-    f"execute positioned {CX}.5 96 {CZ}.5 store result score #near so_ar if entity @e[tag=so_ar_mob,distance=..3.5]",
-    "scoreboard players operation #hp so_ar -= #near so_ar",
-    f"execute if score #near so_ar matches 1.. run particle minecraft:damage_indicator {CX}.5 97.5 {CZ}.5 0.4 0.4 0.4 0.1 6 force",
-    f"execute if score #near so_ar matches 1.. run playsound minecraft:block.anvil.land master {IN} {CX} 97 {CZ} 0.4 1.6",
+    "# Daño real que recibió el aldeano cebo (cada 2 de vida = 1% de núcleo); después se cura al máximo.",
+    "scoreboard players set #bh so_ar 1024",
+    "execute as @e[tag=so_ar_bait,limit=1] store result score #bh so_ar run data get entity @s Health",
+    "scoreboard players set #dmg so_ar 1025",
+    "scoreboard players operation #dmg so_ar -= #bh so_ar",
+    "scoreboard players operation #dmg so_ar /= #two so_ar",
+    "scoreboard players operation #hp so_ar -= #dmg so_ar",
+    "execute as @e[tag=so_ar_bait] run data modify entity @s Health set value 1024f",
+    f"execute if score #dmg so_ar matches 1.. run particle minecraft:damage_indicator {CX}.5 98 {CZ}.5 0.4 0.6 0.4 0.1 8 force",
+    f"execute if score #dmg so_ar matches 1.. run playsound minecraft:block.anvil.land master {IN} {CX} 97 {CZ} 0.4 1.6",
     f"execute store result bossbar {NS}:fight value run scoreboard players get #hp so_ar",
     f"title {IN} actionbar {T({'text': 'Núcleo: ', 'color': 'dark_purple'}, {'score': {'name': '#hp', 'objective': 'so_ar'}, 'color': 'white', 'bold': True}, {'text': '% · tiempo: ', 'color': 'gray'}, {'score': {'name': '#t', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '/120 s', 'color': 'gray'})}",
     f"execute if score #hp so_ar matches ..0 run return run function {NS}:lib/fail",
@@ -810,12 +948,23 @@ F("mode/defensa/second", [
     f"execute if score #m so_ar matches 0 run function {NS}:mode/defensa/wave",
 ])
 # rey de la colina
-RING = [(CX + 0.5 + 4 * math.cos(a * math.pi / 8), CZ + 0.5 + 4 * math.sin(a * math.pi / 8)) for a in range(16)]
+HILL = []
+for _y, _r, _b in ((96, 6.2, "minecraft:moss_block"), (97, 4.4, "minecraft:mud_bricks"), (98, 2.7, "minecraft:smooth_quartz")):
+    for _dx in range(-int(_r), int(_r) + 1):
+        _hz = int(math.sqrt(_r * _r - _dx * _dx))
+        HILL.append(f"fill {CX + _dx} {_y} {CZ - _hz} {CX + _dx} {_y} {CZ + _hz} {_b}")
+HILL += [f"setblock {CX + a} 98 {CZ + b} minecraft:gold_block" for a in range(-2, 3) for b in range(-2, 3)
+         if 1.6 < math.hypot(a, b) <= 2.7]
+HILL.append(f"setblock {CX} 98 {CZ} minecraft:pearlescent_froglight")
+RING = [(CX + 0.5 + 2.6 * math.cos(a * math.pi / 8), CZ + 0.5 + 2.6 * math.sin(a * math.pi / 8)) for a in range(16)]
+CAPT = T({"text": "Captura ", "color": "gold", "bold": True}, {"score": {"name": "#hold", "objective": "so_ar"}, "color": "white"}, {"text": "/90", "color": "gold"})
 F("mode/rey/start", [
-    "scoreboard players set #mode so_ar 5", "scoreboard players set #hold so_ar 0",
+    "# Colina física en el centro (dentro del óvalo que se limpia: desaparece al cerrar el foso).",
+    *HILL,
+    "scoreboard players set #mode so_ar 5", "scoreboard players set #hold so_ar 0", "scoreboard players set #anticamp so_ar 0",
     f"bossbar set {NS}:fight color yellow", f"bossbar set {NS}:fight max 90", f"bossbar set {NS}:fight value 0",
-    f'bossbar set {NS}:fight name {T({"text": "Rey de la Colina: dominio", "color": "gold"})}',
-    say(ZONE, "Contrato: quedate dentro del círculo de luz central 90 s. Si salís, el contador se frena.", "gold"),
+    f"bossbar set {NS}:fight name {CAPT}",
+    say(ZONE, "Contrato: subí a la colina del centro y dominá la cima del anillo dorado 90 s en total (límite: 120 s). Sin anti-camping.", "gold"),
     f"function {NS}:mode/rey/wave",
 ])
 F("mode/rey/wave", [
@@ -827,16 +976,17 @@ F("mode/rey/wave", [
 ])
 F("mode/rey/second", [
     "scoreboard players add #t so_ar 1",
-    *[f"particle minecraft:end_rod {x:.2f} 96.3 {z:.2f} 0 0.4 0 0.01 2 force" for x, z in RING],
-    f"particle minecraft:glow {CX}.5 97 {CZ}.5 0.3 1.5 0.3 0 10 force",
-    f"execute positioned {CX}.5 96 {CZ}.5 if entity @a[tag=so_ar_in,distance=..4.5] run scoreboard players add #hold so_ar 1",
+    *[f"particle minecraft:end_rod {x:.2f} 99.2 {z:.2f} 0 0.3 0 0.01 2 force" for x, z in RING],
+    f"particle minecraft:glow {CX}.5 100 {CZ}.5 0.3 1.5 0.3 0 10 force",
+    f"execute positioned {CX + 0.5} 99 {CZ + 0.5} if entity @a[tag=so_ar_in,distance=..2.8] run scoreboard players add #hold so_ar 1",
     f"execute store result bossbar {NS}:fight value run scoreboard players get #hold so_ar",
+    f"bossbar set {NS}:fight name {CAPT}",
     "scoreboard players operation #wave so_ar = #hold so_ar",
-    f"title {IN} actionbar {T({'text': 'Dominio: ', 'color': 'gold'}, {'score': {'name': '#hold', 'objective': 'so_ar'}, 'color': 'white', 'bold': True}, {'text': '/90 s (quedate en el círculo)', 'color': 'gray'})}",
+    f"title {IN} actionbar {T({'text': 'Captura: ', 'color': 'gold'}, {'score': {'name': '#hold', 'objective': 'so_ar'}, 'color': 'white', 'bold': True}, {'text': '/90 · tiempo ', 'color': 'gray'}, {'score': {'name': '#t', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '/120 s', 'color': 'gray'})}",
     f"execute if score #hold so_ar matches 90.. run return run function {NS}:lib/win_contract",
+    f"execute if score #t so_ar matches 120.. run return run function {NS}:lib/fail",
     "scoreboard players operation #m so_ar = #t so_ar", "scoreboard players operation #m so_ar %= #ten so_ar",
     f"execute if score #m so_ar matches 0 run function {NS}:mode/rey/wave",
-    f"execute if score #t so_ar matches 300.. run function {NS}:lib/fail",
 ])
 # asedio volador
 F("mode/asedio/start", [
@@ -1019,6 +1169,10 @@ for dx in range(-AX, AX + 1):
     reset.append(f"fill {x} 96 {CZ - zb} {x} 120 {CZ + zb} minecraft:air")
     reset.append(f"fill {x} {G} {CZ - zb} {x} {G} {CZ + zb} {FLOOR_MIX[(dx // 3) % len(FLOOR_MIX)]}")
 reset += [f"setblock {x} {G} {z} minecraft:ochre_froglight" for x, z in FLOOR_LIGHTS]
+reset.append("# Barricadas puestas en el labio o las gradas: solo tablas de roble y muros de piedra (la estructura no usa ninguno).")
+for dx in range(-AX, AX + 1):
+    for _blk in ("minecraft:oak_planks", "minecraft:cobblestone_wall"):
+        reset += band(CX + dx, dx, R_RESET, R_GRADA, 96, 112, f"minecraft:air replace {_blk}")
 F("lib/reset_pit", reset)
 
 # ---------------------------------------------------------------- spawn de enemigos
@@ -1026,7 +1180,7 @@ F("lib/spawn", [
     "# $(m): id de so_events:api/mob · $(t): 1 = objetivo de caza. Punto al azar dentro del foso.",
     "$data modify storage so_arenas:tmp m set value \"$(m)\"",
     "execute store result storage so_arenas:tmp a int 1 run random value 0..359",
-    "execute store result storage so_arenas:tmp d int 1 run random value 5..20",
+    "execute store result storage so_arenas:tmp d int 1 run random value 7..20",
     f"function {NS}:lib/spawn_at with storage so_arenas:tmp",
     "$scoreboard players set #tg so_ar $(t)",
     f"execute as @e[tag=so_ev_mob,{MOB_BOX}] run function {NS}:lib/claim",
@@ -1046,6 +1200,7 @@ F("lib/claim", [
     "tag @s add so_ar_mob",
     "tag @s remove so_ev_mob",
     "execute if score #tg so_ar matches 1 run tag @s add so_ar_target",
+    f"execute if entity @s[type=#{NS}:aggro] run tag @s add so_ar_aggro",
     f"execute if entity @s[tag=so_ev_boss] run function {NS}:lib/claim_boss",
     "execute if score #mut_f so_ar matches 1 run effect give @s minecraft:speed infinite 1 true",
     "execute if score #mut_v so_ar matches 1 run effect give @s minecraft:regeneration infinite 1 true",
@@ -1106,7 +1261,7 @@ F("mode/pvp/start", [
     f"title @a[tag=so_ar_zone] title {T({'text': '¡Duelo!', 'color': 'red', 'bold': True})}",
     f"title @a[tag=so_ar_zone] subtitle {T({'text': 'Pierde quien baje a 3 corazones', 'color': 'gray'})}",
     f'tellraw {ZONE} [{json.dumps(PFX)},{{"text":"Duelo amistoso: ","color":"red","bold":false}},{{"selector":"@a[tag=so_ar_pvp]","color":"white"}}]',
-    "execute store result score #song so_ar run random value 1..7",
+    f"execute store result score #song so_ar run random value 1..{NSONG}",
     f"function {NS}:lib/music_play",
     f"function {NS}:lib/judges_salute",
 ])
@@ -1169,6 +1324,7 @@ dialog("main", "Coliseo VorNeX", "gold",
        "Elegí desafío, música y mutadores. Después tocá la campana del túnel. Mercaderes y médica en el lobby.", [
            show("practice", "Práctica por tiers", "yellow"), show("contracts", "Contratos", "aqua"),
            show("dj", "Música de entrada", "light_purple"), show("mut", "Mutadores (x2 botín)", "red"),
+           act("/trigger arena_dg set 20", "Las Catacumbas", "Tres mazmorras bajo el coliseo.", "dark_purple"),
            act("/trigger arena_con set 9", "Unirse al desafío", "Entrar si ya hay uno en curso o en preparación.", "green"),
            act("/trigger arena_ver", "Tribunas (espectador)", "Mirar invisible desde las gradas. Otra vez para bajar.", "aqua"),
            act("/trigger arena_pvp set 1", "Duelo PvP amistoso", "Retar o aceptar. Termina a los 3 corazones.", "red"),
@@ -1186,9 +1342,10 @@ dialog("contracts", "Contratos", "aqua",
        cols=1, w=250)
 dialog("dj", "Música de entrada", "light_purple",
        "Elegí el tema que va a sonar en todo el estadio. También podés poner tu disco en el tocadiscos del túnel. Si no elegís, suena uno al azar.",
-       [act(f"/trigger arena_dj set {n}", f"♪ {name}", None, "light_purple") for n, _, name, _ in SONGS] +
-       [act("/trigger arena_dj set 8", "♪ Al azar", None, "dark_purple"),
-        act("/trigger arena_con set 30", "¡Tocar la campana!", "Empieza el combate (solo desde el túnel).", "green"), BACK])
+       [act(f"/trigger arena_dj set {n}", f"♪ {name}", None, "light_purple", 120) for n, _, name, _ in SONGS] +
+       [act(f"/trigger arena_dj set {RAND}", "♪ Al azar", None, "dark_purple", 120),
+        act("/trigger arena_con set 30", "¡Campana!", "Empieza el combate (solo desde el túnel).", "green", 120), BACK | {"width": 120}],
+       cols=3, w=120)
 dialog("mut", "Mutadores", "red",
        "Cada mutador activo duplica el botín. Se eligen antes de la campana y se apagan al terminar.", [
            act("/trigger arena_mut set 1", "Niebla de Oscuridad", "Oscuridad constante en el foso.", "dark_gray"),
@@ -1544,7 +1701,7 @@ cur += [f"setblock {JUKE[0]} {G} {JUKE[2]} minecraft:gold_block",
         f"setblock {START_PLATE[0]} {G} {START_PLATE[2]} minecraft:chiseled_polished_blackstone",
         f"setblock {P(EXIT_PLATE)} minecraft:light_weighted_pressure_plate",
         f"setblock {EXIT_PLATE[0]} {G} {EXIT_PLATE[2]} minecraft:gold_block"]
-for idx, (n, sid, name, _) in enumerate(SONGS + [(8, None, "Al azar", 0)]):
+for idx, (n, sid, name, _) in enumerate(SONGS + [(RAND, None, "Al azar", 0)]):
     cur.append(f"setblock {CX - 3} 97 {TZ0 + 5 + idx} minecraft:oak_wall_sign[facing=east]{sign_snbt(['Tema de entrada', ('♪ ' + name, 'dark_purple'), 'tocá para elegir', ''], f'/trigger arena_dj set {n}')}")
 cur.append(f"setblock {CX - 3} 98 {TZ0 + 4} minecraft:oak_wall_sign[facing=east]{sign_snbt(['O poné tu disco', ('Tocadiscos', 'dark_purple'), 'acá abajo', ''])}")
 for idx, (n, k, name) in enumerate(MUTS + [(4, None, "Quitar todos")]):
@@ -1585,11 +1742,25 @@ F("lib/refill", [
     *[f"data modify block {x} {y} {z} Items set value [{','.join(ROCKET.format(s=i, sh=sh, c=c) for i, (sh, c) in enumerate(ROCKET_SETS))}]" for x, y, z in ROCKET_CHESTS],
 ])
 F("lib/donations", [
-    "# Cestas de apoyo: lo que un espectador tira en la tolva aparece junto a un luchador al azar.",
-    *[f"execute if score #mode so_ar matches 1..8 if data block {x} {y} {z} Items[0] if entity {IN} run function {NS}:lib/donate {{x:{x},y:{y},z:{z}}}" for x, y, z in HOPPERS],
+    "# Cestas de apoyo: en combate, lo que cae en la tolva aparece junto a un luchador; si no hay combate, vuelve a quien lo tiró.",
+    *[f"execute if data block {x} {y} {z} Items[0] run function {NS}:lib/donate_route {{x:{x},y:{y},z:{z}}}" for x, y, z in HOPPERS],
+])
+F("lib/donate_route", [
+    f"$execute if score #mode so_ar matches 1..8 if entity {IN} run return run function {NS}:lib/donate {{x:$(x),y:$(y),z:$(z)}}",
+    f"$function {NS}:lib/donate_back {{x:$(x),y:$(y),z:$(z)}}",
+])
+F("lib/donate_back", [
+    '$execute positioned $(x) $(y) $(z) unless entity @p[tag=so_ar_zone,distance=..10] run return 0',
+    '$execute positioned $(x) $(y) $(z) as @p[tag=so_ar_zone,distance=..10] at @s run summon minecraft:item ~ ~1.8 ~ {Tags:["so_ar_gift"],PickupDelay:0s,Item:{id:"minecraft:stone",count:1}}',
+    "$data modify entity @e[type=minecraft:item,tag=so_ar_gift,limit=1] Item set from block $(x) $(y) $(z) Items[0]",
+    "data remove entity @e[type=minecraft:item,tag=so_ar_gift,limit=1] Item.Slot",
+    "tag @e[type=minecraft:item,tag=so_ar_gift] remove so_ar_gift",
+    "$data remove block $(x) $(y) $(z) Items[0]",
+    f'$execute positioned $(x) $(y) $(z) as @p[tag=so_ar_zone,distance=..10] at @s run playsound minecraft:entity.item.pickup master @s ~ ~ ~ 1 0.7',
+    f'$execute positioned $(x) $(y) $(z) run title @p[tag=so_ar_zone,distance=..10] actionbar {T({"text": "Solo se puede donar durante un combate: te lo devolvemos.", "color": "yellow"})}',
 ])
 F("lib/donate", [
-    '$execute as @a[tag=so_ar_in,limit=1,sort=random] at @s run summon minecraft:item ~ ~1.5 ~ {Tags:["so_ar_gift"],PickupDelay:10s,Motion:[0.0d,0.2d,0.0d],Item:{id:"minecraft:stone",count:1}}',
+    'execute as @a[tag=so_ar_in,limit=1,sort=random] at @s run summon minecraft:item ~ ~1.5 ~ {Tags:["so_ar_gift"],PickupDelay:10s,Motion:[0.0d,0.2d,0.0d],Item:{id:"minecraft:stone",count:1}}',
     "$data modify entity @e[type=minecraft:item,tag=so_ar_gift,limit=1] Item set from block $(x) $(y) $(z) Items[0]",
     "data remove entity @e[type=minecraft:item,tag=so_ar_gift,limit=1] Item.Slot",
     "execute as @e[type=minecraft:item,tag=so_ar_gift] at @s run particle minecraft:totem_of_undying ~ ~ ~ 0.3 0.3 0.3 0.2 20 force",
@@ -1651,6 +1822,7 @@ def npc_summons():
             label(TRASH[0], 97.4, TRASH[2], "Tacho de descarte", "red", scale=0.6),
             label(JUKE[0], 97.4, JUKE[2], "♪ DJ", "light_purple", scale=0.7),
             label(BELL[0], 97.4, BELL[2], "Campana de inicio", "gold", scale=0.7)]
+    out += dg_labels()
     return out
 
 
