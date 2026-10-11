@@ -393,7 +393,7 @@ CONTRACTS = [  # (n, nombre corto, nombre, bloques mínimos, descripción)
     (1, "Caza", "Caza: 15 bajas objetivo", 400, "15 objetivos en tandas, con apoyo mixto según tu fase."),
     (2, "Oleadas", "Oleadas dobles", 400, "3 oleadas, cada una más dura."),
     (3, "Defensa", "Defensa del Núcleo", 2501, "2 minutos. Cebo vivo: todos van al núcleo. Te damos barricadas."),
-    (4, "Rey", "Rey de la Colina", 400, "Aguantá 90 s dentro del círculo de luz central."),
+    (4, "Rey", "Rey de la Colina", 400, "Dominá 90 s la cima de la colina central (límite 120 s)."),
     (5, "Asedio", "Asedio Volador", 2501, "Phantoms y vexes: arco, ballesta y escudo."),
     (6, "Duelo", "Duelo de Campeones", 3334, "3 minijefes seguidos, 10 s de respiro entre cada uno."),
     (7, "Jefes", "Desafío de Jefes", 6667, "5 jefes de tu fase en cadena. Botín de jefe."),
@@ -408,9 +408,9 @@ F("lib/chat_main", [
     f"tellraw @s {T({'text': '━━━ Coliseo VorNeX ━━━', 'color': 'gold', 'bold': True})}",
     f"tellraw @s {T({'text': ' Práctica: ', 'color': 'gray'}, *[x for t in range(1, 5) for x in (link(f'[T{t}]', f'/trigger arena_pr set {t}', 'yellow', f'Tier {t} con kit prestado'), link(f'[T{t}+propio] ', f'/trigger arena_pr set {t + 10}', 'gold', f'Tier {t} con tu equipo'))])}",
     f"tellraw @s {T({'text': ' Contratos: ', 'color': 'gray'}, *[link(f'[{s}] ', f'/trigger arena_con set {n}', 'aqua', f'{name} ({fmt(b)}+): {d}') for n, s, name, b, d in CONTRACTS])}",
-    f"tellraw @s {T({'text': ' Música: ', 'color': 'gray'}, *[link(f'[{name}] ', f'/trigger arena_dj set {n}', 'light_purple', f'Tema de entrada: {name}') for n, _, name, _ in SONGS], link('[Azar]', '/trigger arena_dj set 8', 'dark_purple', 'Tema al azar'))}",
+    f"tellraw @s {T({'text': ' Música: ', 'color': 'gray'}, *[link(f'[{name}] ', f'/trigger arena_dj set {n}', 'light_purple', f'Tema de entrada: {name}') for n, _, name, _ in SONGS], link('[Azar]', f'/trigger arena_dj set {RAND}', 'dark_purple', 'Tema al azar'))}",
     f"tellraw @s {T({'text': ' Mutadores (x2 botín): ', 'color': 'gray'}, link('[Niebla] ', '/trigger arena_mut set 1', 'dark_gray', 'Oscuridad constante'), link('[Furia] ', '/trigger arena_mut set 2', 'red', 'Monstruos con Velocidad II'), link('[Vampirismo] ', '/trigger arena_mut set 3', 'dark_red', 'Monstruos con Regeneración II'), link('[Quitar]', '/trigger arena_mut set 4', 'gray', 'Sin mutadores'))}",
-    f"tellraw @s {T({'text': ' ', 'color': 'gray'}, link('[Unirse] ', '/trigger arena_con set 9', 'green', 'Entrar al desafío en curso'), link('[Tribunas] ', '/trigger arena_ver', 'aqua', 'Mirar desde las gradas (invisible)'), link('[Duelo PvP] ', '/trigger arena_pvp set 1', 'red', 'Retar o aceptar un duelo amistoso'), link('[Mi rango] ', '/trigger levelrank', 'gray', 'Rango y racha'), link('[Volver a la isla]', '/trigger volver', 'red', 'Salir (si hay desafío: abandono)'))}",
+    f"tellraw @s {T({'text': ' ', 'color': 'gray'}, link('[Unirse] ', '/trigger arena_con set 9', 'green', 'Entrar al desafío en curso'), link('[Tribunas] ', '/trigger arena_ver', 'aqua', 'Mirar desde las gradas (invisible)'), link('[Duelo PvP] ', '/trigger arena_pvp set 1', 'red', 'Retar o aceptar un duelo amistoso'), link('[Mi rango] ', '/trigger levelrank', 'gray', 'Rango y racha'), link('[Catacumbas] ', '/trigger arena_dg set 20', 'dark_purple', 'Mazmorras bajo el coliseo'), link('[Volver a la isla]', '/trigger volver', 'red', 'Salir (si hay desafío: abandono)'))}",
 ])
 
 # ---------------------------------------------------------------- placas del piso
@@ -428,7 +428,9 @@ F("lib/pads", [
     *[f"execute as @a[tag=so_ar_zone,tag=!so_ar_pad,x={x},y=96,z={PAD_Z},dx=0,dy=0,dz=0] run function {NS}:lib/{fn}" for x, fn, _, _ in PADS],
     f"execute if score #mode so_ar matches 9 as @a[tag=so_ar_ready,tag=!so_ar_pad,{at_cell(START_PLATE)}] run function {NS}:lib/pad_start",
     f"execute if score #mode so_ar matches 0 as @a[tag=so_ar_zone,tag=!so_ar_pad,{at_cell(EXIT_PLATE)}] run function {NS}:lib/pad_exit",
+    f"execute as @a[tag=so_ar_zone,tag=!so_ar_pad,{at_cell(DG_PLATE)}] run function {NS}:lib/pad_dg",
 ])
+F("lib/pad_dg", ["tag @s add so_ar_pad", f"function {NS}:dg/menu", "playsound minecraft:block.chest.locked master @s ~ ~ ~ 1 0.6"])
 F("lib/pad_pr", ["tag @s add so_ar_pad", f"dialog show @s {NS}:practice", f"function {NS}:lib/chat_main", "playsound minecraft:block.note_block.pling master @s ~ ~ ~ 1 1.4"])
 F("lib/pad_con", ["tag @s add so_ar_pad", f"dialog show @s {NS}:contracts", f"function {NS}:lib/chat_main", "playsound minecraft:block.note_block.pling master @s ~ ~ ~ 1 1.4"])
 F("lib/pad_join", ["tag @s add so_ar_pad", f"function {NS}:lib/join"])
@@ -613,7 +615,7 @@ F("lib/stage_in", [
     f'title @s title {T({"text": "Túnel de gladiadores", "color": "gold", "bold": True})}',
     f'title @s subtitle {T({"text": "Elegí tu tema y tocá la campana", "color": "yellow"})}',
     say("@s", "Elegí la música (carteles, tocadiscos o chat), activá mutadores si querés y tocá la CAMPANA o pisá la placa del portón. En 30 s arranca sola.", "yellow"),
-    f"tellraw @s {T({'text': ' Música: ', 'color': 'gray'}, *[link(f'[{name}] ', f'/trigger arena_dj set {n}', 'light_purple', name) for n, _, name, _ in SONGS], link('[Azar] ', '/trigger arena_dj set 8', 'dark_purple', 'Al azar'), link('[¡COMENZAR!]', '/trigger arena_con set 30', 'green', 'Tocar la campana'))}",
+    f"tellraw @s {T({'text': ' Música: ', 'color': 'gray'}, *[link(f'[{name}] ', f'/trigger arena_dj set {n}', 'light_purple', name) for n, _, name, _ in SONGS], link('[Azar] ', f'/trigger arena_dj set {RAND}', 'dark_purple', 'Al azar'), link('[¡COMENZAR!]', '/trigger arena_con set 30', 'green', 'Tocar la campana'))}",
 ])
 F("lib/stage_second", [
     "scoreboard players add #st so_ar 1",
@@ -689,18 +691,20 @@ F("lib/board_idle", [
 # ---------------------------------------------------------------- música
 F("lib/dj", [
     f'execute unless entity @s[tag=so_ar_zone] run return run {say("@s", "La música se elige dentro del Coliseo.", "red")}',
-    "execute if score @s arena_dj matches 1..7 run scoreboard players operation #song so_ar = @s arena_dj",
-    "execute if score @s arena_dj matches 8 run scoreboard players set #song so_ar 0",
+    f"execute if score @s arena_dj matches 1..{NSONG} run scoreboard players operation #song so_ar = @s arena_dj",
+    f"execute if score @s arena_dj matches {RAND} run scoreboard players set #song so_ar 0",
     *[f'execute if score @s arena_dj matches {n} run {say(ZONE, f"♪ Tema elegido: {name}", "light_purple")}' for n, _, name, _ in SONGS],
-    f'execute if score @s arena_dj matches 8 run {say(ZONE, "♪ Tema al azar: la campana tira los dados.", "light_purple")}',
+    f'execute if score @s arena_dj matches {RAND} run {say(ZONE, "♪ Tema al azar: la campana tira los dados.", "light_purple")}',
     "execute at @s run playsound minecraft:block.note_block.chime master @s ~ ~ ~ 1 1.5",
     f"execute if score #playing so_ar matches 1 if score #song so_ar matches 1.. run function {NS}:lib/music_play",
 ])
 F("lib/music_pick", [
     "# Disco puesto en el tocadiscos del túnel > elección por cartel/menú > azar (solo temas épicos).",
-    *[f'execute if block {P(JUKE)} minecraft:jukebox{{RecordItem:{{id:"minecraft:music_disc_{sid}"}}}} run scoreboard players set #song so_ar {n}' for n, sid, _, _ in SONGS],
+    "scoreboard players set #dsc so_ar 0",
+    *[f'execute if block {P(JUKE)} minecraft:jukebox{{RecordItem:{{id:"minecraft:music_disc_{sid}"}}}} store success score #dsc so_ar run scoreboard players set #song so_ar {n}' for n, sid, _, _ in SONGS],
+    f'execute if data block {P(JUKE)} RecordItem if score #dsc so_ar matches 0 run {say(ZONE, "Ese disco no suena en el Coliseo (solo temas de batalla): va otro tema.", "gray")}',
     f"execute if data block {P(JUKE)} RecordItem run function {NS}:lib/juke_pop",
-    "execute unless score #song so_ar matches 1..7 store result score #song so_ar run random value 1..7",
+    f"execute unless score #song so_ar matches 1..{NSONG} store result score #song so_ar run random value 1..{NSONG}",
 ])
 F("lib/juke_pop", [
     "# Devuelve el disco al piso del túnel (no desaparece) y apaga el tocadiscos para no duplicar la música.",
@@ -714,7 +718,7 @@ F("lib/music_play", [
     "stopsound @a[tag=so_ar_zone] record",
     "scoreboard players set #mt so_ar 0",
     "scoreboard players set #playing so_ar 1",
-    f"execute as {ZONE} run function {NS}:lib/music_one",
+    f"execute as @a[tag=so_ar_zone,tag=!so_ar_dgp] run function {NS}:lib/music_one",
     *[f'execute if score #song so_ar matches {n} run title @a[tag=so_ar_zone] actionbar {T({"text": f"♪ Suena: {name}", "color": "light_purple"})}' for n, _, name, _ in SONGS],
 ])
 F("lib/music_one", [
@@ -782,9 +786,9 @@ PHASES = [
 ]
 # Defensa: solo mobs que van a pegar cuerpo a cuerpo (los esqueletos no persiguen aldeanos)
 DEF_MOBS = [["zombie", "husk", "zombie", "baby_zombie", "zombie_villager"],
-            ["zombie_armor", "husk", "piglin", "zombie_escort", "baby_zombie", "zombified_piglin"],
-            ["vindicator", "zombie_armor", "vindicator", "zombie_escort", "piglin_brute", "baby_zombie"],
-            ["zombie_ominous", "vindicator", "piglin_brute", "zombie_ominous", "zoglin", "vindicator"]]
+            ["zombie_armor", "husk", "zombie_escort", "baby_zombie", "vindicator", "zombie_villager"],
+            ["vindicator", "zombie_armor", "vindicator", "zombie_escort", "drowned_trident", "baby_zombie"],
+            ["zombie_ominous", "vindicator", "elite_zombie", "zombie_ominous", "zoglin", "vindicator"]]
 AIR_MOBS = [["phantom", "phantom", "vex"], ["phantom", "phantom", "phantom_big", "vex"],
             ["phantom_big", "phantom_big", "vex", "vex", "phantom"], ["phantom_big", "phantom_big", "vex", "vex", "breeze", "phantom"]]
 AIR_BOSS = [None, "espectro_alfa", "espectro_alfa", "espectro_alfa"]
@@ -898,14 +902,23 @@ F("mode/caza2/second", [
 # defensa del núcleo: cebo vivo + barricadas
 F("mode/defensa/start", [
     f"setblock {CX} 96 {CZ} minecraft:crying_obsidian",
-    f'summon minecraft:villager {CX}.5 97 {CZ}.5 {{Tags:["so_ar_bait","so_ar_mob_keep"],NoAI:1b,Invulnerable:1b,Silent:1b,PersistenceRequired:1b,active_effects:[{{id:"minecraft:invisibility",amplifier:0b,duration:-1,show_particles:0b}}]}}',
+    f'summon minecraft:villager {CX + 0.5} 97 {CZ + 0.5} {{Tags:["so_ar_bait"],NoAI:1b,Silent:1b,PersistenceRequired:1b,CustomNameVisible:1b,'
+    f'CustomName:{{text:"Núcleo Vivo",color:"dark_purple",bold:true}},VillagerData:{{profession:"minecraft:cleric",level:5,type:"minecraft:plains"}},'
+    f'attributes:[{{id:"minecraft:max_health",base:1024d}},{{id:"minecraft:knockback_resistance",base:1d}}],Health:1024f,'
+    f'active_effects:[{{id:"minecraft:glowing",amplifier:0b,duration:-1,show_particles:0b}}]}}',
     "scoreboard players set #mode so_ar 3", "scoreboard players set #hp so_ar 100", "scoreboard players set #anticamp so_ar 0",
     f"bossbar set {NS}:fight color purple", f"bossbar set {NS}:fight max 100", f"bossbar set {NS}:fight value 100",
     f'bossbar set {NS}:fight name {T({"text": "Núcleo", "color": "dark_purple"})}',
     f"execute as {IN} run function {NS}:lib/kit_def",
-    say(ZONE, "Contrato: protegé el Núcleo 2 minutos. ¡Los monstruos van directo a él! Usá las barricadas. Acá la altura está permitida.", "dark_purple"),
+    say(ZONE, "Contrato: protegé al Núcleo Vivo 2 minutos. Cada golpe que recibe baja la vida del núcleo (no le pegues vos). Usá las barricadas; acá la altura está permitida.", "dark_purple"),
     f"function {NS}:mode/defensa/wave",
 ])
+W(f"data/{NS}/advancement/bait_hit.json", {"criteria": {"hit": {"trigger": "minecraft:player_hurt_entity", "conditions": {
+    "entity": [{"condition": "minecraft:entity_properties", "entity": "this", "predicate": {"nbt": "{Tags:[\"so_ar_bait\"]}"}}]}}},
+    "rewards": {"function": f"{NS}:lib/bait_hit"}})
+F("lib/bait_hit", [f"advancement revoke @s only {NS}:bait_hit",
+                   "execute as @e[tag=so_ar_bait] run data modify entity @s Health set value 1024f",
+                   f"title @s actionbar {T({'text': '¡No le pegues al Núcleo Vivo! Defendelo.', 'color': 'red', 'bold': True})}"])
 F("mode/defensa/wave", [
     "scoreboard players add #wave so_ar 1",
     "execute store result score #alive so_ar if entity @e[tag=so_ar_mob]",
@@ -917,10 +930,16 @@ F("mode/defensa/wave", [
 ])
 F("mode/defensa/second", [
     "scoreboard players add #t so_ar 1",
-    f"execute positioned {CX}.5 96 {CZ}.5 store result score #near so_ar if entity @e[tag=so_ar_mob,distance=..3.5]",
-    "scoreboard players operation #hp so_ar -= #near so_ar",
-    f"execute if score #near so_ar matches 1.. run particle minecraft:damage_indicator {CX}.5 97.5 {CZ}.5 0.4 0.4 0.4 0.1 6 force",
-    f"execute if score #near so_ar matches 1.. run playsound minecraft:block.anvil.land master {IN} {CX} 97 {CZ} 0.4 1.6",
+    "# Daño real que recibió el aldeano cebo (cada 2 de vida = 1% de núcleo); después se cura al máximo.",
+    "scoreboard players set #bh so_ar 1024",
+    "execute as @e[tag=so_ar_bait,limit=1] store result score #bh so_ar run data get entity @s Health",
+    "scoreboard players set #dmg so_ar 1025",
+    "scoreboard players operation #dmg so_ar -= #bh so_ar",
+    "scoreboard players operation #dmg so_ar /= #two so_ar",
+    "scoreboard players operation #hp so_ar -= #dmg so_ar",
+    "execute as @e[tag=so_ar_bait] run data modify entity @s Health set value 1024f",
+    f"execute if score #dmg so_ar matches 1.. run particle minecraft:damage_indicator {CX}.5 98 {CZ}.5 0.4 0.6 0.4 0.1 8 force",
+    f"execute if score #dmg so_ar matches 1.. run playsound minecraft:block.anvil.land master {IN} {CX} 97 {CZ} 0.4 1.6",
     f"execute store result bossbar {NS}:fight value run scoreboard players get #hp so_ar",
     f"title {IN} actionbar {T({'text': 'Núcleo: ', 'color': 'dark_purple'}, {'score': {'name': '#hp', 'objective': 'so_ar'}, 'color': 'white', 'bold': True}, {'text': '% · tiempo: ', 'color': 'gray'}, {'score': {'name': '#t', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '/120 s', 'color': 'gray'})}",
     f"execute if score #hp so_ar matches ..0 run return run function {NS}:lib/fail",
@@ -929,12 +948,23 @@ F("mode/defensa/second", [
     f"execute if score #m so_ar matches 0 run function {NS}:mode/defensa/wave",
 ])
 # rey de la colina
-RING = [(CX + 0.5 + 4 * math.cos(a * math.pi / 8), CZ + 0.5 + 4 * math.sin(a * math.pi / 8)) for a in range(16)]
+HILL = []
+for _y, _r, _b in ((96, 6.2, "minecraft:moss_block"), (97, 4.4, "minecraft:mud_bricks"), (98, 2.7, "minecraft:smooth_quartz")):
+    for _dx in range(-int(_r), int(_r) + 1):
+        _hz = int(math.sqrt(_r * _r - _dx * _dx))
+        HILL.append(f"fill {CX + _dx} {_y} {CZ - _hz} {CX + _dx} {_y} {CZ + _hz} {_b}")
+HILL += [f"setblock {CX + a} 98 {CZ + b} minecraft:gold_block" for a in range(-2, 3) for b in range(-2, 3)
+         if 1.6 < math.hypot(a, b) <= 2.7]
+HILL.append(f"setblock {CX} 98 {CZ} minecraft:pearlescent_froglight")
+RING = [(CX + 0.5 + 2.6 * math.cos(a * math.pi / 8), CZ + 0.5 + 2.6 * math.sin(a * math.pi / 8)) for a in range(16)]
+CAPT = T({"text": "Captura ", "color": "gold", "bold": True}, {"score": {"name": "#hold", "objective": "so_ar"}, "color": "white"}, {"text": "/90", "color": "gold"})
 F("mode/rey/start", [
-    "scoreboard players set #mode so_ar 5", "scoreboard players set #hold so_ar 0",
+    "# Colina física en el centro (dentro del óvalo que se limpia: desaparece al cerrar el foso).",
+    *HILL,
+    "scoreboard players set #mode so_ar 5", "scoreboard players set #hold so_ar 0", "scoreboard players set #anticamp so_ar 0",
     f"bossbar set {NS}:fight color yellow", f"bossbar set {NS}:fight max 90", f"bossbar set {NS}:fight value 0",
-    f'bossbar set {NS}:fight name {T({"text": "Rey de la Colina: dominio", "color": "gold"})}',
-    say(ZONE, "Contrato: quedate dentro del círculo de luz central 90 s. Si salís, el contador se frena.", "gold"),
+    f"bossbar set {NS}:fight name {CAPT}",
+    say(ZONE, "Contrato: subí a la colina del centro y dominá la cima del anillo dorado 90 s en total (límite: 120 s). Sin anti-camping.", "gold"),
     f"function {NS}:mode/rey/wave",
 ])
 F("mode/rey/wave", [
@@ -946,16 +976,17 @@ F("mode/rey/wave", [
 ])
 F("mode/rey/second", [
     "scoreboard players add #t so_ar 1",
-    *[f"particle minecraft:end_rod {x:.2f} 96.3 {z:.2f} 0 0.4 0 0.01 2 force" for x, z in RING],
-    f"particle minecraft:glow {CX}.5 97 {CZ}.5 0.3 1.5 0.3 0 10 force",
-    f"execute positioned {CX}.5 96 {CZ}.5 if entity @a[tag=so_ar_in,distance=..4.5] run scoreboard players add #hold so_ar 1",
+    *[f"particle minecraft:end_rod {x:.2f} 99.2 {z:.2f} 0 0.3 0 0.01 2 force" for x, z in RING],
+    f"particle minecraft:glow {CX}.5 100 {CZ}.5 0.3 1.5 0.3 0 10 force",
+    f"execute positioned {CX + 0.5} 99 {CZ + 0.5} if entity @a[tag=so_ar_in,distance=..2.8] run scoreboard players add #hold so_ar 1",
     f"execute store result bossbar {NS}:fight value run scoreboard players get #hold so_ar",
+    f"bossbar set {NS}:fight name {CAPT}",
     "scoreboard players operation #wave so_ar = #hold so_ar",
-    f"title {IN} actionbar {T({'text': 'Dominio: ', 'color': 'gold'}, {'score': {'name': '#hold', 'objective': 'so_ar'}, 'color': 'white', 'bold': True}, {'text': '/90 s (quedate en el círculo)', 'color': 'gray'})}",
+    f"title {IN} actionbar {T({'text': 'Captura: ', 'color': 'gold'}, {'score': {'name': '#hold', 'objective': 'so_ar'}, 'color': 'white', 'bold': True}, {'text': '/90 · tiempo ', 'color': 'gray'}, {'score': {'name': '#t', 'objective': 'so_ar'}, 'color': 'white'}, {'text': '/120 s', 'color': 'gray'})}",
     f"execute if score #hold so_ar matches 90.. run return run function {NS}:lib/win_contract",
+    f"execute if score #t so_ar matches 120.. run return run function {NS}:lib/fail",
     "scoreboard players operation #m so_ar = #t so_ar", "scoreboard players operation #m so_ar %= #ten so_ar",
     f"execute if score #m so_ar matches 0 run function {NS}:mode/rey/wave",
-    f"execute if score #t so_ar matches 300.. run function {NS}:lib/fail",
 ])
 # asedio volador
 F("mode/asedio/start", [
@@ -1138,6 +1169,10 @@ for dx in range(-AX, AX + 1):
     reset.append(f"fill {x} 96 {CZ - zb} {x} 120 {CZ + zb} minecraft:air")
     reset.append(f"fill {x} {G} {CZ - zb} {x} {G} {CZ + zb} {FLOOR_MIX[(dx // 3) % len(FLOOR_MIX)]}")
 reset += [f"setblock {x} {G} {z} minecraft:ochre_froglight" for x, z in FLOOR_LIGHTS]
+reset.append("# Barricadas puestas en el labio o las gradas: solo tablas de roble y muros de piedra (la estructura no usa ninguno).")
+for dx in range(-AX, AX + 1):
+    for _blk in ("minecraft:oak_planks", "minecraft:cobblestone_wall"):
+        reset += band(CX + dx, dx, R_RESET, R_GRADA, 96, 112, f"minecraft:air replace {_blk}")
 F("lib/reset_pit", reset)
 
 # ---------------------------------------------------------------- spawn de enemigos
@@ -1145,7 +1180,7 @@ F("lib/spawn", [
     "# $(m): id de so_events:api/mob · $(t): 1 = objetivo de caza. Punto al azar dentro del foso.",
     "$data modify storage so_arenas:tmp m set value \"$(m)\"",
     "execute store result storage so_arenas:tmp a int 1 run random value 0..359",
-    "execute store result storage so_arenas:tmp d int 1 run random value 5..20",
+    "execute store result storage so_arenas:tmp d int 1 run random value 7..20",
     f"function {NS}:lib/spawn_at with storage so_arenas:tmp",
     "$scoreboard players set #tg so_ar $(t)",
     f"execute as @e[tag=so_ev_mob,{MOB_BOX}] run function {NS}:lib/claim",
@@ -1165,6 +1200,7 @@ F("lib/claim", [
     "tag @s add so_ar_mob",
     "tag @s remove so_ev_mob",
     "execute if score #tg so_ar matches 1 run tag @s add so_ar_target",
+    f"execute if entity @s[type=#{NS}:aggro] run tag @s add so_ar_aggro",
     f"execute if entity @s[tag=so_ev_boss] run function {NS}:lib/claim_boss",
     "execute if score #mut_f so_ar matches 1 run effect give @s minecraft:speed infinite 1 true",
     "execute if score #mut_v so_ar matches 1 run effect give @s minecraft:regeneration infinite 1 true",
@@ -1225,7 +1261,7 @@ F("mode/pvp/start", [
     f"title @a[tag=so_ar_zone] title {T({'text': '¡Duelo!', 'color': 'red', 'bold': True})}",
     f"title @a[tag=so_ar_zone] subtitle {T({'text': 'Pierde quien baje a 3 corazones', 'color': 'gray'})}",
     f'tellraw {ZONE} [{json.dumps(PFX)},{{"text":"Duelo amistoso: ","color":"red","bold":false}},{{"selector":"@a[tag=so_ar_pvp]","color":"white"}}]',
-    "execute store result score #song so_ar run random value 1..7",
+    f"execute store result score #song so_ar run random value 1..{NSONG}",
     f"function {NS}:lib/music_play",
     f"function {NS}:lib/judges_salute",
 ])
@@ -1288,6 +1324,7 @@ dialog("main", "Coliseo VorNeX", "gold",
        "Elegí desafío, música y mutadores. Después tocá la campana del túnel. Mercaderes y médica en el lobby.", [
            show("practice", "Práctica por tiers", "yellow"), show("contracts", "Contratos", "aqua"),
            show("dj", "Música de entrada", "light_purple"), show("mut", "Mutadores (x2 botín)", "red"),
+           act("/trigger arena_dg set 20", "Las Catacumbas", "Tres mazmorras bajo el coliseo.", "dark_purple"),
            act("/trigger arena_con set 9", "Unirse al desafío", "Entrar si ya hay uno en curso o en preparación.", "green"),
            act("/trigger arena_ver", "Tribunas (espectador)", "Mirar invisible desde las gradas. Otra vez para bajar.", "aqua"),
            act("/trigger arena_pvp set 1", "Duelo PvP amistoso", "Retar o aceptar. Termina a los 3 corazones.", "red"),
@@ -1305,9 +1342,10 @@ dialog("contracts", "Contratos", "aqua",
        cols=1, w=250)
 dialog("dj", "Música de entrada", "light_purple",
        "Elegí el tema que va a sonar en todo el estadio. También podés poner tu disco en el tocadiscos del túnel. Si no elegís, suena uno al azar.",
-       [act(f"/trigger arena_dj set {n}", f"♪ {name}", None, "light_purple") for n, _, name, _ in SONGS] +
-       [act("/trigger arena_dj set 8", "♪ Al azar", None, "dark_purple"),
-        act("/trigger arena_con set 30", "¡Tocar la campana!", "Empieza el combate (solo desde el túnel).", "green"), BACK])
+       [act(f"/trigger arena_dj set {n}", f"♪ {name}", None, "light_purple", 120) for n, _, name, _ in SONGS] +
+       [act(f"/trigger arena_dj set {RAND}", "♪ Al azar", None, "dark_purple", 120),
+        act("/trigger arena_con set 30", "¡Campana!", "Empieza el combate (solo desde el túnel).", "green", 120), BACK | {"width": 120}],
+       cols=3, w=120)
 dialog("mut", "Mutadores", "red",
        "Cada mutador activo duplica el botín. Se eligen antes de la campana y se apagan al terminar.", [
            act("/trigger arena_mut set 1", "Niebla de Oscuridad", "Oscuridad constante en el foso.", "dark_gray"),
@@ -1663,7 +1701,7 @@ cur += [f"setblock {JUKE[0]} {G} {JUKE[2]} minecraft:gold_block",
         f"setblock {START_PLATE[0]} {G} {START_PLATE[2]} minecraft:chiseled_polished_blackstone",
         f"setblock {P(EXIT_PLATE)} minecraft:light_weighted_pressure_plate",
         f"setblock {EXIT_PLATE[0]} {G} {EXIT_PLATE[2]} minecraft:gold_block"]
-for idx, (n, sid, name, _) in enumerate(SONGS + [(8, None, "Al azar", 0)]):
+for idx, (n, sid, name, _) in enumerate(SONGS + [(RAND, None, "Al azar", 0)]):
     cur.append(f"setblock {CX - 3} 97 {TZ0 + 5 + idx} minecraft:oak_wall_sign[facing=east]{sign_snbt(['Tema de entrada', ('♪ ' + name, 'dark_purple'), 'tocá para elegir', ''], f'/trigger arena_dj set {n}')}")
 cur.append(f"setblock {CX - 3} 98 {TZ0 + 4} minecraft:oak_wall_sign[facing=east]{sign_snbt(['O poné tu disco', ('Tocadiscos', 'dark_purple'), 'acá abajo', ''])}")
 for idx, (n, k, name) in enumerate(MUTS + [(4, None, "Quitar todos")]):
@@ -1704,8 +1742,22 @@ F("lib/refill", [
     *[f"data modify block {x} {y} {z} Items set value [{','.join(ROCKET.format(s=i, sh=sh, c=c) for i, (sh, c) in enumerate(ROCKET_SETS))}]" for x, y, z in ROCKET_CHESTS],
 ])
 F("lib/donations", [
-    "# Cestas de apoyo: lo que un espectador tira en la tolva aparece junto a un luchador al azar.",
-    *[f"execute if score #mode so_ar matches 1..8 if data block {x} {y} {z} Items[0] if entity {IN} run function {NS}:lib/donate {{x:{x},y:{y},z:{z}}}" for x, y, z in HOPPERS],
+    "# Cestas de apoyo: en combate, lo que cae en la tolva aparece junto a un luchador; si no hay combate, vuelve a quien lo tiró.",
+    *[f"execute if data block {x} {y} {z} Items[0] run function {NS}:lib/donate_route {{x:{x},y:{y},z:{z}}}" for x, y, z in HOPPERS],
+])
+F("lib/donate_route", [
+    f"$execute if score #mode so_ar matches 1..8 if entity {IN} run return run function {NS}:lib/donate {{x:$(x),y:$(y),z:$(z)}}",
+    f"$function {NS}:lib/donate_back {{x:$(x),y:$(y),z:$(z)}}",
+])
+F("lib/donate_back", [
+    '$execute positioned $(x) $(y) $(z) unless entity @p[tag=so_ar_zone,distance=..10] run return 0',
+    '$execute positioned $(x) $(y) $(z) as @p[tag=so_ar_zone,distance=..10] at @s run summon minecraft:item ~ ~1.8 ~ {Tags:["so_ar_gift"],PickupDelay:0s,Item:{id:"minecraft:stone",count:1}}',
+    "$data modify entity @e[type=minecraft:item,tag=so_ar_gift,limit=1] Item set from block $(x) $(y) $(z) Items[0]",
+    "data remove entity @e[type=minecraft:item,tag=so_ar_gift,limit=1] Item.Slot",
+    "tag @e[type=minecraft:item,tag=so_ar_gift] remove so_ar_gift",
+    "$data remove block $(x) $(y) $(z) Items[0]",
+    f'$execute positioned $(x) $(y) $(z) as @p[tag=so_ar_zone,distance=..10] at @s run playsound minecraft:entity.item.pickup master @s ~ ~ ~ 1 0.7',
+    f'$execute positioned $(x) $(y) $(z) run title @p[tag=so_ar_zone,distance=..10] actionbar {T({"text": "Solo se puede donar durante un combate: te lo devolvemos.", "color": "yellow"})}',
 ])
 F("lib/donate", [
     'execute as @a[tag=so_ar_in,limit=1,sort=random] at @s run summon minecraft:item ~ ~1.5 ~ {Tags:["so_ar_gift"],PickupDelay:10s,Motion:[0.0d,0.2d,0.0d],Item:{id:"minecraft:stone",count:1}}',
@@ -1770,6 +1822,7 @@ def npc_summons():
             label(TRASH[0], 97.4, TRASH[2], "Tacho de descarte", "red", scale=0.6),
             label(JUKE[0], 97.4, JUKE[2], "♪ DJ", "light_purple", scale=0.7),
             label(BELL[0], 97.4, BELL[2], "Campana de inicio", "gold", scale=0.7)]
+    out += dg_labels()
     return out
 
 
