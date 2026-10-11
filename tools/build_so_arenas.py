@@ -88,31 +88,86 @@ W("data/minecraft/tags/function/load.json", {"replace": False, "values": [f"{NS}
 W("data/minecraft/tags/function/tick.json", {"replace": False, "values": [f"{NS}:tick"]})
 
 
-# ---------------------------------------------------------------- loot
-def item(name, w, lo=1, hi=1):
+# ---------------------------------------------------------------- loot (v4: mucha variedad, cantidades chicas)
+def item(name, w, lo=1, hi=1, fn=None):
     e = {"type": "minecraft:item", "name": f"minecraft:{name}", "weight": w}
-    if hi > 1: e["functions"] = [{"function": "minecraft:set_count", "count": {"min": lo, "max": hi}}]
+    fs = list(fn or [])
+    if hi > 1: fs.insert(0, {"function": "minecraft:set_count", "count": {"min": lo, "max": hi}})
+    if fs: e["functions"] = fs
     return e
+
+
+def ench(name, w, lv):
+    return item(name, w, fn=[{"function": "minecraft:enchant_with_levels", "levels": lv}])
+
+
+def book(w, lv):
+    return ench("book", w, lv)
+
+
+def pot(name, p, w, lo=1, hi=1):
+    return item(name, w, lo, hi, fn=[{"function": "minecraft:set_potion", "id": f"minecraft:{p}"}])
+
+
+def named(name, w, label, color, lv):
+    return item(name, w, fn=[{"function": "minecraft:enchant_with_levels", "levels": lv},
+                             {"function": "minecraft:set_name", "target": "item_name", "name": {"text": label, "color": color}}])
 
 
 FRAG = {"type": "minecraft:item", "name": "minecraft:echo_shard", "weight": 1,
         "functions": [{"function": "minecraft:set_name", "target": "item_name",
                        "name": {"text": "Fragmento de Victoria", "color": "gold"}}]}
-PR_LOOT = {
-    1: [item("experience_bottle", 6, 4, 8), item("bread", 4, 3, 6), item("emerald", 4, 2, 5), item("iron_ingot", 3, 1, 3), item("arrow", 3, 8, 16)],
-    2: [item("experience_bottle", 6, 6, 12), item("emerald", 5, 3, 8), item("iron_ingot", 4, 2, 5), item("golden_carrot", 3, 3, 6), item("gold_ingot", 2, 1, 4)],
-    3: [item("experience_bottle", 6, 10, 18), item("emerald", 5, 5, 12), item("diamond", 2, 1, 2), item("golden_apple", 2, 1, 2), item("ender_pearl", 2, 1, 3)],
-    4: [item("experience_bottle", 6, 14, 24), item("emerald", 5, 8, 16), item("diamond", 3, 1, 3), item("golden_apple", 3, 1, 3), item("netherite_scrap", 1)],
-}
-for t, entries in PR_LOOT.items():
-    W(f"data/{NS}/loot_table/practice_t{t}.json", {"type": "minecraft:chest", "pools": [{"rolls": 2 + t // 2, "entries": entries}]})
-W(f"data/{NS}/loot_table/contract.json", {"type": "minecraft:chest", "pools": [{"rolls": 4, "entries": [
-    item("experience_bottle", 6, 10, 20), item("emerald", 6, 8, 18), item("diamond", 2, 1, 3), item("golden_apple", 2, 1, 2), FRAG]}]})
-W(f"data/{NS}/loot_table/boss.json", {"type": "minecraft:chest", "pools": [{"rolls": 6, "entries": [
-    item("experience_bottle", 6, 16, 32), item("emerald", 5, 12, 24), item("diamond", 3, 2, 4), item("enchanted_golden_apple", 1),
-    item("netherite_scrap", 1, 1, 2), item("totem_of_undying", 1), FRAG]}]})
-W(f"data/{NS}/loot_table/streak.json", {"type": "minecraft:chest", "pools": [{"rolls": 3, "entries": [
-    item("experience_bottle", 5, 16, 32), item("diamond", 3, 2, 4), item("golden_apple", 3, 2, 4), item("totem_of_undying", 1), FRAG]}]})
+L_COMMON = [item("experience_bottle", 6, 3, 6), item("bread", 3, 3, 6), item("cooked_beef", 3, 2, 5), item("arrow", 4, 8, 16),
+            item("emerald", 5, 2, 4), item("iron_ingot", 4, 1, 3), item("gold_ingot", 3, 1, 3), item("copper_ingot", 3, 3, 8),
+            item("lapis_lazuli", 3, 3, 8), item("redstone", 3, 3, 8), item("torch", 2, 4, 12), item("lead", 2), item("name_tag", 2),
+            item("saddle", 1), item("shield", 2), item("wind_charge", 2, 2, 5), item("firework_rocket", 2, 2, 5),
+            pot("potion", "healing", 3), pot("splash_potion", "swiftness", 2), pot("potion", "night_vision", 2),
+            ench("bow", 2, 10), ench("stone_sword", 2, 10), ench("iron_pickaxe", 1, 10), book(2, 10), item("honey_bottle", 2),
+            item("glow_berries", 2, 2, 5), item("pumpkin_pie", 2, 1, 3), item("amethyst_shard", 2, 2, 5)]
+L_MID = [item("experience_bottle", 5, 5, 10), item("emerald", 5, 3, 7), item("golden_carrot", 3, 2, 4), item("ender_pearl", 3, 1, 2),
+         item("diamond", 2), item("golden_apple", 2), item("spectral_arrow", 3, 6, 12), item("blaze_rod", 2, 1, 2),
+         item("slime_ball", 2, 2, 4), item("glowstone_dust", 2, 3, 6), item("quartz", 2, 4, 8), item("obsidian", 2, 1, 3),
+         pot("potion", "strength", 3), pot("potion", "regeneration", 2), pot("splash_potion", "strong_healing", 2),
+         pot("potion", "fire_resistance", 2), pot("potion", "slow_falling", 2), item("wind_charge", 2, 4, 8),
+         ench("iron_sword", 2, 15), ench("crossbow", 2, 15), ench("iron_chestplate", 2, 15), ench("iron_axe", 1, 15),
+         book(3, 20), item("saddle", 1), item("name_tag", 2), item("trident", 1), item("music_disc_pigstep", 1),
+         item("bundle", 1), item("spyglass", 1), item("goat_horn", 1), item("cake", 1)]
+L_HIGH = [item("experience_bottle", 4, 8, 16), item("emerald", 4, 5, 10), item("diamond", 4, 1, 3), item("golden_apple", 3, 1, 2),
+          item("totem_of_undying", 1), item("netherite_scrap", 1), item("shulker_shell", 1, 1, 2), item("heart_of_the_sea", 1),
+          item("nautilus_shell", 2, 1, 2), item("ghast_tear", 2, 1, 2), item("crying_obsidian", 2, 2, 4), item("ender_eye", 2, 1, 3),
+          item("echo_shard", 1), item("enchanted_golden_apple", 1), pot("potion", "strong_strength", 3),
+          pot("potion", "strong_regeneration", 2), pot("potion", "strong_swiftness", 2), pot("potion", "strong_turtle_master", 1),
+          pot("lingering_potion", "strong_healing", 1), ench("diamond_sword", 2, 30), ench("diamond_pickaxe", 2, 30),
+          ench("diamond_helmet", 1, 30), ench("diamond_boots", 1, 30), ench("bow", 2, 30), book(4, 30),
+          named("diamond_axe", 1, "Hacha del Campeón", "gold", 30), named("trident", 1, "Tridente del Coliseo", "aqua", 30),
+          item("netherite_upgrade_smithing_template", 1), item("sentry_armor_trim_smithing_template", 1),
+          item("coast_armor_trim_smithing_template", 1), item("wild_armor_trim_smithing_template", 1),
+          item("dune_armor_trim_smithing_template", 1), item("breeze_rod", 2, 1, 3), item("blaze_powder", 2, 2, 4),
+          item("sponge", 1, 1, 2), item("music_disc_otherside", 1), item("music_disc_relic", 1)]
+L_EPIC = [item("netherite_ingot", 1), item("nether_star", 1), item("elytra", 1), item("trident", 1, fn=[{"function": "minecraft:enchant_with_levels", "levels": 30}]),
+          item("enchanted_golden_apple", 2), item("totem_of_undying", 2), item("netherite_upgrade_smithing_template", 2),
+          item("silence_armor_trim_smithing_template", 1), item("eye_armor_trim_smithing_template", 1), item("ward_armor_trim_smithing_template", 1),
+          item("heavy_core", 1), item("shulker_shell", 2, 2, 2), item("beacon", 1), item("dragon_breath", 1, 2, 4),
+          named("netherite_sword", 1, "Espada del Campeón Eterno", "light_purple", 30)]
+
+
+def table(name, *pools):
+    W(f"data/{NS}/loot_table/{name}.json", {"type": "minecraft:chest", "pools": [{"rolls": r, "entries": e} for r, e in pools]})
+
+
+table("practice_t1", (4, L_COMMON))
+table("practice_t2", (4, L_COMMON), (2, L_MID))
+table("practice_t3", (3, L_COMMON), (3, L_MID), (1, L_HIGH))
+table("practice_t4", (2, L_COMMON), (3, L_MID), (3, L_HIGH))
+table("contract", (3, L_COMMON), (3, L_MID), (2, L_HIGH), (1, [FRAG]))
+table("boss", (2, L_MID), (5, L_HIGH), (1, L_EPIC), (1, [FRAG]))
+table("streak", (2, L_MID), (2, L_HIGH), (1, L_EPIC + [FRAG]))
+table("dg_room", (3, L_COMMON), (2, L_MID))
+table("dg_room_hi", (2, L_COMMON), (2, L_MID), (1, L_HIGH))
+table("dg_secret", (2, L_HIGH), (1, L_EPIC))
+table("dg_boss1", (3, L_MID), (3, L_HIGH), (1, [FRAG]))
+table("dg_boss2", (2, L_MID), (4, L_HIGH), (1, L_EPIC), (1, [FRAG]))
+table("dg_boss3", (5, L_HIGH), (2, L_EPIC), (1, [FRAG]))
 
 # ---------------------------------------------------------------- música
 SONGS = [  # (n, id, nombre, duración en s)
@@ -1589,7 +1644,7 @@ F("lib/donations", [
     *[f"execute if score #mode so_ar matches 1..8 if data block {x} {y} {z} Items[0] if entity {IN} run function {NS}:lib/donate {{x:{x},y:{y},z:{z}}}" for x, y, z in HOPPERS],
 ])
 F("lib/donate", [
-    '$execute as @a[tag=so_ar_in,limit=1,sort=random] at @s run summon minecraft:item ~ ~1.5 ~ {Tags:["so_ar_gift"],PickupDelay:10s,Motion:[0.0d,0.2d,0.0d],Item:{id:"minecraft:stone",count:1}}',
+    'execute as @a[tag=so_ar_in,limit=1,sort=random] at @s run summon minecraft:item ~ ~1.5 ~ {Tags:["so_ar_gift"],PickupDelay:10s,Motion:[0.0d,0.2d,0.0d],Item:{id:"minecraft:stone",count:1}}',
     "$data modify entity @e[type=minecraft:item,tag=so_ar_gift,limit=1] Item set from block $(x) $(y) $(z) Items[0]",
     "data remove entity @e[type=minecraft:item,tag=so_ar_gift,limit=1] Item.Slot",
     "execute as @e[type=minecraft:item,tag=so_ar_gift] at @s run particle minecraft:totem_of_undying ~ ~ ~ 0.3 0.3 0.3 0.2 20 force",

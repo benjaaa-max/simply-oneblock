@@ -126,9 +126,28 @@ MOBS = {
     "blaze_fast": ("blaze", f"{BASE},{FX('speed', 'strength')}"),
     "zombified_piglin": ("zombified_piglin", f"{GOLEM},{eq(mainhand='golden_sword')}"),
     "zoglin": ("zoglin", BASE),
+    # --- v4: elite (eclipse e invasiones alfa)
+    "elite_zombie": ("zombie", f"{BASE},{FX('speed', 'strength', 'resistance')},"
+        f"{eq(head='netherite_helmet', chest='netherite_chestplate', legs='netherite_leggings', feet='netherite_boots', mainhand=it('netherite_sword', sharpness=2))}"),
+    "elite_skeleton": ("skeleton", f"{BASE},{FX('speed', 'resistance')},"
+        f"{eq(head='netherite_helmet', chest='netherite_chestplate', mainhand=it('bow', power=3, punch=1))}"),
+    "elite_spider": ("spider", f"{BASE},{FX('speed', 'strength')},{attrs(scale=1.4, max_health=40)},Health:40f"),
+    "elite_vex": ("vex", f"{BASE},{FX('strength')},{eq(mainhand=it('iron_sword', sharpness=3))}"),
+    # --- v4: caravana perdida
+    "llama_caravan": ("llama", 'Tags:["so_ev_llama"],PersistenceRequired:1b,ChestedHorse:1b,Tame:1b,'
+        'CustomNameVisible:1b,CustomName:{text:"Llama de la Caravana",color:"gold"}'),
+    "saqueador_caravana": ("pillager", f"{BASE},{eq(mainhand='crossbow')},PatrolLeader:0b"),
+    # --- v4.1: jinete del eclipse (araña élite montada por esqueleto wither)
+    "eclipse_rider": ("spider", f"{BASE},{FX('speed', 'resistance')},{attrs(scale=1.3, max_health=40)},Health:40f," + rider("wither_skeleton",
+        f"{BASE},{FX('fire_resistance')},{eq(head='netherite_helmet', chest='netherite_chestplate', mainhand=it('netherite_sword', sharpness=3))}")),
 }
 for name, (eid, nbt) in MOBS.items():
     F(f"mob/{name}", [f"summon minecraft:{eid} ~ ~ ~ {{{nbt}}}", "scoreboard players set #ok so_ev 1"])
+
+# Warden: memoria de excavación bloqueada (no puede enterrarse ni desaparecer).
+WARDEN_BRAIN = 'Brain:{memories:{"minecraft:dig_cooldown":{value:{},ttl:1200000L}}}'
+F("lib/warden_keep", ['data modify entity @s Brain.memories."minecraft:dig_cooldown" set value {value:{},ttl:1200000L}'])
+
 
 def boss(name, eid, hp, label, color, extra="", att=None, mount=None, tags='"so_ev_mob","so_ev_boss"'):
     a = {"max_health": hp, "knockback_resistance": 0.6, **(att or {})}
@@ -173,7 +192,7 @@ BOSSES = {
     "caudillo_bruto": dict(eid="piglin_brute", hp=180, label="Caudillo Bruto", color="gold",
         extra="IsImmuneToZombification:1b," + eq(chest="netherite_chestplate", mainhand=it("golden_axe", sharpness=3))),
     "guardian_oscuro": dict(eid="warden", hp=180, label="Guardián de la Oscuridad", color="dark_aqua",
-        att={"attack_damage": 10, "knockback_resistance": 1}),
+        att={"attack_damage": 10, "knockback_resistance": 1}, extra=WARDEN_BRAIN),
     "espectro_alfa": dict(eid="phantom", hp=100, label="Espectro Alfa", color="dark_gray", att={"scale": 3},
         extra=FX("fire_resistance")),
     "guardian_anciano": dict(eid="elder_guardian", hp=120, label="Guardián Anciano", color="aqua"),
@@ -182,6 +201,9 @@ BOSSES = {
     "senor_llamas": dict(eid="blaze", hp=160, label="Señor de las Llamas", color="gold", att={"scale": 2.5}),
     "bestia_nether": dict(eid="zoglin", hp=180, label="Bestia del Nether", color="red", att={"scale": 1.8}),
     "invocador": dict(eid="evoker", hp=120, label="Invocador Supremo", color="dark_red", mount="ravager"),
+    # --- v4.1: jefe final de la caravana
+    "caudillo_saqueador": dict(eid="pillager", hp=160, label="Caudillo Saqueador", color="red", mount="ravager",
+        extra=eq(head="iron_helmet", chest="iron_chestplate", mainhand=it("crossbow", piercing=2))),
 }
 for n, kw in BOSSES.items():
     boss(n, **kw)
@@ -226,9 +248,58 @@ LOOT = {
                       item("enchanted_golden_apple", 1), item("totem_of_undying", 2)]],
     # v3: eventos activos
     "runner": [4, [item("emerald", 8, 8, 16), item("experience_bottle", 8, 8, 16), item("gold_ingot", 3, 4, 8), item("diamond", 1, 1, 2)]],
+    # v4: eventos nuevos
+    "meteor": [2, [item("iron_ingot", 6, 2, 6), item("gold_ingot", 5, 2, 5), item("coal", 5, 4, 10), item("obsidian", 3, 2, 4),
+                   item("emerald", 3, 1, 3), item("experience_bottle", 3, 2, 6), item("diamond", 2)]],
+    "gold_fever": [1, [item("gold_nugget", 7, 3, 9), item("gold_ingot", 3, 1, 2), item("raw_gold", 2, 1, 3)]],
+    "mimic_treasure": [3, [item("emerald", 6, 6, 14), item("diamond", 5, 2, 5), item("golden_apple", 3, 1, 2),
+                           item("netherite_scrap", 2), item("totem_of_undying", 1), item("enchanted_golden_apple", 1)]],
+    "caravan": [3, [item("emerald", 6, 6, 14), item("iron_ingot", 5, 6, 12), item("golden_carrot", 4, 4, 8),
+                    item("experience_bottle", 4, 4, 10), item("lead", 3, 1, 2), item("diamond", 2, 1, 3), item("name_tag", 2)]],
+    "reward_alpha": [3, [item("emerald", 6, 16, 28), item("diamond", 5, 3, 6), item("netherite_scrap", 4, 1, 2),
+                         item("totem_of_undying", 3), item("enchanted_golden_apple", 2)]],
 }
+# v4.1: pools variados (libros, pociones, equipo encantado, rarezas) que se suman a cada tabla.
+def book(w, lv):
+    return {"type": "minecraft:item", "name": "minecraft:book", "weight": w,
+            "functions": [{"function": "minecraft:enchant_with_levels", "levels": lv}]}
+def gear(name, w, lv):
+    return {"type": "minecraft:item", "name": f"minecraft:{name}", "weight": w,
+            "functions": [{"function": "minecraft:enchant_with_levels", "levels": lv}]}
+def pot(kind, pid, w, n=1):
+    e = {"type": "minecraft:item", "name": f"minecraft:{kind}", "weight": w,
+         "functions": [{"function": "minecraft:set_potion", "id": f"minecraft:{pid}"}]}
+    if n > 1: e["functions"].append({"function": "minecraft:set_count", "count": {"min": 1, "max": n}})
+    return e
+POTS = [pot("potion", "strong_strength", 3), pot("potion", "strong_swiftness", 3), pot("potion", "strong_regeneration", 3),
+        pot("potion", "long_slow_falling", 2), pot("potion", "strong_turtle_master", 2), pot("potion", "long_fire_resistance", 2),
+        pot("splash_potion", "strong_healing", 3, 3), pot("potion", "long_night_vision", 2)]
+COMMON = [book(4, 15), *POTS[:3], item("wind_charge", 3, 4, 10), item("ender_pearl", 3, 2, 4), item("firework_rocket", 3, 8, 16),
+          item("amethyst_shard", 2, 4, 10), item("glow_berries", 2, 6, 12), item("saddle", 1), item("name_tag", 2),
+          item("slime_ball", 2, 3, 8), item("blaze_rod", 2, 2, 5), item("nautilus_shell", 1), item("sponge", 1, 1, 3),
+          gear("iron_pickaxe", 2, 15), gear("bow", 2, 15), item("cooked_beef", 2, 8, 16)]
+RARE = [book(6, 30), *POTS, item("shulker_shell", 3, 1, 2), item("totem_of_undying", 3), item("heart_of_the_sea", 1),
+        item("ender_eye", 3, 2, 6), item("netherite_upgrade_smithing_template", 2), item("trial_key", 2),
+        item("breeze_rod", 2, 2, 4), item("echo_shard", 1, 1, 2), item("ancient_debris", 2), item("enchanted_golden_apple", 1),
+        gear("diamond_pickaxe", 2, 30), gear("diamond_sword", 2, 30), gear("diamond_chestplate", 2, 30), gear("crossbow", 2, 25),
+        *[item(f"{t}_armor_trim_smithing_template", 1) for t in ("sentry", "vex", "wild", "coast", "dune", "ward", "silence", "spire")]]
+LOOT["meteor"][1] += [item("crying_obsidian", 4, 2, 6), item("ghast_tear", 2, 1, 2), item("netherite_scrap", 2), item("quartz", 4, 6, 16),
+                      item("magma_cream", 3, 2, 6), item("ancient_debris", 1), item("blaze_powder", 3, 2, 6)]
+LOOT["caravan"][1] += [item("saddle", 3), item("hay_block", 4, 2, 6), item("golden_apple", 3, 1, 3), item("lead", 2, 2, 4),
+                       gear("iron_shovel", 2, 20), gear("iron_axe", 2, 20), item("cake", 2), item("bundle", 2), item("spyglass", 2), item("compass", 2)]
+LOOT["mimic_junk"] = [4, [item("rotten_flesh", 8, 4, 12), item("bone", 6, 2, 6), item("dirt", 6, 4, 16), item("spider_eye", 5, 1, 4),
+                          item("poisonous_potato", 4, 1, 3), item("stick", 4, 2, 8), item("dead_bush", 3), item("string", 3, 1, 3)]]
+LOOT["reward_eclipse"] = [4, [item("netherite_ingot", 3), item("netherite_scrap", 6, 2, 4), item("totem_of_undying", 5), book(6, 30),
+                              item("enchanted_golden_apple", 3), item("netherite_upgrade_smithing_template", 3), item("shulker_shell", 4, 2, 4),
+                              gear("netherite_sword", 1, 30), gear("diamond_helmet", 3, 30), item("heart_of_the_sea", 2), item("elytra", 1),
+                              item("dragon_breath", 2, 2, 4), item("echo_shard", 3, 2, 4)]]
+EXTRA = {"rain": (COMMON, 1), "supply": (COMMON, 2), "reward_small": (COMMON, 2), "runner": (COMMON, 2), "meteor": (COMMON, 1),
+         "caravan": (COMMON, 2), "reward_big": (RARE, 2), "reward_t2": (RARE, 1), "reward_t3": (RARE, 2),
+         "mimic_treasure": (RARE, 3), "reward_alpha": (RARE, 3), "reward_eclipse": (RARE, 3)}
 for n, (rolls, entries) in LOOT.items():
-    W(f"data/{NS}/loot_table/{n}.json", {"type": "minecraft:chest", "pools": [{"rolls": rolls, "entries": entries}]})
+    pools = [{"rolls": rolls, "entries": entries}]
+    if n in EXTRA: pools.append({"rolls": EXTRA[n][1], "entries": EXTRA[n][0]})
+    W(f"data/{NS}/loot_table/{n}.json", {"type": "minecraft:chest", "pools": pools})
 
 # avance invisible que detecta golpes al fugitivo
 W(f"data/{NS}/advancement/hit.json", {"criteria": {"hit": {"trigger": "minecraft:player_hurt_entity", "conditions": {"entity": [
@@ -239,6 +310,10 @@ W(f"data/{NS}/advancement/hit.json", {"criteria": {"hit": {"trigger": "minecraft
 F("load", [
     "scoreboard objectives add so_ev dummy",
     "scoreboard objectives add evento trigger",
+    "scoreboard objectives add evento_diario trigger",
+    "scoreboard objectives add so_ev_win dummy", "scoreboard objectives add so_ev_inv dummy", "scoreboard objectives add so_ev_pos dummy",
+    "execute unless score #streak so_ev matches 0.. run scoreboard players set #streak so_ev 0",
+    "execute unless score #alpha_force so_ev matches 0..1 run scoreboard players set #alpha_force so_ev 0",
     "execute unless score #enabled so_ev matches 0..1 run scoreboard players set #enabled so_ev 1",
     "execute unless score #auto so_ev matches 0..1 run scoreboard players set #auto so_ev 1",
     "execute unless score #every so_ev matches 1.. run scoreboard players set #every so_ev 400",
@@ -255,7 +330,9 @@ F("load", [
 ])
 F("tick", [
     f"execute as @a[scores={{evento=1..}}] run function {NS}:lib/info",
+    f"execute as @a[scores={{evento_diario=1..}}] run function {NS}:lib/diary",
     "scoreboard players reset @a evento", "scoreboard players enable @a evento",
+    "scoreboard players reset @a evento_diario", "scoreboard players enable @a evento_diario",
     "scoreboard players add #beat so_ev 1",
     f"execute if score #beat so_ev matches 20.. run function {NS}:lib/second",
     "execute if score #beat so_ev matches 20.. run scoreboard players set #beat so_ev 0",
@@ -281,6 +358,11 @@ F("lib/second", [
     f"execute if score #active so_ev matches 7 run function {NS}:event/runner/second",
     f"execute if score #active so_ev matches 8 run function {NS}:event/mana/second",
     f"execute if score #active so_ev matches 9 run function {NS}:event/altar/second",
+    f"execute if score #active so_ev matches 10 run function {NS}:event/meteor/second",
+    f"execute if score #active so_ev matches 11 run function {NS}:event/gold/second",
+    f"execute if score #active so_ev matches 12 run function {NS}:event/mimic/second",
+    f"execute if score #active so_ev matches 13 run function {NS}:event/caravan/second",
+    f"execute if score #active so_ev matches 14 run function {NS}:event/eclipse/second",
     f"execute if entity @e[tag=so_ev_boss,limit=1] store result bossbar {NS}:boss value run data get entity @e[tag=so_ev_boss,limit=1] Health",
     f"execute unless entity @e[tag=so_ev_boss,limit=1] run bossbar set {NS}:boss visible false",
 ])
@@ -293,9 +375,10 @@ F("lib/auto", [
     "execute if score #n so_ev matches 0 run scoreboard players operation #next so_ev = #blk so_ev",
     "execute if score #n so_ev matches 0 run scoreboard players add #next so_ev 50",
     "execute if score #n so_ev matches 0 run return 0",
-    "execute store result score #r so_ev run random value 1..9",
-    "# Noche oscura solo desde la fase 5 (1668 bloques).",
+    "execute store result score #r so_ev run random value 1..14",
+    "# Noche oscura desde la fase 5 (1668 bloques); eclipse solo post-Nether (9000 bloques).",
     "execute if score #r so_ev matches 6 if score #blk so_ev matches ..1667 run scoreboard players set #r so_ev 1",
+    "execute if score #r so_ev matches 14 if score #blk so_ev matches ..8999 run scoreboard players set #r so_ev 2",
     f"execute if score #r so_ev matches 1 run function {NS}:event/rain/start",
     f"execute if score #r so_ev matches 2 run function {NS}:event/supply/start",
     f"execute if score #r so_ev matches 3 run function {NS}:event/mining/start",
@@ -305,6 +388,11 @@ F("lib/auto", [
     f"execute if score #r so_ev matches 7 run function {NS}:event/runner/start",
     f"execute if score #r so_ev matches 8 run function {NS}:event/mana/start",
     f"execute if score #r so_ev matches 9 run function {NS}:event/altar/start",
+    f"execute if score #r so_ev matches 10 run function {NS}:event/meteor/start",
+    f"execute if score #r so_ev matches 11 run function {NS}:event/gold/start",
+    f"execute if score #r so_ev matches 12 run function {NS}:event/mimic/start",
+    f"execute if score #r so_ev matches 13 run function {NS}:event/caravan/start",
+    f"execute if score #r so_ev matches 14 run function {NS}:event/eclipse/start",
 ])
 F("lib/begin", [
     "# Comun a todo evento: participantes, alerta, temporizador y nivel (1 <5000, 2 <10000, 3 desde 10000).",
@@ -336,6 +424,8 @@ for lv, (hp, dmg, arm, tough, spd) in {2: (0.5, 0.3, 4, 0, 0.1), 3: (1.0, 0.6, 8
 F("lib/cleanup", [
     "# Limpieza total: mobs al vacío (sin drops), barras, marcas y regla de griefing.",
     "tp @e[tag=so_ev_mob] 0 -300 0", "kill @e[tag=so_ev_mob]",
+    "kill @e[tag=so_ev_altar]", "kill @e[tag=so_ev_mimic]", "kill @e[tag=so_ev_llama]",
+    "scoreboard players set #alpha so_ev 0", "scoreboard players set #mimic so_ev 0",
     f"bossbar set {NS}:ev visible false", f"bossbar set {NS}:boss visible false",
     "execute if score #mg_saved so_ev matches 1 if score #mg_prev so_ev matches 1 run gamerule mob_griefing true",
     "scoreboard players set #mg_saved so_ev 0",
@@ -397,9 +487,11 @@ F("event/mining/second", ["scoreboard players add #t so_ev 1", NEAR,
     f"execute if score #prog so_ev >= #mine_goal so_ev run function {NS}:event/mining/win",
     f"execute if score #active so_ev matches 3 if score #t so_ev matches 180.. run function {NS}:event/mining/fail"])
 F("event/mining/win", [f"execute as {IN} run loot give @s loot {NS}:reward_small",
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_pos 1",
+    f"function {NS}:lib/streak_up",
     say("@a", "¡Desafío superado! Recompensa entregada a los participantes.", "green"),
     "execute as @a[tag=so_ev_in] at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1", f"function {NS}:lib/cleanup"])
-F("event/mining/fail", [say("@a", "Se acabó el tiempo del desafío de minería.", "gray"), f"function {NS}:lib/cleanup"])
+F("event/mining/fail", [f"function {NS}:lib/streak_reset", say("@a", "Se acabó el tiempo del desafío de minería.", "gray"), f"function {NS}:lib/cleanup"])
 
 # ---------------------------------------------------------------- 4 mercaderes especiales (5 min, junto al OneBlock)
 def sell_raw(raw, buy, bc, uses):
@@ -520,6 +612,10 @@ F("event/invasion/start", [f"function {NS}:lib/begin", "scoreboard players set #
     f"execute unless score #force_type so_ev matches 1..{N} run function so_events:event/invasion/pick",
     f"execute if score #force_type so_ev matches 1..{N} run scoreboard players operation #type so_ev = #force_type so_ev",
     "scoreboard players set #force_type so_ev 0",
+    "# Invasión alfa: 10% de chance (o forzada por admin).",
+    "execute store result score #alpha so_ev run random value 1..10",
+    "execute if score #alpha_force so_ev matches 1 run scoreboard players set #alpha so_ev 1",
+    "execute if score #alpha so_ev matches 2.. run scoreboard players set #alpha so_ev 0",
     f"bossbar set {NS}:ev color red", f"bossbar set {NS}:ev max 10",
     *[f"execute if score #type so_ev matches {k} if score #tier so_ev matches {t} run bossbar set {NS}:ev name {T({'text': '¡' + v[0] + '!' + ts, 'color': v[1], 'bold': True})}" for k, v in INV.items() for t, ts in TIER.items()],
     *[f"execute if score #type so_ev matches {k} if score #tier so_ev matches {t} run tellraw @a {T(PFX, {'text': '¡ALERTA! ' + v[0] + ts + ' en 10 segundos. Defiendan la isla.', 'color': 'red', 'bold': True})}" for k, v in INV.items() for t, ts in TIER.items()],
@@ -540,6 +636,11 @@ F("event/invasion/second", ["scoreboard players add #t so_ev 1", NEAR, f"bossbar
     "# Golems enfurecidos: un roce minimo atribuido al jugador mas cercano los vuelve hostiles.",
     "scoreboard players operation #m so_ev = #t so_ev", "scoreboard players operation #m so_ev %= #five so_ev",
     f"execute if score #m so_ev matches 0 as @e[tag=so_ev_golem] at @s if entity {IN.replace(']', ',distance=..32]')} run damage @s 0.01 minecraft:player_attack by @p[tag=so_ev_in]",
+    "# Warden: se renueva el bloqueo de excavación y un golpe real del jugador más cercano le sube la ira al tope.",
+    f"execute as @e[tag=so_ev_boss,type=minecraft:warden] run function {NS}:lib/warden_keep",
+    f"execute if score #m so_ev matches 0 as @e[tag=so_ev_boss,type=minecraft:warden] at @s if entity @a[tag=so_ev_in,distance=..48] run damage @s 0.1 minecraft:player_attack by @p[tag=so_ev_in]",
+    "# Invasión alfa: aura del jefe.",
+    "execute if score #alpha so_ev matches 1 as @e[tag=so_ev_boss] at @s run particle minecraft:soul_fire_flame ~ ~1 ~ 0.4 0.6 0.4 0.02 12",
     f"execute if score #active so_ev matches 5 if score #t so_ev matches 420.. run function {NS}:event/invasion/fail",
     f"execute if score #active so_ev matches 5 unless entity @a[tag=so_ev_in] run function {NS}:event/invasion/fail"])
 F("event/invasion/countdown", [
@@ -570,14 +671,25 @@ F("event/invasion/waves", [
 F("event/invasion/boss", ["scoreboard players set #stage so_ev 2",
     *[f"execute if score #type so_ev matches {k} run function {NS}:event/invasion/boss_{k}" for k in INV],
     f"function {NS}:lib/tier_up",
-    f"title {IN} title {T({'text': '¡JEFE INVASOR!', 'color': 'dark_red', 'bold': True})}"])
+    "# Versión alfa: jefe con aura, refuerzos de la primera oleada y anuncio especial.",
+    *[f"execute if score #alpha so_ev matches 1 if score #type so_ev matches {k} run function {NS}:event/invasion/w_{k}_1" for k in INV],
+    "execute if score #alpha so_ev matches 1 run function so_events:lib/tier_up",
+    "execute if score #alpha so_ev matches 1 as @e[tag=so_ev_boss] run effect give @s minecraft:resistance infinite 1 true",
+    "execute if score #alpha so_ev matches 1 as @e[tag=so_ev_boss] run effect give @s minecraft:strength infinite 0 true",
+    f"execute if score #alpha so_ev matches 1 run title {IN} title {T({'text': '¡JEFE ALFA!', 'color': 'dark_purple', 'bold': True})}",
+    f"execute if score #alpha so_ev matches 1 run tellraw @a {T(PFX, {'text': '¡Es una invasión ALFA! El jefe viene con aura y refuerzos; la recompensa es mucho mayor.', 'color': 'dark_purple', 'bold': True})}",
+    f"execute unless score #alpha so_ev matches 1 run title {IN} title {T({'text': '¡JEFE INVASOR!', 'color': 'dark_red', 'bold': True})}"])
 F("event/invasion/win", [f"execute as {IN} run loot give @s loot {NS}:reward_big",
     f"execute if score #tier so_ev matches 2 as {IN} run loot give @s loot {NS}:reward_t2",
     f"execute if score #tier so_ev matches 3.. as {IN} run loot give @s loot {NS}:reward_t3",
+    f"execute if score #alpha so_ev matches 1 as {IN} run loot give @s loot {NS}:reward_alpha",
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_inv 1",
+    f"function {NS}:lib/streak_up",
     say("@a", "¡Invasión derrotada! Cada defensor recibió su recompensa.", "green"),
     f"title {IN} title {T({'text': '¡Victoria!', 'color': 'green', 'bold': True})}",
     "execute as @a[tag=so_ev_in] at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1", f"function {NS}:lib/cleanup"])
-F("event/invasion/fail", [say("@a", "La invasión se retiró sin vencedores. No hubo recompensa.", "gray"), f"function {NS}:lib/cleanup"])
+F("event/invasion/fail", [f"function {NS}:lib/streak_reset",
+    say("@a", "La invasión se retiró sin vencedores. No hubo recompensa.", "gray"), f"function {NS}:lib/cleanup"])
 
 # ---------------------------------------------------------------- 6 noche oscura (90 s): oleadas de 5, final de 10
 DARK = ["zombie", "skeleton", "spider", "witch", "blaze"]
@@ -596,6 +708,8 @@ F("event/dark/spawn", [spawn(m) for m in DARK] + [f"function {NS}:lib/tier_up"])
 F("event/dark/final", [*[spawn(m) for m in DARK for _ in (0, 1)], f"function {NS}:lib/tier_up",
     f"title {IN} title {T({'text': '¡Oleada final!', 'color': 'dark_purple', 'bold': True})}"])
 F("event/dark/end", [f"execute as {IN} run loot give @s loot {NS}:reward_small",
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_inv 1",
+    f"function {NS}:lib/streak_up",
     say("@a", "Amaneció. Los sobrevivientes recibieron una recompensa.", "green"), f"function {NS}:lib/cleanup"])
 # ---------------------------------------------------------------- v3: bendiciones del bloque (cada 200 bloques)
 BLESS = [
@@ -663,11 +777,14 @@ F("event/runner/win", [
     f'title {IN} title {T({"text": "¡Atraparon al fugitivo!", "color": "gold", "bold": True})}',
     say("@a", "¡El fugitivo cayó! Esmeraldas, botellas de XP y oro en el piso.", "gold"),
     "kill @e[tag=so_ev_runner]",
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_pos 1",
+    f"function {NS}:lib/streak_up",
     f"function {NS}:lib/cleanup",
 ])
 F("event/runner/fail", [
     f'title {IN} title {T({"text": "¡Se escapó!", "color": "gray", "bold": True})}',
     say("@a", "El fugitivo escapó con su tesoro.", "gray"),
+    f"function {NS}:lib/streak_reset",
     f"function {NS}:lib/cleanup",
 ])
 
@@ -683,7 +800,12 @@ F("event/mana/second", [
     f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
     "scoreboard players operation #m so_ev = #t so_ev", "scoreboard players operation #m so_ev %= #three so_ev",
     f"execute if score #m so_ev matches 0 run function {NS}:event/mana/burst",
-    f"execute if score #t so_ev matches 45.. run function {NS}:lib/cleanup",
+    f"execute if score #t so_ev matches 45.. run function {NS}:event/mana/end",
+])
+F("event/mana/end", [
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_pos 1",
+    f"function {NS}:lib/streak_up",
+    f"function {NS}:lib/cleanup",
 ])
 F("event/mana/burst", [
     f"execute as @a[tag=so_ev_in,limit=3] at @s run function {NS}:lib/orbs",
@@ -723,17 +845,21 @@ F("event/altar/second", [
     f"execute if score #paid so_ev matches 32.. run function {NS}:event/altar/win",
     f"execute if score #t so_ev matches 90.. run function {NS}:event/altar/fail",
 ])
+W(f"data/{NS}/tags/item/altar_tribute.json", {"values": [
+    *[f"minecraft:{b}" for b in ("cobblestone", "stone", "deepslate", "cobbled_deepslate", "andesite", "diorite", "granite",
+                                 "tuff", "blackstone", "calcite", "mossy_cobblestone", "netherrack", "end_stone")],
+    "#minecraft:logs"]})
 F("event/altar/take", [
-    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'minecraft:cobblestone\'}}}}] run function {NS}:event/altar/add',
-    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'minecraft:cobblestone\'}}}}] run kill @s',
-    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'minecraft:deepslate\'}}}}] run function {NS}:event/altar/add',
-    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'minecraft:deepslate\'}}}}] run kill @s',
-    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'#minecraft:logs\'}}}}] run function {NS}:event/altar/add',
-    f'execute as @e[type=minecraft:item,distance=..2,nbt={{Item:{{id:\'#minecraft:logs\'}}}}] run kill @s',
+    "# 'if items' sí acepta tags de ítem (las NBT con # no funcionan).",
+    f"execute as @e[type=minecraft:item,distance=..3.5] if items entity @s contents #{NS}:altar_tribute run function {NS}:event/altar/add",
 ])
 F("event/altar/add", [
     "execute store result score #cnt so_ev run data get entity @s Item.count 1",
     "scoreboard players operation #paid so_ev += #cnt so_ev",
+    "particle minecraft:soul_fire_flame ~ ~0.3 ~ 0.2 0.2 0.2 0.05 12",
+    "playsound minecraft:block.respawn_anchor.charge master @a ~ ~ ~ 0.8 1.4",
+    "kill @s",
+    f"title {IN} actionbar {T({'text': 'Tributo: ', 'color': 'gold'}, {'score': {'name': '#paid', 'objective': 'so_ev'}, 'color': 'white', 'bold': True}, {'text': ' / 32', 'color': 'gold'})}",
 ])
 F("event/altar/win", [
     f'title {IN} title {T({"text": "¡Altar satisfecho!", "color": "gold", "bold": True})}',
@@ -741,6 +867,8 @@ F("event/altar/win", [
     f"execute as {IN} run effect give @s minecraft:haste 180 1 true",
     f"execute as {IN} run effect give @s minecraft:regeneration 180 1 true",
     say("@a", "El altar premió a la isla: Prisa II y Regeneración II por 3 minutos.", "gold"),
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_pos 1",
+    f"function {NS}:lib/streak_up",
     f"function {NS}:lib/cleanup",
 ])
 F("event/altar/fail", [
@@ -748,10 +876,231 @@ F("event/altar/fail", [
     f"function {NS}:lib/cleanup",
 ])
 
+# ---------------------------------------------------------------- v4: racha de eventos (multiplicador de recompensa)
+F("lib/streak_up", [
+    "scoreboard players add #streak so_ev 1",
+    "# Bonus: 1 rollo extra de reward_small por cada 2 de racha (tope 3).",
+    "execute if score #streak so_ev matches 2..3 as @a[tag=so_ev_in] run loot give @s loot so_events:reward_small",
+    "execute if score #streak so_ev matches 4..5 as @a[tag=so_ev_in] run loot give @s loot so_events:reward_small",
+    "execute if score #streak so_ev matches 4..5 as @a[tag=so_ev_in] run loot give @s loot so_events:reward_small",
+    "execute if score #streak so_ev matches 6.. as @a[tag=so_ev_in] run loot give @s loot so_events:reward_small",
+    "execute if score #streak so_ev matches 6.. as @a[tag=so_ev_in] run loot give @s loot so_events:reward_small",
+    "execute if score #streak so_ev matches 6.. as @a[tag=so_ev_in] run loot give @s loot so_events:reward_small",
+    f"execute if score #streak so_ev matches 2.. run tellraw @a {T(PFX, {'text': 'Racha de eventos: x', 'color': 'gold', 'bold': False}, {'score': {'name': '#streak', 'objective': 'so_ev'}, 'color': 'white', 'bold': True}, {'text': ' — recompensa mejorada.', 'color': 'gold'})}",
+])
+F("lib/streak_reset", [
+    f"execute if score #streak so_ev matches 2.. run tellraw @a {T(PFX, {'text': 'La racha de eventos se perdió.', 'color': 'gray', 'bold': False})}",
+    "scoreboard players set #streak so_ev 0",
+])
+
+# ---------------------------------------------------------------- v4: diario de eventos (/trigger evento_diario)
+F("lib/diary", [
+    f"tellraw @s {T({'text': '—— Diario de eventos ——', 'color': 'gold', 'bold': True})}",
+    f"tellraw @s {T({'text': 'Eventos ganados: ', 'color': 'gray'}, {'score': {'name': '@s', 'objective': 'so_ev_win'}, 'color': 'white', 'bold': True})}",
+    f"tellraw @s {T({'text': 'Invasiones derrotadas: ', 'color': 'gray'}, {'score': {'name': '@s', 'objective': 'so_ev_inv'}, 'color': 'red'})}",
+    f"tellraw @s {T({'text': 'Eventos positivos completados: ', 'color': 'gray'}, {'score': {'name': '@s', 'objective': 'so_ev_pos'}, 'color': 'green'})}",
+    f"tellraw @s {T({'text': 'Racha actual de la isla: x', 'color': 'gray'}, {'score': {'name': '#streak', 'objective': 'so_ev'}, 'color': 'gold'})}",
+])
+
+# ---------------------------------------------------------------- v4: 10 lluvia de meteoritos (60 s)
+F("event/meteor/start", [f"function {NS}:lib/begin", "scoreboard players set #active so_ev 10", f"function {NS}:lib/no_grief",
+    f"bossbar set {NS}:ev name {T({'text': 'Lluvia de meteoritos', 'color': 'red'})}", f"bossbar set {NS}:ev max 60", f"bossbar set {NS}:ev color red",
+    f"title {IN} title {T({'text': '¡Lluvia de meteoritos!', 'color': 'red', 'bold': True})}",
+    say("@a", "¡Meteoritos caen sobre la isla durante 60 segundos! Cada cráter deja botín... si te animás a acercarte.", "red")])
+F("event/meteor/second", ["scoreboard players add #t so_ev 1", NEAR,
+    f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
+    "scoreboard players operation #m so_ev = #t so_ev", "scoreboard players operation #m so_ev %= #three so_ev",
+    f"execute if score #m so_ev matches 0 as @a[tag=so_ev_in,limit=3] at @s run function {NS}:event/meteor/burst",
+    f"execute if score #t so_ev matches 60.. run function {NS}:event/meteor/end"])
+F("event/meteor/burst", [
+    "execute store result storage so_events:tmp dx int 1 run random value -10..10",
+    "execute store result storage so_events:tmp dz int 1 run random value -10..10",
+    f"function {NS}:event/meteor/fall with storage {NS}:tmp",
+])
+F("event/meteor/fall", [
+    "$execute positioned ~$(dx) ~ ~$(dz) over motion_blocking_no_leaves run summon minecraft:falling_block ~ ~14 ~ {BlockState:{Name:\"minecraft:magma_block\"},Time:1,Tags:[\"so_ev_meteor\"]}",
+    "$execute positioned ~$(dx) ~ ~$(dz) over motion_blocking_no_leaves run particle minecraft:flame ~ ~2 ~ 0.3 1 0.3 0.02 30",
+    "$execute positioned ~$(dx) ~ ~$(dz) over motion_blocking_no_leaves run loot spawn ~ ~1 ~ loot so_events:meteor",
+    "$execute positioned ~$(dx) ~ ~$(dz) over motion_blocking_no_leaves run playsound minecraft:entity.generic.explode master @a ~ ~ ~ 0.7 1.2",
+])
+F("event/meteor/end", [
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_pos 1",
+    f"function {NS}:lib/streak_up",
+    say("@a", "La lluvia de meteoritos terminó. Revisen los cráteres.", "green"), f"function {NS}:lib/cleanup"])
+
+# ---------------------------------------------------------------- v4: 11 fiebre del oro (60 s)
+F("event/gold/start", [f"function {NS}:lib/begin", "scoreboard players set #active so_ev 11",
+    f"bossbar set {NS}:ev name {T({'text': 'Fiebre del oro', 'color': 'gold'})}", f"bossbar set {NS}:ev max 60", f"bossbar set {NS}:ev color yellow",
+    f"title {IN} title {T({'text': '¡Fiebre del oro!', 'color': 'gold', 'bold': True})}",
+    say("@a", "¡El OneBlock brilla! Durante 60 segundos el oro brota de la isla.", "gold")])
+F("event/gold/second", ["scoreboard players add #t so_ev 1", NEAR,
+    f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
+    "scoreboard players operation #m so_ev = #t so_ev", "scoreboard players operation #m so_ev %= #two so_ev",
+    f"execute if score #m so_ev matches 0 as {IN} at @s run loot spawn ~ ~1 ~ loot {NS}:gold_fever",
+    f"execute if score #m so_ev matches 0 as {IN} at @s run particle minecraft:happy_villager ~ ~2 ~ 1 0.5 1 0 8",
+    f"execute as {IN} at @s run particle minecraft:end_rod ~ ~1.5 ~ 0.6 0.4 0.6 0.01 3",
+    f"execute if score #t so_ev matches 60.. run function {NS}:event/gold/end"])
+F("event/gold/end", [
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_pos 1",
+    f"function {NS}:lib/streak_up",
+    say("@a", "La fiebre del oro se calmó.", "gold"), f"function {NS}:lib/cleanup"])
+
+# ---------------------------------------------------------------- v4: 12 espejismo (2 cofres gemelos: uno tesoro, otro trampa)
+for adv, tbl, fn in (("mimic", "mimic_treasure", "mimic_open"), ("mimic_junk", "mimic_junk", "mimic_trap_open")):
+    W(f"data/{NS}/advancement/{adv}.json", {"criteria": {"open": {"trigger": "minecraft:player_generates_container_loot",
+        "conditions": {"loot_table": f"{NS}:{tbl}"}}}, "rewards": {"function": f"{NS}:{fn}"}})
+F("event/mimic/start", [f"function {NS}:lib/begin", "scoreboard players set #active so_ev 12", "scoreboard players set #mimic so_ev 0",
+    f"bossbar set {NS}:ev name {T({'text': 'Espejismo: elegí un cofre', 'color': 'light_purple'})}", f"bossbar set {NS}:ev max 120", f"bossbar set {NS}:ev color purple",
+    "execute store result score #side so_ev run random value 1..2",
+    f"execute as @a[tag=so_ev_in,limit=1,sort=random] at @s run function {NS}:event/mimic/place",
+    f"title {IN} title {T({'text': 'Espejismo', 'color': 'light_purple', 'bold': True})}",
+    f"title {IN} subtitle {T({'text': 'Dos cofres gemelos... solo uno es real', 'color': 'gray'})}",
+    say("@a", "Dos cofres gemelos aparecieron junto a vos. Uno guarda un tesoro, el otro es una trampa. Abrí solo uno: tenés 2 minutos.", "light_purple")])
+_REAL = 'setblock ~ ~ ~ minecraft:chest[facing=north]{LootTable:"so_events:mimic_treasure"}'
+_FAKE = 'setblock ~ ~ ~ minecraft:chest[facing=north]{LootTable:"so_events:mimic_junk"}'
+F("event/mimic/place", [
+    *[f"execute if score #side so_ev matches {s} positioned ~{dx} ~ ~2 if block ~ ~ ~ #minecraft:air run {blk}"
+      for s, dx, blk in ((1, 2, _REAL), (1, -2, _FAKE), (2, 2, _FAKE), (2, -2, _REAL))],
+    *[f'execute positioned ~{dx} ~ ~2 if block ~ ~ ~ minecraft:chest run summon minecraft:marker ~ ~ ~ {{Tags:["so_ev_mimic","{t}"]}}'
+      for dx, t in ((2, "so_ev_mim_a"), (-2, "so_ev_mim_b"))],
+    "execute if score #side so_ev matches 1 as @e[tag=so_ev_mim_a] run tag @s add so_ev_mim_real",
+    "execute if score #side so_ev matches 2 as @e[tag=so_ev_mim_b] run tag @s add so_ev_mim_real",
+    "tag @e[tag=so_ev_mimic,tag=!so_ev_mim_real] add so_ev_mim_fake",
+    "execute as @e[tag=so_ev_mimic] at @s run particle minecraft:witch ~ ~0.5 ~ 0.3 0.3 0.3 0.02 20",
+    "execute as @e[tag=so_ev_mimic] at @s run playsound minecraft:block.amethyst_block.chime master @a ~ ~ ~ 1 0.6",
+])
+F("event/mimic/second", ["scoreboard players add #t so_ev 1", NEAR,
+    f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
+    f"execute if score #mimic so_ev matches 0 as @e[tag=so_ev_mimic] at @s run particle minecraft:witch ~ ~0.7 ~ 0.3 0.3 0.3 0.01 4",
+    f"execute if score #mimic so_ev matches 0 as @e[tag=so_ev_mimic] at @s run particle minecraft:enchant ~ ~1.2 ~ 0.3 0.3 0.3 0.5 6",
+    "# Antitrampa: romper el cofre también cuenta como elegirlo.",
+    f"execute if score #mimic so_ev matches 0 as @e[tag=so_ev_mim_real] at @s unless block ~ ~ ~ minecraft:chest run function {NS}:event/mimic/treasure",
+    f"execute if score #mimic so_ev matches 0 as @e[tag=so_ev_mim_fake] at @s unless block ~ ~ ~ minecraft:chest run function {NS}:event/mimic/trap",
+    f"execute if score #mimic so_ev matches 1 run function {NS}:event/mimic/end",
+    "# Trampa: el evento sigue hasta derrotar a los vexes.",
+    f"execute if score #mimic so_ev matches 2 run title {IN} actionbar {T({'text': '¡Derrotá a los vexes y phantoms de la trampa!', 'color': 'red', 'bold': True})}",
+    f"execute if score #mimic so_ev matches 2 unless entity @e[tag=so_ev_mob] run function {NS}:event/mimic/trap_win",
+    f"execute if score #t so_ev matches 120.. run function {NS}:event/mimic/vanish"])
+F("mimic_open", [
+    f"advancement revoke @s only {NS}:mimic",
+    f"execute if score #active so_ev matches 12 if score #mimic so_ev matches 0 run function {NS}:event/mimic/treasure",
+])
+F("mimic_trap_open", [
+    f"advancement revoke @s only {NS}:mimic_junk",
+    f"execute if score #active so_ev matches 12 if score #mimic so_ev matches 0 run function {NS}:event/mimic/trap",
+])
+F("event/mimic/treasure", [
+    "scoreboard players set #mimic so_ev 1",
+    "execute as @e[tag=so_ev_mim_real] at @s run particle minecraft:firework ~ ~1 ~ 0.4 0.4 0.4 0.05 40",
+    "execute as @e[tag=so_ev_mim_real] at @s run playsound minecraft:ui.toast.challenge_complete master @a ~ ~ ~ 1 1",
+    "execute as @e[tag=so_ev_mim_fake] at @s run particle minecraft:large_smoke ~ ~0.5 ~ 0.3 0.4 0.3 0.02 30",
+    "execute as @e[tag=so_ev_mim_fake] at @s run playsound minecraft:entity.illusioner.mirror_move master @a ~ ~ ~ 1 1",
+    "execute as @e[tag=so_ev_mim_fake] at @s run setblock ~ ~ ~ minecraft:air",
+    say("@a", "¡Elegiste bien! El cofre era un tesoro de verdad y su gemelo se desvaneció en humo.", "gold")])
+F("event/mimic/trap", [
+    "scoreboard players set #mimic so_ev 2",
+    "execute as @e[tag=so_ev_mim_real] at @s run particle minecraft:large_smoke ~ ~0.5 ~ 0.3 0.4 0.3 0.02 30",
+    "execute as @e[tag=so_ev_mim_real] at @s run setblock ~ ~ ~ minecraft:air",
+    "execute as @e[tag=so_ev_mim_fake] at @s run playsound minecraft:event.raid.horn hostile @a ~ ~ ~ 1 1.4",
+    "execute as @e[tag=so_ev_mim_fake] at @s run playsound minecraft:entity.vex.charge hostile @a ~ ~ ~ 1 0.8",
+    "execute as @e[tag=so_ev_mim_fake] at @s run particle minecraft:soul ~ ~1 ~ 0.4 0.4 0.4 0.05 30",
+    *["execute as @e[tag=so_ev_mim_fake,limit=1] at @s positioned ~ ~1 ~ run function so_events:mob/elite_vex"] * 3,
+    *["execute as @e[tag=so_ev_mim_fake,limit=1] at @s positioned ~ ~6 ~ run function so_events:mob/phantom"] * 2,
+    say("@a", "¡Era una trampa! El cofre solo tenía chatarra y salen vexes espectrales con phantoms. ¡Derrotalos!", "red")])
+F("event/mimic/trap_win", [
+    f"execute as {IN} run loot give @s loot {NS}:reward_small",
+    say("@a", "Sobreviviste a la trampa del espejismo. Algo es algo.", "green"),
+    f"function {NS}:event/mimic/end"])
+F("event/mimic/end", [
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_pos 1",
+    f"function {NS}:lib/streak_up", f"function {NS}:lib/cleanup"])
+F("event/mimic/vanish", [
+    "execute if score #mimic so_ev matches 0 as @e[tag=so_ev_mimic] at @s run setblock ~ ~ ~ minecraft:air",
+    "execute as @e[tag=so_ev_mimic] at @s run particle minecraft:large_smoke ~ ~0.5 ~ 0.3 0.4 0.3 0.02 20",
+    say("@a", "El espejismo se desvaneció.", "gray"), f"function {NS}:lib/cleanup"])
+
+# ---------------------------------------------------------------- v4: 13 caravana perdida (3 min, defender las llamas)
+F("event/caravan/start", [f"function {NS}:lib/begin", "scoreboard players set #active so_ev 13", f"function {NS}:lib/no_grief",
+    f"bossbar set {NS}:ev name {T({'text': 'Caravana perdida', 'color': 'gold'})}", f"bossbar set {NS}:ev max 120", f"bossbar set {NS}:ev color yellow",
+    "scoreboard players set #near so_ev 1",
+    f'execute as @a[tag=so_ev_in,limit=1,sort=random] at @s run function {NS}:lib/spawn {{mob:"mob/llama_caravan"}}',
+    f'execute as @a[tag=so_ev_in,limit=1,sort=random] at @s run function {NS}:lib/spawn {{mob:"mob/llama_caravan"}}',
+    f'execute as @a[tag=so_ev_in,limit=1,sort=random] at @s run function {NS}:lib/spawn {{mob:"mob/llama_caravan"}}',
+    "scoreboard players set #near so_ev 0",
+    f"title {IN} title {T({'text': '¡Caravana perdida!', 'color': 'gold', 'bold': True})}",
+    say("@a", "Una caravana de llamas cargadas llegó a la isla. ¡Saqueadores las persiguen! Defendé al menos una por 3 minutos.", "gold")])
+F("event/caravan/second", ["scoreboard players add #t so_ev 1", NEAR,
+    f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
+    "execute store result score #llamas so_ev if entity @e[tag=so_ev_llama]",
+    f"execute if score #t so_ev matches 15 run function {NS}:event/caravan/wave",
+    f"execute if score #t so_ev matches 45 run function {NS}:event/caravan/wave",
+    f"execute if score #t so_ev matches 75 run function {NS}:event/caravan/wave",
+    f"execute if score #t so_ev matches 90 run function {NS}:event/caravan/boss",
+    "# Los saqueadores lastiman a la llama más cercana cada 5 s.",
+    "scoreboard players operation #m so_ev = #t so_ev", "scoreboard players operation #m so_ev %= #five so_ev",
+    "execute if score #m so_ev matches 0 as @e[tag=so_ev_mob,tag=!so_ev_llama] at @s if entity @e[tag=so_ev_llama,distance=..16] run damage @e[tag=so_ev_llama,limit=1,sort=nearest] 2 minecraft:mob_attack by @s",
+    f"execute if score #llamas so_ev matches 0 run function {NS}:event/caravan/fail",
+    "# Victoria a los 120 s, pero solo si el caudillo ya cayó.",
+    f"execute if score #t so_ev matches 120.. unless entity @e[tag=so_ev_boss] run function {NS}:event/caravan/win",
+    "# Si el caudillo se resiste demasiado, la caravana se rinde a los 240 s.",
+    f"execute if score #t so_ev matches 240.. run function {NS}:event/caravan/fail"])
+F("event/caravan/wave", [
+    spawn("saqueador_caravana"), spawn("saqueador_caravana"), spawn("pillager"), spawn("vindicator"),
+    f"function {NS}:lib/tier_up",
+    f"title {IN} actionbar {T({'text': '¡Saqueadores atacan la caravana!', 'color': 'red', 'bold': True})}"])
+F("event/caravan/boss", [
+    f'execute as @a[tag=so_ev_in,limit=1,sort=random] at @s run function {NS}:lib/spawn {{mob:"boss/caudillo_saqueador"}}',
+    "playsound minecraft:event.raid.horn hostile @a ~ ~ ~ 1 0.8",
+    f"title {IN} title {T({'text': '¡El Caudillo Saqueador!', 'color': 'red', 'bold': True})}",
+    f"title {IN} subtitle {T({'text': 'Derrotalo para salvar la caravana', 'color': 'gray'})}",
+    say("@a", "¡El Caudillo Saqueador llegó montado en su devastador! Derrotalo para asegurar la caravana.", "red")])
+F("event/caravan/win", [
+    f"execute as {IN} run loot give @s loot {NS}:caravan",
+    "# Por cada llama viva, un rollo extra de cargamento para la isla.",
+    f"execute as @e[tag=so_ev_llama] at @s run loot spawn ~ ~1 ~ loot {NS}:caravan",
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_pos 1",
+    f"function {NS}:lib/streak_up",
+    f"title {IN} title {T({'text': '¡Caravana a salvo!', 'color': 'green', 'bold': True})}",
+    say("@a", "La caravana sobrevivió y les deja su cargamento. Las llamas se quedan en la isla como mascotas.", "green"),
+    "# Las llamas dejan de ser del evento: el limpiador ya no las toca.",
+    "execute as @e[tag=so_ev_llama] at @s run particle minecraft:heart ~ ~1.8 ~ 0.4 0.3 0.4 0 6",
+    "execute as @e[tag=so_ev_llama] run data merge entity @s {PersistenceRequired:1b,Tame:1b,CustomName:{text:\"Llama de la Isla\",color:\"gold\"}}",
+    "tag @e[tag=so_ev_llama] add so_ev_saved", "tag @e[tag=so_ev_llama] remove so_ev_mob", "tag @e[tag=so_ev_llama] remove so_ev_llama",
+    f"function {NS}:lib/cleanup"])
+F("event/caravan/fail", [
+    f"function {NS}:lib/streak_reset",
+    say("@a", "Los saqueadores acabaron con la caravana. No quedó nada que rescatar.", "gray"), f"function {NS}:lib/cleanup"])
+
+# ---------------------------------------------------------------- v4: 14 eclipse (90 s, élite, botín legendario; desde 9000 bloques)
+ECLIPSE = ["elite_zombie", "elite_skeleton", "elite_spider", "elite_vex", "witch", "eclipse_rider"]
+F("event/eclipse/start", [f"function {NS}:lib/begin", "scoreboard players set #active so_ev 14", f"function {NS}:lib/no_grief",
+    f"bossbar set {NS}:ev name {T({'text': 'Eclipse', 'color': 'dark_purple', 'bold': True})}", f"bossbar set {NS}:ev max 90", f"bossbar set {NS}:ev color purple",
+    f"title {IN} title {T({'text': '¡ECLIPSE!', 'color': 'dark_purple', 'bold': True})}",
+    f"title {IN} subtitle {T({'text': 'Sobreviví 90 segundos a la élite', 'color': 'light_purple'})}",
+    f"execute as {IN} at @s run playsound minecraft:entity.wither.spawn hostile @s ~ ~ ~ 0.8 0.6",
+    say("@a", "Un eclipse cubre la isla. Jinetes y enemigos de élite cada 15 s: sobrevivan 90 segundos por un botín legendario.", "dark_purple")])
+F("event/eclipse/second", ["scoreboard players add #t so_ev 1", NEAR,
+    f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
+    f"effect give {IN} minecraft:darkness 3 0 true",
+    f"execute as {IN} at @s run particle minecraft:reverse_portal ~ ~1 ~ 4 2 4 0.02 20",
+    "scoreboard players operation #m so_ev = #t so_ev", "scoreboard players operation #m so_ev %= #fifteen so_ev",
+    f"execute if score #m so_ev matches 1 if score #t so_ev matches ..80 run function {NS}:event/eclipse/spawn",
+    f"execute if score #t so_ev matches 81 run function {NS}:event/eclipse/final",
+    f"execute if score #t so_ev matches 90.. run function {NS}:event/eclipse/end"])
+F("event/eclipse/spawn", [spawn(m) for m in ECLIPSE] + [f"function {NS}:lib/tier_up"])
+F("event/eclipse/final", [*[spawn(m) for m in ECLIPSE for _ in (0, 1)], f"function {NS}:lib/tier_up",
+    f"title {IN} title {T({'text': '¡Oleada final del eclipse!', 'color': 'dark_purple', 'bold': True})}"])
+F("event/eclipse/end", [f"execute as {IN} run loot give @s loot {NS}:reward_eclipse",
+    f"execute as {IN} run loot give @s loot {NS}:reward_big",
+    "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_inv 1",
+    f"function {NS}:lib/streak_up",
+    f"execute as {IN} at @s run summon minecraft:firework_rocket ~ ~1 ~ {{LifeTime:30,FireworksItem:{{id:\"minecraft:firework_rocket\",count:1,components:{{\"minecraft:fireworks\":{{explosions:[{{shape:\"large_ball\",colors:[I;11141290,16777215],has_trail:1b}}]}}}}}}}}",
+    say("@a", "El eclipse terminó. Los sobrevivientes recibieron el botín legendario del eclipse.", "green"), f"function {NS}:lib/cleanup"])
+
 
 lines = open(os.path.join(ROOT, f"data/{NS}/function/load.mcfunction"), encoding="utf-8").read()
 W(f"data/{NS}/function/load.mcfunction", lines + "scoreboard players set #twenty so_ev 20\nscoreboard players set #five so_ev 5\nscoreboard players set #near so_ev 0\n"
-  + "scoreboard players set #three so_ev 3\n" + f"function {NS}:load_offers\n")
+  + "scoreboard players set #three so_ev 3\nscoreboard players set #two so_ev 2\nscoreboard players set #fifteen so_ev 15\n" + f"function {NS}:load_offers\n")
 
 
 # ---------------------------------------------------------------- API para so_arenas
@@ -760,7 +1109,8 @@ F("api/mob", ["# Uso: execute positioned X Y Z run function so_events:api/mob {i
 F("api/cleanup", [f"function {NS}:lib/cleanup"])
 # ---------------------------------------------------------------- admin
 EVS = {"lluvia": "rain", "suministro": "supply", "mineria": "mining", "mercader": "trader", "invasion": "invasion", "oscuridad": "dark",
-       "duende": "runner", "mana": "mana", "altar": "altar"}
+       "duende": "runner", "mana": "mana", "altar": "altar", "meteoritos": "meteor", "oro": "gold", "espejismo": "mimic",
+       "caravana": "caravan", "eclipse": "eclipse"}
 for es, en in EVS.items():
     F(f"admin/start_{es}", [f"function {NS}:lib/blocks", f"execute unless score #active so_ev matches 0 run function {NS}:lib/cleanup",
                             f"function {NS}:event/{en}/start"])
@@ -772,6 +1122,8 @@ for lv in (1, 2, 3):
     F(f"admin/start_invasion_nivel_{lv}", [f"scoreboard players set #force_tier so_ev {lv}", f"function {NS}:admin/start_invasion"])
 for i in range(1, 6):
     F(f"admin/bless_{i}", [f"scoreboard players set #r so_ev {i}", f"function {NS}:admin/bless"])
+F("admin/alpha_on", ["scoreboard players set #alpha_force so_ev 1", say("@s", "Próximas invasiones SIEMPRE alfa: ON.", "green")])
+F("admin/alpha_off", ["scoreboard players set #alpha_force so_ev 0", say("@s", "Invasiones alfa forzadas: OFF (vuelve el 10% al azar).", "red")])
 F("admin/bless_on", ["scoreboard players set #bless_on so_ev 1", say("@s", "Bendiciones cada 200 bloques: ON.", "green")])
 F("admin/bless_off", ["scoreboard players set #bless_on so_ev 0", say("@s", "Bendiciones cada 200 bloques: OFF.", "red")])
 F("admin/stop", [f"function {NS}:lib/cleanup", say("@a", "Evento detenido por un administrador.", "gray")])
@@ -782,10 +1134,12 @@ F("admin/auto_off", ["scoreboard players set #auto so_ev 0", say("@s", "Eventos 
 F("admin/status", [f"function {NS}:lib/blocks",
     f"tellraw @s {T(PFX, {'text': 'activo=', 'color': 'gray', 'bold': False}, {'score': {'name': '#active', 'objective': 'so_ev'}, 'color': 'white'}, {'text': '  bloques=', 'color': 'gray'}, {'score': {'name': '#blk', 'objective': 'so_ev'}, 'color': 'white'}, {'text': '  próximo=', 'color': 'gray'}, {'score': {'name': '#next', 'objective': 'so_ev'}, 'color': 'white'}, {'text': '  cada=', 'color': 'gray'}, {'score': {'name': '#every', 'objective': 'so_ev'}, 'color': 'white'})}"])
 INV_LIST = ", ".join(f"{k} {v[0].lower()}" for k, v in INV.items())
-HELP = ["SO Events v3 — ayuda admin",
+HELP = ["SO Events v4 — ayuda admin",
         "/function so_events:admin/start_<lluvia|suministro|mineria|mercader|invasion|oscuridad|duende|mana|altar>",
         f"/function so_events:admin/start_invasion_<1..{N}>",
         "/function so_events:admin/start_invasion_nivel_<1|2|3>  (invasión al azar con nivel forzado)",
+        "/function so_events:admin/start_<meteoritos|oro|espejismo|caravana|eclipse>  (eventos v4)",
+        "/function so_events:admin/alpha_on | alpha_off  (forzar invasiones alfa)",
         "/function so_events:admin/bless | bless_<1..5> | bless_on | bless_off",
         "  1 prisa X 5 min, 2 regeneración III 60 s, 3 fuerza V 60 s, 4 velocidad II 2 min, 5 absorción IX 3 min",
         f"  {INV_LIST}",
@@ -795,15 +1149,17 @@ HELP = ["SO Events v3 — ayuda admin",
         "/scoreboard players set #min so_ev 300     (primer evento posible)",
         "/scoreboard players set #mine_goal so_ev 150",
         "/scoreboard players set #bless_every so_ev 200   (bloques entre bendiciones)",
-        "Jugadores: /trigger evento  (estado del evento actual)"]
+        "Jugadores: /trigger evento  (estado del evento actual)  ·  /trigger evento_diario  (estadísticas)"]
 F("admin/help", [f"tellraw @s {T({'text': h, 'color': 'gold' if i == 0 else 'gray'})}" for i, h in enumerate(HELP)])
 F("uninstall", [f"function {NS}:lib/cleanup", f"bossbar remove {NS}:ev", f"bossbar remove {NS}:boss",
                 "scoreboard objectives remove so_ev", "scoreboard objectives remove evento",
+                "scoreboard objectives remove evento_diario", "scoreboard objectives remove so_ev_win",
+                "scoreboard objectives remove so_ev_inv", "scoreboard objectives remove so_ev_pos",
                 f"data remove storage {NS}:offers alq", f"data remove storage {NS}:offers arm", f"data remove storage {NS}:offers min",
                 say("@s", "so_events desinstalado. Quitá el datapack y hacé /reload.", "gray")])
 
 INV_ROWS = "\n".join(f"| {k} | {v[0]} | {v[4]} | {', '.join(x.split('/')[1] for x in v[3])} |" for k, v in INV.items())
-W("README.md", f"""# so_events v3 — lo que pasa en la isla
+W("README.md", f"""# so_events v4 — lo que pasa en la isla
 
 Eventos automáticos cada `#every` bloques minados (por defecto 400, el primero desde 300), solo si hay alguien en la isla (64 bloques alrededor de 0 64 0).
 
@@ -817,7 +1173,17 @@ Eventos automáticos cada `#every` bloques minados (por defecto 400, el primero 
 | Noche oscura | 90 s | Oscuridad + oleadas de 5 mobs cada 20 s y final de 10 |
 | Caza del fugitivo | 60 s | Pollo Dorado o Zorro Místico veloz: 5 golpes y suelta esmeraldas y XP |
 | Tormenta de maná | 45 s | Grietas en el aire disparan orbes de experiencia cada 3 s |
-| Altar del sacrificio | 90 s | Tirenle encima 32 piedra (o troncos): Prisa II + Regeneración II 3 min para todos |
+| Altar del sacrificio | 90 s | Tiren cerca (3 bloques) 32 piedra de cualquier tipo o troncos: Prisa II + Regeneración II 3 min para todos |
+| Lluvia de meteoritos | 60 s | Cráteres de magma con botín caen cerca de los jugadores cada 3 s |
+| Fiebre del oro | 60 s | El oro brota de la isla cada 2 s |
+| Espejismo | 2 min | Dos cofres gemelos: uno es tesoro, el otro chatarra + vexes espectrales |
+| Caravana perdida | 3 min | Defendé las llamas cargadas de los saqueadores; sobrevive al menos una |
+| Eclipse | 90 s | Jinetes y enemigos de élite con oscuridad; botín legendario (desde 9.000 bloques) |
+
+## Sistemas v4
+- **Racha de eventos**: cada evento ganado sube la racha de la isla; desde x2 da rollos extra de recompensa (tope 3). Fallar la reinicia.
+- **Invasión alfa**: 10% de chance (o `admin/alpha_on`); jefe con aura y refuerzos, recompensa `reward_alpha`.
+- **Diario**: `/trigger evento_diario` muestra eventos ganados, invasiones derrotadas y positivos completados.
 
 ## Mercaderes
 1. Misterioso: siempre las mismas 8 ofertas.
@@ -843,7 +1209,7 @@ Ayuda admin: `/function so_events:admin/help`. Jugadores: `/trigger evento`.
 
 # ---------------------------------------------------------------- zip (raiz limpia)
 os.makedirs("/mnt/documents", exist_ok=True)
-out = "/mnt/documents/so_events-v3.zip"
+out = "/mnt/documents/so_events-v4.1.zip"
 with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
     for d, _, files in os.walk(ROOT):
         for f in files:
