@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
-"""Generador de so_arenas v3 — el Coliseo VorNeX (donde pasa).
+"""Generador de so_arenas v4 — el Coliseo VorNeX y Las Catacumbas.
 
 Unica fuente del datapack datapacks/so-arenas (no editar los .mcfunction a mano).
-v3:
-- Flujo de combate: menú -> túnel de preparación (DJ + mutadores) -> campana/placa/cartel
-  (o 30 s) -> saludo de jueces + música -> foso. Victoria: portones abiertos 60 s, cofre
-  de recompensa variable en el lobby, salida a pie o por la placa del túnel.
-- Limpieza quirúrgica: solo ítems/flechas del foso y bloques dentro del óvalo interior
-  (R_RESET). Nunca toca muros, gradas, lobby, tocadiscos ni terraza.
-- Contratos: Caza, Oleadas, Defensa (cebo vivo + barricadas), Rey de la Colina,
-  Asedio Volador, Duelo de Campeones, Desafío de Jefes. PvP amistoso aparte.
-- Racha, mutadores, médica, tribunas (espectador), cestas de donación, cohetes en gradas,
-  tablero en vivo, palco de jueces, público, terraza con jardines e iluminación integrada.
-Salida: datapacks/so-arenas + /mnt/documents/so_arenas-v3.zip (raiz limpia).
+v3 (base): túnel con DJ y mutadores, campana, jueces, portones, cofre de recompensa variable,
+limpieza quirúrgica, 7 contratos, PvP, racha, médica, tribunas, cestas, cohetes, terraza.
+v4:
+- Música: el tocadiscos del túnel se lee con data (disco puesto > menú > azar). 16 temas de batalla
+  (sin 11, 13, 5 ni discos raros).
+- Cestas de apoyo: en combate llegan al luchador; fuera de combate se devuelven al espectador.
+- Rey de la Colina sobre una colina física (captura 90 s dentro de 120 s, sin anti-camping).
+- Arañas, endermans y wardens con aggro forzado al jugador más cercano.
+- Limpieza de barricadas también en labio y gradas (solo bloques de jugador).
+- Defensa: aldeano "Núcleo Vivo" que recibe golpes reales; el daño baja la vida del núcleo.
+- Botín: llaves de so_crates (12 de Simply OneBlock + 6 propias) por rareza y Fragmento de Llave.
+- Las Catacumbas (y=60 bajo el coliseo): Cripta (0), Mina (3.000), Templo (6.000); 4 salas con rejas
+  que se cierran, llave de sala, cofres, jefe, récord de tiempo y reinicio limpio.
+Salida: datapacks/so-arenas + /mnt/documents/so_arenas-v4.zip (raiz limpia).
 """
 import json, os, shutil, zipfile, math, random
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "datapacks", "so-arenas")
 NS = "so_arenas"
-VER = "v3"
+VER = "v4"
 CX, CZ = -5000, -5000
 G = 95                 # bloque del piso; se camina en y=96
 AX, BZ = 42, 50        # semiejes exteriores: 84 x 100
@@ -44,7 +47,9 @@ JUDGE_Z = CZ - 44
 PIT_BOX = f"x={CX - 27},y=90,z={CZ - 32},dx=54,dy=50,dz=64"
 PIT_FLOOR_BOX = f"x={CX - 27},y=94,z={CZ - 33},dx=54,dy=5,dz=66"
 TUNNEL_BOX = f"x={CX - 3},y=95,z={TZ0},dx=6,dy=6,dz={LZ0 - TZ0}"
-ZONE_BOX = f"x={CX - 56},y=80,z={CZ - 66},dx=112,dy=130,dz={LZ1 + 12 - (CZ - 66)}"
+ZONE_BOX = f"x={CX - 56},y=50,z={CZ - 66},dx=112,dy=160,dz={LZ1 + 12 - (CZ - 66)}"  # incluye Las Catacumbas (y 54-71)
+DG_PLATE = (CX, 96, LZ1 + 5)              # entrada a Las Catacumbas (plaza sur)
+DG_OUT = (CX, 96, LZ1 + 2)                # salida de Las Catacumbas
 MOB_BOX = f"x={CX - 32},y=88,z={CZ - 38},dx=64,dy=60,dz=76"
 shutil.rmtree(ROOT, ignore_errors=True)
 random.seed(7)
@@ -80,6 +85,7 @@ ZONE = "@a[tag=so_ar_zone]"
 LOAN = "*[minecraft:custom_data~{so_arena_loan:1b}]"
 LOAN_C = 'minecraft:custom_data={so_arena_loan:1b},minecraft:lore=[{text:"Prestado por el Coliseo",color:"gray",italic:false}]'
 ANYBLOCK = "minecraft:can_place_on=[{}]"
+DGKEY = "*[minecraft:custom_data~{so_ar_dgkey:1b}]"
 
 # ---------------------------------------------------------------- pack
 W("pack.mcmeta", {"pack": {"description": f"Simply OneBlock Expansion - Arenas {VER} (/trigger arena)",
@@ -117,6 +123,41 @@ def named(name, w, label, color, lv):
 FRAG = {"type": "minecraft:item", "name": "minecraft:echo_shard", "weight": 1,
         "functions": [{"function": "minecraft:set_name", "target": "item_name",
                        "name": {"text": "Fragmento de Victoria", "color": "gold"}}]}
+# Fragmento de Llave: para la futura forja de so_crates (se detecta por custom_data).
+KFRAG = {"type": "minecraft:item", "name": "minecraft:echo_shard", "weight": 1, "functions": [
+    {"function": "minecraft:set_components", "components": {
+        "minecraft:custom_name": {"text": "Fragmento de Llave", "color": "light_purple", "italic": False},
+        "minecraft:lore": [{"text": "Juntá varios para forjar una llave de crate", "color": "gray", "italic": False}],
+        "minecraft:custom_data": "{so_key_frag:1b}"}}]}
+
+
+def EMPTY(w):
+    return {"type": "minecraft:empty", "weight": w}
+
+
+# Llaves de so_crates: componentes EXACTOS (las bóvedas comparan el custom_name completo).
+def skey(name, item, w=1):
+    return {"type": "minecraft:item", "name": f"minecraft:{item}", "weight": w,
+            "functions": [{"function": "minecraft:set_components", "components": {"minecraft:custom_name": name}}]}
+
+
+def okey(name, color, item, crate, w=1):
+    return {"type": "minecraft:item", "name": f"minecraft:{item}", "weight": w,
+            "functions": [{"function": "minecraft:set_components", "components": {
+                "minecraft:custom_name": {"text": name, "color": color, "italic": False},
+                "minecraft:lore": [{"text": f"Abre: {crate}", "color": "gray", "italic": False}]}}]}
+
+
+K_T1 = [skey(n, "trial_key") for n in ("Cemetery Key", "Graveyard Key", "Ossuary Key", "Old Tower Key")]
+K_T2 = [skey(n, "trial_key") for n in ("Pyramid Key", "Rusty Mineshaft Key", "Treasure Room", "Deep_Key")]
+K_BASIC = [okey("Llave del Arquitecto", "aqua", "trial_key", "Crate del Constructor"),
+           okey("Llave Silvestre", "green", "trial_key", "Crate de la Naturaleza")]
+K_RARE = [skey("Elder Guardian Key", "ominous_trial_key"), skey("To the End", "trial_key"),
+          okey("Llave Subterránea", "gray", "trial_key", "Crate del Minero"),
+          okey("Llave de Batalla", "red", "trial_key", "Crate de Combate")]
+K_LEG = [skey("Warden_Key", "ominous_trial_key"), skey("Wither Arena", "ominous_trial_key"),
+         okey("Llave Abisal", "dark_purple", "ominous_trial_key", "Crate Místico"),
+         okey("Llave del Vacío", "gold", "ominous_trial_key", "Crate Legendario")]
 L_COMMON = [item("experience_bottle", 6, 3, 6), item("bread", 3, 3, 6), item("cooked_beef", 3, 2, 5), item("arrow", 4, 8, 16),
             item("emerald", 5, 2, 4), item("iron_ingot", 4, 1, 3), item("gold_ingot", 3, 1, 3), item("copper_ingot", 3, 3, 8),
             item("lapis_lazuli", 3, 3, 8), item("redstone", 3, 3, 8), item("torch", 2, 4, 12), item("lead", 2), item("name_tag", 2),
@@ -149,6 +190,11 @@ L_EPIC = [item("netherite_ingot", 1), item("nether_star", 1), item("elytra", 1),
           item("silence_armor_trim_smithing_template", 1), item("eye_armor_trim_smithing_template", 1), item("ward_armor_trim_smithing_template", 1),
           item("heavy_core", 1), item("shulker_shell", 2, 2, 2), item("beacon", 1), item("dragon_breath", 1, 2, 4),
           named("netherite_sword", 1, "Espada del Campeón Eterno", "light_purple", 30)]
+# Llaves por rareza: Simply T1/T2 frecuentes; básicas de so_crates y raras en pools medios/altos; legendarias solo en épico.
+L_COMMON += K_T1 + K_T2
+L_MID += K_T1 + K_T2 + K_BASIC
+L_HIGH += K_T2 + K_BASIC + K_RARE
+L_EPIC += K_LEG + [dict(KFRAG, weight=2)]
 
 
 def table(name, *pools):
@@ -159,24 +205,29 @@ table("practice_t1", (4, L_COMMON))
 table("practice_t2", (4, L_COMMON), (2, L_MID))
 table("practice_t3", (3, L_COMMON), (3, L_MID), (1, L_HIGH))
 table("practice_t4", (2, L_COMMON), (3, L_MID), (3, L_HIGH))
-table("contract", (3, L_COMMON), (3, L_MID), (2, L_HIGH), (1, [FRAG]))
-table("boss", (2, L_MID), (5, L_HIGH), (1, L_EPIC), (1, [FRAG]))
+table("contract", (3, L_COMMON), (3, L_MID), (2, L_HIGH), (1, [FRAG]), (1, [KFRAG, EMPTY(2)]))
+table("boss", (2, L_MID), (5, L_HIGH), (1, L_EPIC), (1, [FRAG]), (1, [KFRAG]))
 table("streak", (2, L_MID), (2, L_HIGH), (1, L_EPIC + [FRAG]))
 table("dg_room", (3, L_COMMON), (2, L_MID))
 table("dg_room_hi", (2, L_COMMON), (2, L_MID), (1, L_HIGH))
 table("dg_secret", (2, L_HIGH), (1, L_EPIC))
-table("dg_boss1", (3, L_MID), (3, L_HIGH), (1, [FRAG]))
-table("dg_boss2", (2, L_MID), (4, L_HIGH), (1, L_EPIC), (1, [FRAG]))
-table("dg_boss3", (5, L_HIGH), (2, L_EPIC), (1, [FRAG]))
+table("dg_boss1", (3, L_MID), (3, L_HIGH), (1, [FRAG]), (1, [KFRAG]))
+table("dg_boss2", (2, L_MID), (4, L_HIGH), (1, L_EPIC), (1, [FRAG]), (1, [KFRAG]))
+table("dg_boss3", (5, L_HIGH), (2, L_EPIC), (1, [FRAG]), (1, [KFRAG]), (1, K_LEG + [EMPTY(4)]))
 
 # ---------------------------------------------------------------- música
-SONGS = [  # (n, id, nombre, duración en s)
+SONGS = [  # (n, id, nombre, duración en s) — temas de batalla; sin 11, 13, 5, mellohi ni cajas de música
     (1, "pigstep", "Pigstep", 148), (2, "otherside", "Otherside", 195), (3, "creator", "Creator", 176),
     (4, "relic", "Relic", 218), (5, "precipice", "Precipice", 299), (6, "strad", "Strad", 188), (7, "chirp", "Chirp", 185),
+    (8, "blocks", "Blocks", 345), (9, "cat", "Cat", 185), (10, "far", "Far", 174), (11, "mall", "Mall", 197),
+    (12, "stal", "Stal", 150), (13, "ward", "Ward", 251), (14, "wait", "Wait", 238), (15, "tears", "Tears", 175),
+    (16, "lava_chicken", "Lava Chicken", 134),
 ]
+NSONG = len(SONGS)
+RAND = 99  # /trigger arena_dj set 99 = tema al azar
 
 # ---------------------------------------------------------------- load / tick
-TRIGGERS = ["arena", "volver", "arena_pr", "arena_con", "levelrank", "arena_dj", "arena_mut", "arena_ver", "arena_pvp"]
+TRIGGERS = ["arena", "volver", "arena_pr", "arena_con", "levelrank", "arena_dj", "arena_mut", "arena_ver", "arena_pvp", "arena_dg"]
 OBJS = ["so_ar_air", "so_ar_rank", "so_ar_x", "so_ar_y", "so_ar_z", "so_ar_saved", "so_ar_streak", "so_ar_hp"]
 F("load", [
     "scoreboard objectives add so_ar dummy",
@@ -187,16 +238,19 @@ F("load", [
     "execute unless score #mode so_ar matches 0..10 run scoreboard players set #mode so_ar 0",
     "execute unless score #exit so_ar matches 0..1 run scoreboard players set #exit so_ar 0",
     *[f"execute unless score #{m} so_ar matches 0..1 run scoreboard players set #{m} so_ar 0" for m in ("mut_n", "mut_f", "mut_v", "playing")],
-    "execute unless score #song so_ar matches 0..7 run scoreboard players set #song so_ar 0",
+    f"execute unless score #song so_ar matches 0..{NSONG} run scoreboard players set #song so_ar 0",
+    "execute unless score #dg so_ar matches 0..3 run scoreboard players set #dg so_ar 0",
     "scoreboard players set #beat so_ar 0",
-    "scoreboard players set #twentyfive so_ar 25",
-    "scoreboard players set #ten so_ar 10",
-    "scoreboard players set #fifteen so_ar 15",
+    *[f"scoreboard players set #{k} so_ar {v}" for k, v in (("two", 2), ("three", 3), ("six", 6), ("seven", 7), ("ten", 10),
+                                                              ("fifteen", 15), ("twentyfive", 25))],
     "scoreboard players set #anticamp so_ar 1",
     f"bossbar add {NS}:fight {T({'text': 'Coliseo'})}",
     f"bossbar set {NS}:fight max 100", f"bossbar set {NS}:fight visible false",
+    f"bossbar add {NS}:dg {T({'text': 'Catacumbas'})}",
+    f"bossbar set {NS}:dg color purple", f"bossbar set {NS}:dg visible false",
     f"tellraw @a[tag=oneblock_admin] {T({'text': '[SO Arenas] ', 'color': 'gold'}, {'text': VER + ' cargado. Ayuda: /function so_arenas:admin/help', 'color': 'gray'})}",
 ])
+W(f"data/{NS}/tags/entity_type/aggro.json", {"values": ["minecraft:spider", "minecraft:cave_spider", "minecraft:enderman", "minecraft:warden"]})
 F("tick", [
     "scoreboard players add #beat so_ar 1",
     f"execute as @a[scores={{arena=1..}}] at @s run function {NS}:lib/go",
@@ -208,6 +262,7 @@ F("tick", [
     f"execute as @a[scores={{arena_mut=1..}}] run function {NS}:lib/mut",
     f"execute as @a[scores={{arena_ver=1..}}] at @s run function {NS}:lib/ver",
     f"execute as @a[scores={{arena_pvp=1..}}] at @s run function {NS}:lib/pvp",
+    f"execute as @a[scores={{arena_dg=1..}}] at @s run function {NS}:dg/trigger",
     *[f"scoreboard players reset @a {t}" for t in TRIGGERS],
     *[f"scoreboard players enable @a {t}" for t in TRIGGERS],
     "# duelo: vida chequeada cada tick (se corta antes de morir)",
@@ -248,7 +303,15 @@ F("lib/second", [
     f"execute if score #mode so_ar matches {FIGHT} run function {NS}:lib/board",
     f"execute if score #playing so_ar matches 1 run function {NS}:lib/music_second",
     f"execute if score #exit so_ar matches 1 run function {NS}:lib/exit_second",
-    f"execute if score #mode so_ar matches 0 if score #exit so_ar matches 0 as @a[tag=so_ar_zone,tag=!so_ar_in,tag=!so_ar_spec] run title @s actionbar {T({'text': 'Menú: aldeanos, carteles, placas del piso o /trigger arena', 'color': 'gray'})}",
+    "# Las Catacumbas",
+    f"execute if score #dg so_ar matches 1.. run function {NS}:dg/second",
+    "execute if score #dg so_ar matches 0 run tag @a remove so_ar_dgp",
+    "# Aggro forzado (arañas, endermans, wardens): golpe invisible a nombre del jugador más cercano, cada 2 s.",
+    "scoreboard players add #sec so_ar 1",
+    "scoreboard players operation #m2 so_ar = #sec so_ar",
+    "scoreboard players operation #m2 so_ar %= #two so_ar",
+    f"execute if score #m2 so_ar matches 0 as @e[tag=so_ar_aggro,{ZONE_BOX}] at @s if entity @p[tag=so_ar_zone,distance=..40] run damage @s 0.01 minecraft:player_attack by @p[tag=so_ar_zone,distance=..40]",
+    f"execute if score #mode so_ar matches 0 if score #exit so_ar matches 0 as @a[tag=so_ar_zone,tag=!so_ar_in,tag=!so_ar_spec,tag=!so_ar_dgp] run title @s actionbar {T({'text': 'Menú: aldeanos, carteles, placas del piso o /trigger arena', 'color': 'gray'})}",
 ])
 F("lib/died", [
     "scoreboard players reset @s so_ar_death",
@@ -282,8 +345,9 @@ F("lib/enter_zone", [
 ])
 F("lib/leave", [
     "tag @s remove so_ar_zone", "tag @s remove so_ar_in", "tag @s remove so_ar_pad",
-    "tag @s remove so_ar_ready", "tag @s remove so_ar_win", "tag @s remove so_ar_pvpw",
+    "tag @s remove so_ar_ready", "tag @s remove so_ar_win", "tag @s remove so_ar_pvpw", "tag @s remove so_ar_dgp",
     f"clear @s {LOAN}",
+    f"clear @s {DGKEY}",
     "tag @s remove so_ar_loan",
     "execute if entity @s[tag=so_ar_spec] run effect clear @s minecraft:invisibility",
     "tag @s remove so_ar_spec",
