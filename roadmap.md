@@ -5,3 +5,5 @@
 - [ ] so_quests v3.1: categorías estáticas, progreso coloreado en chat y /trigger pendientes (pausado, falta terminar y probar).
 - [x] so_arenas v2: coliseo, lobby, mercaderes, menú por aldeanos/carteles/placas/chat (probado en servidor 26.2).
 - [ ] so_arenas v3: dungeons, PvP (After Phase).
+- [ ] so_arenas v3 (en curso): limpieza segura del foso (ítems/flechas/bloques puestos), cofres de recompensa variados, salida por portón + 60 s de cortesía, vallas/labio anti-arañas, lobby abierto con terraza/plaza/jardines/fuentes/pérgolas/árboles, palco de jueces, público, cofres de cobre con cohetes, cestas de donación, tablero en vivo, iluminación integrada, tocadiscos decorativos, estación DJ en el túnel (7 temas + azar), campana/placa/cartel de inicio con saludo de jueces, contratos nuevos (Rey de la Colina, Asedio Volador, Duelo de Campeones, Desafío de Jefes), Defensa con cebo vivo y barricadas, racha, médica, mutadores, tribunas espectador, duelo PvP, tacho de descarte.
+- [ ] so_events v3.1: warden sin enterrarse, phantoms en lugar de murciélagos, creepers sin romper bloques, altar que desaparece, fugitivo con más vida.
