@@ -1,4 +1,4 @@
-# coliseo: paso 2/8
+# coliseo: paso 2/14
 fill -5000 90 -5050 -5000 94 -4950 minecraft:deepslate_bricks
 fill -5000 95 -5050 -5000 95 -4950 minecraft:sandstone
 fill -4999 96 -5049 -4999 174 -4951 minecraft:air

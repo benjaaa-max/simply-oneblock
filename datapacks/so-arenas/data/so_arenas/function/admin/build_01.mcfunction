@@ -1,4 +1,4 @@
-# coliseo: paso 1/8
+# coliseo: paso 1/14
 fill -5042 96 -5000 -5042 174 -5000 minecraft:air
 fill -5042 90 -5000 -5042 94 -5000 minecraft:deepslate_bricks
 fill -5042 95 -5000 -5042 95 -5000 minecraft:coarse_dirt

@@ -1,0 +1,1 @@
+$data modify entity @e[tag=so_ar_dgboard,limit=1,x=-5056,y=50,z=-5066,dx=112,dy=160,dz=158] text set value {text:"",extra:[{text:"⚰ Las Catacumbas\n",color:"dark_purple",bold:true},{text:"Récords (segundos)\n",color:"gray"},{text:"Cripta $(r1) · Mina $(r2) · Templo $(r3)",color:"white"}]}

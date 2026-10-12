@@ -36,7 +36,7 @@
         "command": "/trigger arena_con set 1"
       },
       "tooltip": {
-        "text": "Desde 400 bloques.",
+        "text": "Desde 400 bloques. 15 objetivos en tandas, con apoyo mixto según tu fase.",
         "color": "gray"
       }
     },
@@ -51,7 +51,7 @@
         "command": "/trigger arena_con set 2"
       },
       "tooltip": {
-        "text": "3 oleadas. Desde 400 bloques.",
+        "text": "Desde 400 bloques. 3 oleadas, cada una más dura.",
         "color": "gray"
       }
     },
@@ -66,7 +66,67 @@
         "command": "/trigger arena_con set 3"
       },
       "tooltip": {
-        "text": "2 minutos. Desde 2.501 bloques. Altura permitida.",
+        "text": "Desde 2.501 bloques. 2 minutos. Cebo vivo: todos van al núcleo. Te damos barricadas.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Rey de la Colina",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 4"
+      },
+      "tooltip": {
+        "text": "Desde 400 bloques. Dominá 90 s la cima de la colina central (límite 120 s).",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Asedio Volador",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 5"
+      },
+      "tooltip": {
+        "text": "Desde 2.501 bloques. Phantoms y vexes: arco, ballesta y escudo.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Duelo de Campeones",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 6"
+      },
+      "tooltip": {
+        "text": "Desde 3.334 bloques. 3 minijefes seguidos, 10 s de respiro entre cada uno.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Desafío de Jefes",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 7"
+      },
+      "tooltip": {
+        "text": "Desde 6.667 bloques. 5 jefes de tu fase en cadena. Botín de jefe.",
         "color": "gray"
       }
     },

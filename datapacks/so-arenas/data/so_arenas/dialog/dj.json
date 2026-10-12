@@ -1,0 +1,241 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Música de entrada",
+    "color": "light_purple",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Elegí el tema que va a sonar en todo el estadio. También podés poner tu disco en el tocadiscos del túnel. Si no elegís, suena uno al azar.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 3,
+  "can_close_with_escape": true,
+  "exit_action": {
+    "label": {
+      "text": "✕ Cerrar",
+      "color": "gray"
+    },
+    "width": 120
+  },
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "♪ Pigstep",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 1"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Otherside",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 2"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Creator",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 3"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Relic",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 4"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Precipice",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 5"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Strad",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 6"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Chirp",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 7"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Blocks",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 8"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Cat",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 9"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Far",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 10"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Mall",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 11"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Stal",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 12"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Ward",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 13"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Wait",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 14"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Tears",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 15"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Lava Chicken",
+        "color": "light_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 16"
+      }
+    },
+    {
+      "label": {
+        "text": "♪ Al azar",
+        "color": "dark_purple"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dj set 99"
+      }
+    },
+    {
+      "label": {
+        "text": "¡Campana!",
+        "color": "green"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 30"
+      },
+      "tooltip": {
+        "text": "Empieza el combate (solo desde el túnel).",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "« Volver"
+      },
+      "width": 120,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_arenas:main"
+      }
+    }
+  ]
+}
