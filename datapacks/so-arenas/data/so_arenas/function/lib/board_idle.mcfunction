@@ -1,0 +1,1 @@
+data modify entity @e[tag=so_ar_board,limit=1,x=-5056,y=50,z=-5066,dx=112,dy=160,dz=158] text set value {text:"",extra:[{text:"⚔ Coliseo VorNeX\n",color:"gold",bold:true},{text:"Esperando gladiadores",color:"gray"}]}
