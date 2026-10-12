@@ -1,0 +1,144 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Contratos",
+    "color": "aqua",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Un contrato por vez. Los enemigos escalan con tu fase. Cumplirlo sube tu rango oculto.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 1,
+  "can_close_with_escape": true,
+  "exit_action": {
+    "label": {
+      "text": "✕ Cerrar",
+      "color": "gray"
+    },
+    "width": 250
+  },
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Caza: 15 bajas objetivo",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 1"
+      },
+      "tooltip": {
+        "text": "Desde 400 bloques. 15 objetivos en tandas, con apoyo mixto según tu fase.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Oleadas dobles",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 2"
+      },
+      "tooltip": {
+        "text": "Desde 400 bloques. 3 oleadas, cada una más dura.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Defensa del Núcleo",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 3"
+      },
+      "tooltip": {
+        "text": "Desde 2.501 bloques. 2 minutos. Cebo vivo: todos van al núcleo. Te damos barricadas.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Rey de la Colina",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 4"
+      },
+      "tooltip": {
+        "text": "Desde 400 bloques. Dominá 90 s la cima de la colina central (límite 120 s).",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Asedio Volador",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 5"
+      },
+      "tooltip": {
+        "text": "Desde 2.501 bloques. Phantoms y vexes: arco, ballesta y escudo.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Duelo de Campeones",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 6"
+      },
+      "tooltip": {
+        "text": "Desde 3.334 bloques. 3 minijefes seguidos, 10 s de respiro entre cada uno.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Desafío de Jefes",
+        "color": "aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 7"
+      },
+      "tooltip": {
+        "text": "Desde 6.667 bloques. 5 jefes de tu fase en cadena. Botín de jefe.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "« Volver"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_arenas:main"
+      }
+    }
+  ]
+}

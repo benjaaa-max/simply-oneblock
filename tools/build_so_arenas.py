@@ -1169,10 +1169,18 @@ for dx in range(-AX, AX + 1):
     reset.append(f"fill {x} 96 {CZ - zb} {x} 120 {CZ + zb} minecraft:air")
     reset.append(f"fill {x} {G} {CZ - zb} {x} {G} {CZ + zb} {FLOOR_MIX[(dx // 3) % len(FLOOR_MIX)]}")
 reset += [f"setblock {x} {G} {z} minecraft:ochre_froglight" for x, z in FLOOR_LIGHTS]
+def _bandr(x, dx, r0, r1, y0, y1, blk):
+    za, zb = zr(dx, r0), zr(dx, r1)
+    if zb < 0: return []
+    if za < 0: return [f"fill {x} {y0} {CZ - zb} {x} {y1} {CZ + zb} {blk}"]
+    if zb <= za: return []
+    return [f"fill {x} {y0} {CZ - zb} {x} {y1} {CZ - za - 1} {blk}", f"fill {x} {y0} {CZ + za + 1} {x} {y1} {CZ + zb} {blk}"]
+
+
 reset.append("# Barricadas puestas en el labio o las gradas: solo tablas de roble y muros de piedra (la estructura no usa ninguno).")
 for dx in range(-AX, AX + 1):
     for _blk in ("minecraft:oak_planks", "minecraft:cobblestone_wall"):
-        reset += band(CX + dx, dx, R_RESET, R_GRADA, 96, 112, f"minecraft:air replace {_blk}")
+        reset += _bandr(CX + dx, dx, R_RESET, R_GRADA, 96, 112, f"minecraft:air replace {_blk}")
 F("lib/reset_pit", reset)
 
 # ---------------------------------------------------------------- spawn de enemigos

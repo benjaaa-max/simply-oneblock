@@ -1,3 +1,4 @@
+execute if score @s arena_mut matches 20 run return run dialog show @s so_arenas:mut
 execute unless entity @s[tag=so_ar_zone] run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "Los mutadores se eligen dentro del Coliseo.", "color": "red", "bold": false}]
 execute if score #mode so_ar matches 1..8 run return run tellraw @s [{"text": "[Arena] ", "color": "gold", "bold": true}, {"text": "Los mutadores se eligen antes de la campana.", "color": "red", "bold": false}]
 execute if score @s arena_mut matches 1 store success score #tmp so_ar if score #mut_n so_ar matches 0

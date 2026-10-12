@@ -1,0 +1,114 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Las Catacumbas",
+    "color": "dark_purple",
+    "bold": true
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Tres mazmorras bajo el coliseo. Cada una: 3 salas que cierran la reja hasta vencer a todos, llave de sala, cofres y un jefe con cofre final. Se reinician solas.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 1,
+  "can_close_with_escape": true,
+  "exit_action": {
+    "label": {
+      "text": "✕ Cerrar",
+      "color": "gray"
+    },
+    "width": 250
+  },
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Cripta de los Caídos",
+        "color": "gray"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dg set 1"
+      },
+      "tooltip": {
+        "text": "Desde 0 bloques. Trampas: flechas. Jefe: Caballero No-Muerto.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Mina Abandonada",
+        "color": "gold"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dg set 2"
+      },
+      "tooltip": {
+        "text": "Desde 3.000 bloques. Trampas: derrumbes. Jefe: Rey Araña.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Templo Sumergido",
+        "color": "dark_aqua"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dg set 3"
+      },
+      "tooltip": {
+        "text": "Desde 6.000 bloques. Trampas: tridentes. Jefe: Guardián de la Oscuridad.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Unirse a la expedición",
+        "color": "green"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dg set 9"
+      },
+      "tooltip": {
+        "text": "Entrar a la mazmorra en curso.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Abandonar / salir",
+        "color": "red"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dg set 8"
+      },
+      "tooltip": {
+        "text": "Volvés a la plaza del Coliseo.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "« Volver"
+      },
+      "width": 250,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_arenas:main"
+      }
+    }
+  ]
+}

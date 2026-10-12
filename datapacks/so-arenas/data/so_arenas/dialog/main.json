@@ -1,0 +1,166 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "text": "Coliseo VorNeX",
+    "color": "gold",
+    "bold": true
+  },
+  "external_title": {
+    "text": "Arena"
+  },
+  "body": [
+    {
+      "type": "minecraft:plain_message",
+      "contents": {
+        "text": "Elegí desafío, música y mutadores. Después tocá la campana del túnel. Mercaderes y médica en el lobby.",
+        "color": "gray"
+      }
+    }
+  ],
+  "columns": 2,
+  "can_close_with_escape": true,
+  "exit_action": {
+    "label": {
+      "text": "✕ Cerrar",
+      "color": "gray"
+    },
+    "width": 170
+  },
+  "pause": false,
+  "actions": [
+    {
+      "label": {
+        "text": "Práctica por tiers",
+        "color": "yellow"
+      },
+      "width": 170,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_arenas:practice"
+      }
+    },
+    {
+      "label": {
+        "text": "Contratos",
+        "color": "aqua"
+      },
+      "width": 170,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_arenas:contracts"
+      }
+    },
+    {
+      "label": {
+        "text": "Música de entrada",
+        "color": "light_purple"
+      },
+      "width": 170,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_arenas:dj"
+      }
+    },
+    {
+      "label": {
+        "text": "Mutadores (x2 botín)",
+        "color": "red"
+      },
+      "width": 170,
+      "action": {
+        "type": "minecraft:show_dialog",
+        "dialog": "so_arenas:mut"
+      }
+    },
+    {
+      "label": {
+        "text": "Las Catacumbas",
+        "color": "dark_purple"
+      },
+      "width": 170,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_dg set 20"
+      },
+      "tooltip": {
+        "text": "Tres mazmorras bajo el coliseo.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Unirse al desafío",
+        "color": "green"
+      },
+      "width": 170,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_con set 9"
+      },
+      "tooltip": {
+        "text": "Entrar si ya hay uno en curso o en preparación.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Tribunas (espectador)",
+        "color": "aqua"
+      },
+      "width": 170,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_ver"
+      },
+      "tooltip": {
+        "text": "Mirar invisible desde las gradas. Otra vez para bajar.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Duelo PvP amistoso",
+        "color": "red"
+      },
+      "width": 170,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger arena_pvp set 1"
+      },
+      "tooltip": {
+        "text": "Retar o aceptar. Termina a los 3 corazones.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Ver mi rango y racha",
+        "color": "gray"
+      },
+      "width": 170,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger levelrank"
+      },
+      "tooltip": {
+        "text": "Se muestra en el chat.",
+        "color": "gray"
+      }
+    },
+    {
+      "label": {
+        "text": "Volver a la isla",
+        "color": "red"
+      },
+      "width": 170,
+      "action": {
+        "type": "minecraft:run_command",
+        "command": "/trigger volver"
+      },
+      "tooltip": {
+        "text": "Si hay desafío activo, cuenta como abandono.",
+        "color": "gray"
+      }
+    }
+  ]
+}
