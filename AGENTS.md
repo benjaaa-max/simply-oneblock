@@ -17,6 +17,4 @@
 - Generate `so_events` only from `tools/build_so_events.py`; it owns mobs, bosses and world events and exposes `so_events:api/*` (boss, mob, cleanup) so `so_arenas` reuses enemies without duplicating them.
 
 ## Estructura
-
-## Estructura
-- Generate so_arenas only from tools/build_so_arenas.py and validate block/entity IDs against a real server jar; the build forceloads the area and runs scheduled steps so every /fill lands on loaded chunks. Travel uses /trigger arena and /trigger volver; so_events:api mobs are claimed as so_ar_mob (so_ev_mob removed) right after spawning so island cleanup never touches arena mobs.
+- Generate so_arenas only from tools/build_so_arenas.py and validate block/entity IDs against a real server jar; the build forceloads the area and runs scheduled steps so every /fill lands on loaded chunks. Travel uses /trigger arena and /trigger volver; so_events:api mobs are claimed as so_ar_mob (so_ev_mob removed) right after spawning so island cleanup never touches arena mobs; Catacumbas mobs use so_ar_dgm instead so coliseum end_fight never kills dungeon fights, and each dungeon has separate shell (built once) and interior (rebuilt on every reset) functions so resets only touch room insides.

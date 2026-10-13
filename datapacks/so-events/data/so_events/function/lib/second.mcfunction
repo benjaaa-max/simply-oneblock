@@ -12,5 +12,10 @@ execute if score #active so_ev matches 6 run function so_events:event/dark/secon
 execute if score #active so_ev matches 7 run function so_events:event/runner/second
 execute if score #active so_ev matches 8 run function so_events:event/mana/second
 execute if score #active so_ev matches 9 run function so_events:event/altar/second
+execute if score #active so_ev matches 10 run function so_events:event/meteor/second
+execute if score #active so_ev matches 11 run function so_events:event/gold/second
+execute if score #active so_ev matches 12 run function so_events:event/mimic/second
+execute if score #active so_ev matches 13 run function so_events:event/caravan/second
+execute if score #active so_ev matches 14 run function so_events:event/eclipse/second
 execute if entity @e[tag=so_ev_boss,limit=1] store result bossbar so_events:boss value run data get entity @e[tag=so_ev_boss,limit=1] Health
 execute unless entity @e[tag=so_ev_boss,limit=1] run bossbar set so_events:boss visible false

@@ -1,4 +1,4 @@
-# so_events v3 — lo que pasa en la isla
+# so_events v4 — lo que pasa en la isla
 
 Eventos automáticos cada `#every` bloques minados (por defecto 400, el primero desde 300), solo si hay alguien en la isla (64 bloques alrededor de 0 64 0).
 
@@ -12,7 +12,17 @@ Eventos automáticos cada `#every` bloques minados (por defecto 400, el primero 
 | Noche oscura | 90 s | Oscuridad + oleadas de 5 mobs cada 20 s y final de 10 |
 | Caza del fugitivo | 60 s | Pollo Dorado o Zorro Místico veloz: 5 golpes y suelta esmeraldas y XP |
 | Tormenta de maná | 45 s | Grietas en el aire disparan orbes de experiencia cada 3 s |
-| Altar del sacrificio | 90 s | Tirenle encima 32 piedra (o troncos): Prisa II + Regeneración II 3 min para todos |
+| Altar del sacrificio | 90 s | Tiren cerca (3 bloques) 32 piedra de cualquier tipo o troncos: Prisa II + Regeneración II 3 min para todos |
+| Lluvia de meteoritos | 60 s | Cráteres de magma con botín caen cerca de los jugadores cada 3 s |
+| Fiebre del oro | 60 s | El oro brota de la isla cada 2 s |
+| Espejismo | 2 min | Dos cofres gemelos: uno es tesoro, el otro chatarra + vexes espectrales |
+| Caravana perdida | 3 min | Defendé las llamas cargadas de los saqueadores; sobrevive al menos una |
+| Eclipse | 90 s | Jinetes y enemigos de élite con oscuridad; botín legendario (desde 9.000 bloques) |
+
+## Sistemas v4
+- **Racha de eventos**: cada evento ganado sube la racha de la isla; desde x2 da rollos extra de recompensa (tope 3). Fallar la reinicia.
+- **Invasión alfa**: 10% de chance (o `admin/alpha_on`); jefe con aura y refuerzos, recompensa `reward_alpha`.
+- **Diario**: `/trigger evento_diario` muestra eventos ganados, invasiones derrotadas y positivos completados.
 
 ## Mercaderes
 1. Misterioso: siempre las mismas 8 ofertas.

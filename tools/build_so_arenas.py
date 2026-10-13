@@ -1979,7 +1979,7 @@ for dg in DGS:
         f'execute positioned {bx + 0.5} 60 {zc + 0.5} run function so_events:api/boss {{id:"{dg["boss"]}"}}',
         *[f'execute positioned {x + 0.5} 60 {z + 0.5} run function so_events:api/mob {{id:"{m}"}}' for m, (x, z) in zip(dg["esc"], pts(dg, 3)[2:])],
         f"execute as @e[tag=so_ev_mob,{room_box(dg, 3)}] run function {NS}:dg/claim",
-        f'data modify entity @e[tag=so_ar_dgboss,limit=1] CustomName set value {{text:"{dg["bname"]}",color:"dark_red",bold:true}}',
+        f'data modify entity @e[tag=so_ar_dgboss,{room_box(dg, 3)},limit=1] CustomName set value {{text:"{dg["bname"]}",color:"dark_red",bold:true}}',
         "execute unless entity @e[tag=so_ev_boss] run bossbar set so_events:boss visible false",
         f'bossbar set {NS}:dg name {T({"text": dg["bname"], "color": "dark_red", "bold": True})}',
     ])

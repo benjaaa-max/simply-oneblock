@@ -1,4 +1,4 @@
-summon minecraft:warden ~ ~ ~ {Tags:["so_ev_mob","so_ev_boss"],PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{text:"Guardián de la Oscuridad",color:"dark_aqua",bold:true},attributes:[{id:"minecraft:max_health",base:180d},{id:"minecraft:knockback_resistance",base:1d},{id:"minecraft:attack_damage",base:10d}],Health:180f}
+summon minecraft:warden ~ ~ ~ {Tags:["so_ev_mob","so_ev_boss"],PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{text:"Guardián de la Oscuridad",color:"dark_aqua",bold:true},attributes:[{id:"minecraft:max_health",base:180d},{id:"minecraft:knockback_resistance",base:1d},{id:"minecraft:attack_damage",base:10d}],Health:180f,Brain:{memories:{"minecraft:dig_cooldown":{value:{},ttl:1200000L}}}}
 scoreboard players set #ok so_ev 1
 bossbar set so_events:boss name {"text": "Guardián de la Oscuridad", "color": "dark_aqua", "bold": true}
 bossbar set so_events:boss max 180
