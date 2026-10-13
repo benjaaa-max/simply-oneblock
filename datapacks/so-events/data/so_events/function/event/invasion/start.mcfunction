@@ -8,6 +8,10 @@ function so_events:lib/no_grief
 execute unless score #force_type so_ev matches 1..20 run function so_events:event/invasion/pick
 execute if score #force_type so_ev matches 1..20 run scoreboard players operation #type so_ev = #force_type so_ev
 scoreboard players set #force_type so_ev 0
+# Invasión alfa: 10% de chance (o forzada por admin).
+execute store result score #alpha so_ev run random value 1..10
+execute if score #alpha_force so_ev matches 1 run scoreboard players set #alpha so_ev 1
+execute if score #alpha so_ev matches 2.. run scoreboard players set #alpha so_ev 0
 bossbar set so_events:ev color red
 bossbar set so_events:ev max 10
 execute if score #type so_ev matches 1 if score #tier so_ev matches 1 run bossbar set so_events:ev name {"text": "¡Horda de zombis!", "color": "dark_green", "bold": true}

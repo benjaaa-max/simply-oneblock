@@ -6,9 +6,10 @@ execute positioned 0 64 0 store result score #n so_ev if entity @a[distance=..64
 execute if score #n so_ev matches 0 run scoreboard players operation #next so_ev = #blk so_ev
 execute if score #n so_ev matches 0 run scoreboard players add #next so_ev 50
 execute if score #n so_ev matches 0 run return 0
-execute store result score #r so_ev run random value 1..9
-# Noche oscura solo desde la fase 5 (1668 bloques).
+execute store result score #r so_ev run random value 1..14
+# Noche oscura desde la fase 5 (1668 bloques); eclipse solo post-Nether (9000 bloques).
 execute if score #r so_ev matches 6 if score #blk so_ev matches ..1667 run scoreboard players set #r so_ev 1
+execute if score #r so_ev matches 14 if score #blk so_ev matches ..8999 run scoreboard players set #r so_ev 2
 execute if score #r so_ev matches 1 run function so_events:event/rain/start
 execute if score #r so_ev matches 2 run function so_events:event/supply/start
 execute if score #r so_ev matches 3 run function so_events:event/mining/start
@@ -18,3 +19,8 @@ execute if score #r so_ev matches 6 run function so_events:event/dark/start
 execute if score #r so_ev matches 7 run function so_events:event/runner/start
 execute if score #r so_ev matches 8 run function so_events:event/mana/start
 execute if score #r so_ev matches 9 run function so_events:event/altar/start
+execute if score #r so_ev matches 10 run function so_events:event/meteor/start
+execute if score #r so_ev matches 11 run function so_events:event/gold/start
+execute if score #r so_ev matches 12 run function so_events:event/mimic/start
+execute if score #r so_ev matches 13 run function so_events:event/caravan/start
+execute if score #r so_ev matches 14 run function so_events:event/eclipse/start

@@ -1,0 +1,2 @@
+summon minecraft:skeleton ~ ~ ~ {Tags:["so_ev_mob"],PersistenceRequired:1b,active_effects:[{id:"minecraft:speed",amplifier:0b,duration:-1,show_particles:1b},{id:"minecraft:resistance",amplifier:0b,duration:-1,show_particles:1b}],equipment:{head:{id:"minecraft:netherite_helmet",count:1},chest:{id:"minecraft:netherite_chestplate",count:1},mainhand:{id:"minecraft:bow",count:1,components:{"minecraft:enchantments":{"minecraft:power":3,"minecraft:punch":1}}}},drop_chances:{head:0.0f,chest:0.0f,mainhand:0.0f}}
+scoreboard players set #ok so_ev 1
