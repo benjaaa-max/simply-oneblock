@@ -1,0 +1,1 @@
+give @s minecraft:echo_shard[custom_name={text:"Fragmento de Llave",color:"light_purple",italic:false},lore=[{text:"Juntá varios para forjar una llave de crate",color:"gray",italic:false}],custom_data={so_key_frag:1b}] 16

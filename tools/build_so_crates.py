@@ -370,7 +370,7 @@ LOOT["legend"] = table(
     BOOK_T3,
     pool([ELIXIR(2), TITAN(2), MILAGRO(2), PESTE(1), JUICIO(1), VITAL(2), empty(6)]),
     # Única fuente de Élitra de TODO el sistema: casi rota (20% de durabilidad), sin encantar, ~7%.
-    pool([it("elytra", 7, extra=[{"function": "minecraft:set_damage", "damage": 0.2}]), empty(93)]),
+    pool([it("elytra", 7, extra=[{"function": "minecraft:set_damage", "damage": 0.8}]), empty(93)]),
     pool([okey("legend", 1), okey("mystic", 2), empty(14)]), SFRAG(50, 2, 4))
 
 for name, t in LOOT.items():
