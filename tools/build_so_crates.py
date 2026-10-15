@@ -567,7 +567,6 @@ s3 = ["# so_crates v2 · paso 3: atrio, forja y regreso",
       text_display(5000.5, FY + 6.3, PORTAL_Z + 0.5, [tc("« Volver a la isla", "green", True), NL,
                                                       tc("pisá la placa o usá /trigger isla", "gray")], 1.1),
       ] + labels + [
-      "forceload remove 4960 4970 5040 5030",
       f'tellraw @a[tag=oneblock_admin] [{{"text":"[SO Crates] ","color":"gold"}},{{"text":"Templo construido: {len(VAULTS)} bóvedas + Forja.","color":"green"}}]',
 ]
 fn("build/s3", s3)
