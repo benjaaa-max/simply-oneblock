@@ -9,4 +9,4 @@
 - [x] so_events v3.1: warden sin enterrarse, phantoms en lugar de murciélagos, creepers sin romper bloques, altar que desaparece, fugitivo con más vida.
 - [x] so_arenas v4: DJ sincronizado (16 temas), cestas que devuelven, colina 3D, aggro forzado, limpieza de barricadas, Núcleo Vivo, llaves de so_crates en botín, Las Catacumbas (3 mazmorras).
 - [ ] so_events v4.2: llaves de so_crates en los botines de eventos.
-- [ ] so_crates: botín más variado + forja con Fragmentos de Llave.
+- [x] so_crates v2: Templo de las Bóvedas (5000 100 5000), botín por tier + especiales OP, Forja de Llaves 4/6/9/12.
