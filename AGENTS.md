@@ -18,3 +18,4 @@
 
 ## Estructura
 - Generate so_arenas only from tools/build_so_arenas.py and validate block/entity IDs against a real server jar; the build forceloads the area and runs scheduled steps so every /fill lands on loaded chunks. Travel uses /trigger arena and /trigger volver; so_events:api mobs are claimed as so_ar_mob (so_ev_mob removed) right after spawning so island cleanup never touches arena mobs; Catacumbas mobs use so_ar_dgm instead so coliseum end_fight never kills dungeon fights, and each dungeon has separate shell (built once) and interior (rebuilt on every reset) functions so resets only touch room insides.
+- Generate so_crates only from tools/build_so_crates.py; admin/build forceloads the temple and builds in scheduled steps, and the Key Fragment is matched only by custom_data so_key_frag (same as so_arenas) so lore changes never break forge trades.

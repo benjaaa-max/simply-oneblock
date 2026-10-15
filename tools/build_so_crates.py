@@ -289,7 +289,7 @@ LOOT["builder"] = table(pool([
                                "prismarine_bricks", "purpur_block", "copper_block", "white_wool", "moss_block")
 ] + [it("sea_lantern", 4, 32, 64), it("lantern", 4, 32, 64), it("scaffolding", 4, 64), it("end_rod", 2, 16, 32),
      it("white_glazed_terracotta", 2, 32, 64), it("cyan_glazed_terracotta", 2, 32, 64), it("glowstone", 2, 32, 64),
-     it("chain", 2, 32, 64), it("oxidized_cut_copper", 2, 32, 64), it("light_blue_stained_glass", 2, 32, 64),
+     it("iron_chain", 2, 32, 64), it("oxidized_cut_copper", 2, 32, 64), it("light_blue_stained_glass", 2, 32, 64),
      it("bookshelf", 1, 16, 32), it("item_frame", 1, 16, 32), it("flower_pot", 1, 16, 32)], rolls=6),
     pool([gear("diamond_axe", 3, MAXE["axe"], "◆ Forja Maestra ◆", "blue"), gear("diamond_shovel", 3, MAXE["shovel"], "◆ Forja Maestra ◆", "blue"),
           gear("diamond_pickaxe", 3, {"efficiency": 5, "silk_touch": 1, "unbreaking": 3, "mending": 1}, "◆ Forja Maestra ◆", "blue"),
@@ -370,7 +370,7 @@ LOOT["legend"] = table(
     BOOK_T3,
     pool([ELIXIR(2), TITAN(2), MILAGRO(2), PESTE(1), JUICIO(1), VITAL(2), empty(6)]),
     # Única fuente de Élitra de TODO el sistema: casi rota (20% de durabilidad), sin encantar, ~7%.
-    pool([it("elytra", 7, extra=[{"function": "minecraft:set_damage", "damage": 0.8}]), empty(93)]),
+    pool([it("elytra", 7, extra=[{"function": "minecraft:set_damage", "damage": 0.2}]), empty(93)]),
     pool([okey("legend", 1), okey("mystic", 2), empty(14)]), SFRAG(50, 2, 4))
 
 for name, t in LOOT.items():
@@ -438,7 +438,7 @@ for x in range(X0 + 3, X1 - 1, 5):
 # lámparas colgantes (cadenas) en las tres naves
 for x in (4980, 5000, 5020):
     for z in (4988, 5000, 5012):
-        s1 += [f"fill {x} {TOP-3} {z} {x} {TOP} {z} minecraft:chain",
+        s1 += [f"fill {x} {TOP-3} {z} {x} {TOP} {z} minecraft:iron_chain",
                f"setblock {x} {TOP-4} {z} minecraft:lantern[hanging=true]"]
 s1.append("schedule function so_crates:build/s2 10t")
 fn("build/s1", s1)
@@ -537,7 +537,7 @@ s3 = ["# so_crates v2 · paso 3: atrio, forja y regreso",
       f"setblock 4996 {FY+1} {FZ-2} minecraft:blast_furnace[facing=south,lit=true]",
       f"setblock 5004 {FY+1} {FZ-2} minecraft:lava_cauldron",
       f"setblock 4995 {FY+1} {FZ} minecraft:grindstone[face=floor,facing=east]",
-      f"setblock 5005 {FY+1} {FZ} minecraft:chain",
+      f"setblock 5005 {FY+1} {FZ} minecraft:iron_chain",
       f"setblock 5005 {FY+2} {FZ} minecraft:lantern",
       f"setblock 4995 {FY+2} {FZ} minecraft:lantern",
       # corazón del atrio
@@ -567,7 +567,6 @@ s3 = ["# so_crates v2 · paso 3: atrio, forja y regreso",
       text_display(5000.5, FY + 6.3, PORTAL_Z + 0.5, [tc("« Volver a la isla", "green", True), NL,
                                                       tc("pisá la placa o usá /trigger isla", "gray")], 1.1),
       ] + labels + [
-      "forceload remove 4960 4970 5040 5030",
       f'tellraw @a[tag=oneblock_admin] [{{"text":"[SO Crates] ","color":"gold"}},{{"text":"Templo construido: {len(VAULTS)} bóvedas + Forja.","color":"green"}}]',
 ]
 fn("build/s3", s3)
