@@ -1,4 +1,4 @@
-execute unless entity @s[tag=so_cr_in] run return run tellraw @s [{"text":"[SO Crates] ","color":"gold"},{"text":"Este comando solo funciona dentro de la zona de Crates.","color":"red"}]
+execute unless entity @s[tag=so_cr_in] run return run tellraw @s [{"text":"[SO Crates] ","color":"gold"},{"text":"Este comando solo funciona dentro del templo de Crates.","color":"red"}]
 execute store result storage so_crates:tmp x int 1 run scoreboard players get @s so_cr_x
 execute store result storage so_crates:tmp y int 1 run scoreboard players get @s so_cr_y
 execute store result storage so_crates:tmp z int 1 run scoreboard players get @s so_cr_z

@@ -7,12 +7,12 @@ function so_crates:give/rusty
 function so_crates:give/treasure
 function so_crates:give/deep
 function so_crates:give/elder
+function so_crates:give/to_the_end
 function so_crates:give/warden
 function so_crates:give/wither
-function so_crates:give/to_the_end
 function so_crates:give/builder
-function so_crates:give/miner
 function so_crates:give/nature
+function so_crates:give/miner
 function so_crates:give/combat
 function so_crates:give/mystic
 function so_crates:give/legend

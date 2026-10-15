@@ -7,4 +7,4 @@ scoreboard objectives remove so_cr_y
 scoreboard objectives remove so_cr_z
 scoreboard objectives remove so_cr_saved
 data remove storage so_crates:tmp x
-tellraw @s {"text":"[SO Crates] desinstalado. Quitá la carpeta del datapack y /reload. La plataforma queda construida.","color":"yellow"}
+tellraw @s {"text":"[SO Crates] desinstalado. Quitá la carpeta del datapack y /reload. El templo queda construido.","color":"yellow"}
