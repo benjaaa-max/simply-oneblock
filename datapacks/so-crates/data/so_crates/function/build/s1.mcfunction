@@ -256,22 +256,22 @@ setblock 5028 100 5003 minecraft:sea_lantern
 setblock 5028 100 5008 minecraft:sea_lantern
 setblock 5028 100 5013 minecraft:sea_lantern
 setblock 5028 100 5018 minecraft:sea_lantern
-fill 4980 115 4988 4980 118 4988 minecraft:chain
+fill 4980 115 4988 4980 118 4988 minecraft:iron_chain
 setblock 4980 114 4988 minecraft:lantern[hanging=true]
-fill 4980 115 5000 4980 118 5000 minecraft:chain
+fill 4980 115 5000 4980 118 5000 minecraft:iron_chain
 setblock 4980 114 5000 minecraft:lantern[hanging=true]
-fill 4980 115 5012 4980 118 5012 minecraft:chain
+fill 4980 115 5012 4980 118 5012 minecraft:iron_chain
 setblock 4980 114 5012 minecraft:lantern[hanging=true]
-fill 5000 115 4988 5000 118 4988 minecraft:chain
+fill 5000 115 4988 5000 118 4988 minecraft:iron_chain
 setblock 5000 114 4988 minecraft:lantern[hanging=true]
-fill 5000 115 5000 5000 118 5000 minecraft:chain
+fill 5000 115 5000 5000 118 5000 minecraft:iron_chain
 setblock 5000 114 5000 minecraft:lantern[hanging=true]
-fill 5000 115 5012 5000 118 5012 minecraft:chain
+fill 5000 115 5012 5000 118 5012 minecraft:iron_chain
 setblock 5000 114 5012 minecraft:lantern[hanging=true]
-fill 5020 115 4988 5020 118 4988 minecraft:chain
+fill 5020 115 4988 5020 118 4988 minecraft:iron_chain
 setblock 5020 114 4988 minecraft:lantern[hanging=true]
-fill 5020 115 5000 5020 118 5000 minecraft:chain
+fill 5020 115 5000 5020 118 5000 minecraft:iron_chain
 setblock 5020 114 5000 minecraft:lantern[hanging=true]
-fill 5020 115 5012 5020 118 5012 minecraft:chain
+fill 5020 115 5012 5020 118 5012 minecraft:iron_chain
 setblock 5020 114 5012 minecraft:lantern[hanging=true]
 schedule function so_crates:build/s2 10t

@@ -10,7 +10,7 @@ setblock 5003 101 4986 minecraft:smithing_table
 setblock 4996 101 4984 minecraft:blast_furnace[facing=south,lit=true]
 setblock 5004 101 4984 minecraft:lava_cauldron
 setblock 4995 101 4986 minecraft:grindstone[face=floor,facing=east]
-setblock 5005 101 4986 minecraft:chain
+setblock 5005 101 4986 minecraft:iron_chain
 setblock 5005 102 4986 minecraft:lantern
 setblock 4995 102 4986 minecraft:lantern
 fill 4997 100 4997 5003 100 5003 minecraft:chiseled_polished_blackstone
