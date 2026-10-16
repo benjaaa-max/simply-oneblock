@@ -13,6 +13,9 @@
     "minecraft:mossy_cobblestone",
     "minecraft:netherrack",
     "minecraft:end_stone",
+    "minecraft:dirt",
+    "minecraft:sand",
+    "minecraft:gravel",
     "#minecraft:logs"
   ]
 }

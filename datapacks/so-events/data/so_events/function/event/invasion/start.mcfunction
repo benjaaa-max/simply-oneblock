@@ -1,5 +1,7 @@
 function so_events:lib/begin
 scoreboard players set #active so_ev 5
+execute as @a[tag=so_ev_in] at @s run playsound minecraft:event.raid.horn master @s ~ ~ ~ 1 1
+execute as @a[tag=so_ev_in] at @s run playsound minecraft:music_disc.pigstep record @s ~ ~ ~ 0.6 1
 execute if score #force_tier so_ev matches 1..3 run scoreboard players operation #tier so_ev = #force_tier so_ev
 scoreboard players set #force_tier so_ev 0
 scoreboard players set #stage so_ev 0

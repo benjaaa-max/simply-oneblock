@@ -1,4 +1,4 @@
-execute as @a[tag=so_ev_in] run loot give @s loot so_events:caravan
+execute as @a[tag=so_ev_in] at @s run function so_events:lib/chest {t:"caravan"}
 # Por cada llama viva, un rollo extra de cargamento para la isla.
 execute as @e[tag=so_ev_llama] at @s run loot spawn ~ ~1 ~ loot so_events:caravan
 scoreboard players add @a[tag=so_ev_in] so_ev_win 1
