@@ -1,7 +1,9 @@
 # Limpieza total: mobs al vacío (sin drops), barras, marcas y regla de griefing.
 tp @e[tag=so_ev_mob] 0 -300 0
 kill @e[tag=so_ev_mob]
+execute as @e[type=minecraft:marker,tag=so_ev_beacon] at @s run function so_events:event/altar/unbuild
 kill @e[tag=so_ev_altar]
+stopsound @a record
 kill @e[tag=so_ev_mimic]
 kill @e[tag=so_ev_llama]
 scoreboard players set #alpha so_ev 0

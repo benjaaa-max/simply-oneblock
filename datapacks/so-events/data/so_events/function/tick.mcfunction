@@ -6,4 +6,5 @@ scoreboard players reset @a evento_diario
 scoreboard players enable @a evento_diario
 scoreboard players add #beat so_ev 1
 execute if score #beat so_ev matches 20.. run function so_events:lib/second
+execute if score #beat so_ev matches 10 run function so_events:lib/chest_tick
 execute if score #beat so_ev matches 20.. run scoreboard players set #beat so_ev 0

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generador de so_events v1 (lo que pasa: eventos, oleadas y jefes).
 Salida: datapacks/so-events  +  /mnt/documents/so_events-v1.zip (raiz limpia)."""
-import json, os, shutil, zipfile
+import json, os, re, shutil, zipfile
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "datapacks", "so-events")
 NS = "so_events"
@@ -12,7 +12,10 @@ def W(rel, obj):
     with open(p, "w", encoding="utf-8") as f:
         f.write(obj if isinstance(obj, str) else json.dumps(obj, ensure_ascii=False, indent=2))
 
+_CHEST = re.compile(r'(as \S+) run loot give @s loot so_events:(\w+)')
 def F(name, lines):
+    if not name.startswith("lib/chest"):
+        lines = [_CHEST.sub(r'\1 at @s run function so_events:lib/chest {t:"\2"}', l) for l in lines]
     W(f"data/{NS}/function/{name}.mcfunction", "\n".join(lines) + "\n")
 
 def T(*parts):
@@ -259,6 +262,59 @@ LOOT = {
     "reward_alpha": [3, [item("emerald", 6, 16, 28), item("diamond", 5, 3, 6), item("netherite_scrap", 4, 1, 2),
                          item("totem_of_undying", 3), item("enchanted_golden_apple", 2)]],
 }
+# v5: llaves (mismo formato que so_crates) y fragmentos
+SKEYS = {"cemetery": ("Cemetery Key", "trial_key"), "graveyard": ("Graveyard Key", "trial_key"), "ossuary": ("Ossuary Key", "trial_key"),
+         "old_tower": ("Old Tower Key", "trial_key"), "pyramid": ("Pyramid Key", "trial_key"), "rusty": ("Rusty Mineshaft Key", "trial_key"),
+         "treasure": ("Treasure Room", "trial_key"), "deep": ("Deep_Key", "trial_key"), "elder": ("Elder Guardian Key", "ominous_trial_key"),
+         "to_the_end": ("To the End", "trial_key"), "warden": ("Warden_Key", "ominous_trial_key"), "wither": ("Wither Arena", "ominous_trial_key")}
+OKEYS = {"builder": ("Llave del Arquitecto", "aqua", "trial_key", "Crate del Constructor"),
+         "nature": ("Llave Silvestre", "green", "trial_key", "Crate de la Naturaleza"),
+         "miner": ("Llave Subterránea", "gray", "trial_key", "Crate del Minero"),
+         "combat": ("Llave de Batalla", "red", "trial_key", "Crate de Combate"),
+         "mystic": ("Llave Abisal", "dark_purple", "ominous_trial_key", "Crate Místico"),
+         "legend": ("Llave del Vacío", "gold", "ominous_trial_key", "Crate Legendario")}
+def key(k, w=1):
+    if k in SKEYS:
+        nm, i = SKEYS[k]; comp = {"minecraft:custom_name": nm}
+    else:
+        nm, c, i, cr = OKEYS[k]
+        comp = {"minecraft:custom_name": {"text": nm, "color": c, "italic": False},
+                "minecraft:lore": [{"text": f"Abre: {cr}", "color": "gray", "italic": False}]}
+    return {"type": "minecraft:item", "name": f"minecraft:{i}", "weight": w,
+            "functions": [{"function": "minecraft:set_components", "components": comp}]}
+def kfrag(w=1, lo=1, hi=1):
+    f = [{"function": "minecraft:set_components", "components": {
+        "minecraft:custom_name": {"text": "Fragmento de Llave", "color": "light_purple", "italic": False},
+        "minecraft:lore": [{"text": "Juntá varios para forjar una llave de crate", "color": "gray", "italic": False}],
+        "minecraft:custom_data": "{so_key_frag:1b}"}}]
+    if hi > 1 or lo > 1: f.append({"function": "minecraft:set_count", "count": {"min": lo, "max": hi} if hi > lo else lo})
+    return {"type": "minecraft:item", "name": "minecraft:echo_shard", "weight": w, "functions": f}
+def vfrag(w=1, lo=1, hi=1):
+    f = [{"function": "minecraft:set_name", "target": "item_name", "name": {"text": "Fragmento de Victoria", "color": "gold"}}]
+    if hi > 1 or lo > 1: f.append({"function": "minecraft:set_count", "count": {"min": lo, "max": hi} if hi > lo else lo})
+    return {"type": "minecraft:item", "name": "minecraft:echo_shard", "weight": w, "functions": f}
+EMPTY = lambda w: {"type": "minecraft:empty", "weight": w}
+K1 = [key(k) for k in ("cemetery", "graveyard", "ossuary", "old_tower")]
+K2 = [key(k) for k in ("pyramid", "rusty", "treasure", "deep", "builder", "nature", "miner")]
+K3 = [key(k) for k in ("elder", "warden", "wither", "to_the_end", "combat", "mystic")]
+# (tabla) -> pools extra: llave por tier con hueco vacío (probabilidad) + fragmento de llave
+KEYPOOLS = {
+    "rain": [K1 + [EMPTY(36)], [kfrag(1), EMPTY(9)]],
+    "supply": [K1 + [EMPTY(16)], [kfrag(1), EMPTY(5)]],
+    "reward_small": [K1 + [EMPTY(16)], [kfrag(1), EMPTY(4)]],
+    "runner": [K1 + [EMPTY(8)], [kfrag(1, 1, 2), EMPTY(3)]],
+    "meteor": [K1 + K2 + [EMPTY(44)], [kfrag(1), EMPTY(6)]],
+    "caravan": [K1 + K2 + [EMPTY(22)], [kfrag(1, 1, 2), EMPTY(3)]],
+    "reward_big": [K2 + [EMPTY(14)], [kfrag(1, 1, 2), EMPTY(2)]],
+    "reward_t2": [K2 + [EMPTY(10)], [kfrag(1, 1, 2), EMPTY(2)]],
+    "mimic_treasure": [K2 + [EMPTY(7)], [kfrag(1, 1, 2), EMPTY(2)]],
+    "reward_t3": [K3 + [EMPTY(9)], [kfrag(1, 1, 3), EMPTY(1)]],
+    "reward_alpha": [K3 + [EMPTY(6)], [kfrag(1, 2, 3), EMPTY(1)]],
+    "altar_1": [K1 + [EMPTY(4)], [kfrag(1, 1, 2), EMPTY(1)]],
+    "altar_2": [K2 + [EMPTY(4)], [kfrag(1, 2, 3)]],
+    "altar_3": [K3 + [EMPTY(3)], [kfrag(1, 2, 3)]],
+}
+
 # v4.1: pools variados (libros, pociones, equipo encantado, rarezas) que se suman a cada tabla.
 def book(w, lv):
     return {"type": "minecraft:item", "name": "minecraft:book", "weight": w,
@@ -291,15 +347,52 @@ LOOT["mimic_junk"] = [4, [item("rotten_flesh", 8, 4, 12), item("bone", 6, 2, 6),
                           item("poisonous_potato", 4, 1, 3), item("stick", 4, 2, 8), item("dead_bush", 3), item("string", 3, 1, 3)]]
 LOOT["reward_eclipse"] = [4, [item("netherite_ingot", 3), item("netherite_scrap", 6, 2, 4), item("totem_of_undying", 5), book(6, 30),
                               item("enchanted_golden_apple", 3), item("netherite_upgrade_smithing_template", 3), item("shulker_shell", 4, 2, 4),
-                              gear("netherite_sword", 1, 30), gear("diamond_helmet", 3, 30), item("heart_of_the_sea", 2), item("elytra", 1),
+                              gear("netherite_sword", 1, 30), gear("diamond_helmet", 3, 30), item("heart_of_the_sea", 2),
                               item("dragon_breath", 2, 2, 4), item("echo_shard", 3, 2, 4)]]
 EXTRA = {"rain": (COMMON, 1), "supply": (COMMON, 2), "reward_small": (COMMON, 2), "runner": (COMMON, 2), "meteor": (COMMON, 1),
          "caravan": (COMMON, 2), "reward_big": (RARE, 2), "reward_t2": (RARE, 1), "reward_t3": (RARE, 2),
          "mimic_treasure": (RARE, 3), "reward_alpha": (RARE, 3), "reward_eclipse": (RARE, 3)}
+LOOT["altar_1"] = [3, [item("golden_apple", 4, 1, 3), item("iron_ingot", 5, 6, 12), item("gold_ingot", 4, 4, 10), item("lapis_lazuli", 4, 8, 16),
+                      item("redstone", 4, 8, 16), item("experience_bottle", 4, 6, 12), book(3, 15), item("diamond", 2, 1, 3)]]
+LOOT["altar_2"] = [4, [item("golden_apple", 4, 2, 4), item("diamond", 5, 3, 6), item("emerald", 5, 8, 16), item("amethyst_shard", 3, 6, 12),
+                      item("ancient_debris", 2, 1, 2), item("experience_bottle", 4, 10, 20), book(4, 30), item("ender_pearl", 3, 2, 6)]]
+LOOT["altar_3"] = [5, [item("golden_apple", 4, 3, 6), item("diamond", 5, 6, 12), item("netherite_scrap", 3, 1, 3), item("ancient_debris", 3, 2, 3),
+                      item("enchanted_golden_apple", 1), item("totem_of_undying", 2), book(5, 30), item("experience_bottle", 4, 16, 32)]]
+EXTRA.update({"altar_1": (COMMON, 1), "altar_2": (RARE, 1), "altar_3": (RARE, 2)})
+ECL_SUPREME = [
+    {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "minecraft:elytra"}]},
+    {"rolls": 1, "entries": [key("legend")]},
+    {"rolls": 2, "entries": [key(k) for k in ("wither", "warden", "to_the_end", "mystic", "combat")]},
+    {"rolls": 1, "entries": [kfrag(1, 2, 2)]},
+    {"rolls": 1, "entries": [vfrag(1, 3, 3)]},
+]
 for n, (rolls, entries) in LOOT.items():
     pools = [{"rolls": rolls, "entries": entries}]
     if n in EXTRA: pools.append({"rolls": EXTRA[n][1], "entries": EXTRA[n][0]})
+    pools += [{"rolls": 1, "entries": e} for e in KEYPOOLS.get(n, [])]
+    if n == "reward_eclipse": pools += ECL_SUPREME
     W(f"data/{NS}/loot_table/{n}.json", {"type": "minecraft:chest", "pools": pools})
+
+# v5: cofres de recompensa (nada al suelo ni al vacío)
+F("lib/chest", [
+    "# Uso: execute as <jugador> at @s run function so_events:lib/chest {t:\"tabla\"}",
+    "scoreboard players set #pl so_ev 0",
+    *[f'$execute unless score #pl so_ev matches 1 positioned {o} if block ~ ~ ~ #minecraft:air if block ~ ~1 ~ #minecraft:air unless block ~ ~-1 ~ #minecraft:air run function so_events:lib/chest_put {{t:"$(t)"}}'
+      for o in ("~1 ~ ~", "~-1 ~ ~", "~ ~ ~1", "~ ~ ~-1", "~1 ~ ~1", "~-1 ~ ~-1", "~1 ~ ~-1", "~-1 ~ ~1", "~2 ~ ~", "~-2 ~ ~")],
+    "$execute unless score #pl so_ev matches 1 run loot give @s loot so_events:$(t)",
+])
+F("lib/chest_put", [
+    '$setblock ~ ~ ~ minecraft:chest{LootTable:"so_events:$(t)",CustomName:{text:"Cofre de Recompensa",color:"gold",bold:true}}',
+    'summon minecraft:text_display ~0.5 ~1.4 ~0.5 {Tags:["so_ev_chestlbl"],billboard:"center",text:{text:"✦ COFRE DE RECOMPENSA ✦",color:"gold",bold:true},background:0}',
+    "particle minecraft:totem_of_undying ~0.5 ~1 ~0.5 0.3 0.4 0.3 0.2 30",
+    "playsound minecraft:block.chest.open master @a ~ ~ ~ 1 0.7",
+    "playsound minecraft:entity.player.levelup master @a ~ ~ ~ 0.8 1.2",
+    "scoreboard players set #pl so_ev 1",
+])
+F("lib/chest_tick", [
+    "execute as @e[type=minecraft:text_display,tag=so_ev_chestlbl] at @s unless block ~-0.5 ~-1.4 ~-0.5 minecraft:chest run kill @s",
+    "execute as @e[type=minecraft:text_display,tag=so_ev_chestlbl] at @s run particle minecraft:wax_on ~ ~-0.5 ~ 0.3 0.2 0.3 0 1",
+])
 
 # avance invisible que detecta golpes al fugitivo
 W(f"data/{NS}/advancement/hit.json", {"criteria": {"hit": {"trigger": "minecraft:player_hurt_entity", "conditions": {"entity": [
@@ -335,6 +428,7 @@ F("tick", [
     "scoreboard players reset @a evento_diario", "scoreboard players enable @a evento_diario",
     "scoreboard players add #beat so_ev 1",
     f"execute if score #beat so_ev matches 20.. run function {NS}:lib/second",
+    "execute if score #beat so_ev matches 10 run function so_events:lib/chest_tick",
     "execute if score #beat so_ev matches 20.. run scoreboard players set #beat so_ev 0",
 ])
 F("lib/blocks", [
@@ -424,7 +518,8 @@ for lv, (hp, dmg, arm, tough, spd) in {2: (0.5, 0.3, 4, 0, 0.1), 3: (1.0, 0.6, 8
 F("lib/cleanup", [
     "# Limpieza total: mobs al vacío (sin drops), barras, marcas y regla de griefing.",
     "tp @e[tag=so_ev_mob] 0 -300 0", "kill @e[tag=so_ev_mob]",
-    "kill @e[tag=so_ev_altar]", "kill @e[tag=so_ev_mimic]", "kill @e[tag=so_ev_llama]",
+    f"execute as @e[type=minecraft:marker,tag=so_ev_beacon] at @s run function {NS}:event/altar/unbuild",
+    "kill @e[tag=so_ev_altar]", "stopsound @a record", "kill @e[tag=so_ev_mimic]", "kill @e[tag=so_ev_llama]",
     "scoreboard players set #alpha so_ev 0", "scoreboard players set #mimic so_ev 0",
     f"bossbar set {NS}:ev visible false", f"bossbar set {NS}:boss visible false",
     "execute if score #mg_saved so_ev matches 1 if score #mg_prev so_ev matches 1 run gamerule mob_griefing true",
@@ -449,7 +544,7 @@ F("lib/info", [
     f"execute if score #active so_ev matches 6 run tellraw @s {T(PFX, {'text': 'Noche oscura: sobreviví hasta el amanecer.', 'color': 'dark_purple', 'bold': False})}",
     f"execute if score #active so_ev matches 7 run tellraw @s {T(PFX, {'text': 'Caza del fugitivo: golpes ', 'color': 'gold', 'bold': False}, {'score': {'name': '#hits', 'objective': 'so_ev'}, 'color': 'white'}, {'text': '/5', 'color': 'gray'})}",
     f"execute if score #active so_ev matches 8 run tellraw @s {T(PFX, {'text': 'Tormenta de maná: juntá los orbes.', 'color': 'aqua', 'bold': False})}",
-    f"execute if score #active so_ev matches 9 run tellraw @s {T(PFX, {'text': 'Altar: tributo ', 'color': 'yellow', 'bold': False}, {'score': {'name': '#paid', 'objective': 'so_ev'}, 'color': 'white'}, {'text': '/32 (piedra o troncos)', 'color': 'gray'})}",
+    f"execute if score #active so_ev matches 9 run tellraw @s {T(PFX, {'text': 'Altar: tributo ', 'color': 'yellow', 'bold': False}, {'score': {'name': '#paid', 'objective': 'so_ev'}, 'color': 'white'}, {'text': ' ofrendas (fases 64/192/400)', 'color': 'gray'})}",
 ])
 
 # ---------------------------------------------------------------- 1 lluvia de recursos (60 s)
@@ -606,6 +701,8 @@ INV = {  # tipo: (nombre, color, oleadas, etapa final, bloques minimos)
 TIER = {1: "", 2: " [Nivel II]", 3: " [Nivel III]"}
 N = len(INV)
 F("event/invasion/start", [f"function {NS}:lib/begin", "scoreboard players set #active so_ev 5",
+    f"execute as {IN} at @s run playsound minecraft:event.raid.horn master @s ~ ~ ~ 1 1",
+    f"execute as {IN} at @s run playsound minecraft:music_disc.pigstep record @s ~ ~ ~ 0.6 1",
     "execute if score #force_tier so_ev matches 1..3 run scoreboard players operation #tier so_ev = #force_tier so_ev",
     "scoreboard players set #force_tier so_ev 0",
     "scoreboard players set #stage so_ev 0", "scoreboard players set #wave so_ev 0", f"function {NS}:lib/no_grief",
@@ -752,8 +849,8 @@ F("event/runner/start", [
     f'bossbar set {NS}:ev name {T({"text": "Caza del fugitivo", "color": "gold"})}',
     f"bossbar set {NS}:ev max 60", f"bossbar set {NS}:ev color yellow",
     "execute store result score #kind so_ev run random value 1..2",
-    f'execute if score #kind so_ev matches 1 as @a[tag=so_ev_in,limit=1,sort=random] at @s run summon minecraft:chicken ~ ~ ~ {{Tags:["so_ev_mob","so_ev_runner"],PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{{text:"Pollo Dorado",color:"gold",bold:true}},active_effects:[{{id:"minecraft:speed",amplifier:1b,duration:-1,show_particles:1b}}],attributes:[{{id:"minecraft:movement_speed",base:0.42}}]}}',
-    f'execute if score #kind so_ev matches 2 as @a[tag=so_ev_in,limit=1,sort=random] at @s run summon minecraft:fox ~ ~ ~ {{Tags:["so_ev_mob","so_ev_runner"],PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{{text:"Zorro Místico",color:"light_purple",bold:true}},active_effects:[{{id:"minecraft:speed",amplifier:1b,duration:-1,show_particles:1b}}],attributes:[{{id:"minecraft:movement_speed",base:0.6}}]}}',
+    f'execute if score #kind so_ev matches 1 as @a[tag=so_ev_in,limit=1,sort=random] at @s run summon minecraft:chicken ~ ~ ~ {{Tags:["so_ev_mob","so_ev_runner"],PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{{text:"Pollo Dorado",color:"gold",bold:true}},active_effects:[{{id:"minecraft:speed",amplifier:1b,duration:-1,show_particles:1b}}],attributes:[{{id:"minecraft:movement_speed",base:0.42}},{{id:"minecraft:max_health",base:1000d}}],Health:1000f}}',
+    f'execute if score #kind so_ev matches 2 as @a[tag=so_ev_in,limit=1,sort=random] at @s run summon minecraft:fox ~ ~ ~ {{Tags:["so_ev_mob","so_ev_runner"],PersistenceRequired:1b,CustomNameVisible:1b,CustomName:{{text:"Zorro Místico",color:"light_purple",bold:true}},active_effects:[{{id:"minecraft:speed",amplifier:1b,duration:-1,show_particles:1b}}],attributes:[{{id:"minecraft:movement_speed",base:0.6}},{{id:"minecraft:max_health",base:1000d}}],Health:1000f}}',
     *[f"execute if score #kind so_ev matches {k} run tellraw @a {T(PFX, {'text': ('¡El Pollo Dorado apareció!' if k == 1 else '¡El Zorro Místico apareció!') + ' Golpeenlo 5 veces en 60 segundos.', 'color': 'gold', 'bold': True})}" for k in (1, 2)],
     "execute as @e[tag=so_ev_runner,limit=1] at @s run playsound minecraft:entity.experience_orb.pickup master @a ~ ~ ~ 1 1.6",
 ])
@@ -772,7 +869,7 @@ F("hit", [
     f'execute unless score #hits so_ev matches 5.. run playsound minecraft:entity.experience_orb.pickup master @s ~ ~ ~ 1 1.2',
 ])
 F("event/runner/win", [
-    f"execute as @e[tag=so_ev_runner,limit=1] at @s run loot spawn ~ ~ ~ loot {NS}:runner",
+    f"execute as {IN} run loot give @s loot {NS}:runner",
     f"execute as @e[tag=so_ev_runner,limit=1] at @s run particle minecraft:firework ~ ~0.5 ~ 0.3 0.3 0.3 0.1 60",
     f'title {IN} title {T({"text": "¡Atraparon al fugitivo!", "color": "gold", "bold": True})}',
     say("@a", "¡El fugitivo cayó! Esmeraldas, botellas de XP y oro en el piso.", "gold"),
@@ -818,63 +915,98 @@ F("lib/orbs", [
 ])
 F("lib/orb_spawn", ["$execute positioned ~ ~4 ~ run summon minecraft:experience_orb ~$(dx) ~ ~$(dz) {Value:6}"])
 
-# ---------------------------------------------------------------- v3: altar del sacrificio (90 s, tributo de 32 cobblestone o 16 troncos)
+# ---------------------------------------------------------------- v5: altar místico (120 s, 3 fases de tributo, faro multicolor)
 F("event/altar/start", [
     f"function {NS}:lib/begin", "scoreboard players set #active so_ev 9",
-    "scoreboard players set #paid so_ev 0", "scoreboard players set #need so_ev 32",
-    f'bossbar set {NS}:ev name {T({"text": "Altar del sacrificio", "color": "gold"})}',
-    f"bossbar set {NS}:ev max 90", f"bossbar set {NS}:ev color yellow",
-    "scoreboard players set #near so_ev 1",
+    "scoreboard players set #paid so_ev 0", "scoreboard players set #phase so_ev 0",
+    f'bossbar set {NS}:ev name {T({"text": "Altar místico", "color": "gold"})}',
+    f"bossbar set {NS}:ev max 120", f"bossbar set {NS}:ev color yellow",
     f'execute as @a[tag=so_ev_in,limit=1,sort=random] at @s run function {NS}:event/altar/place',
-    "scoreboard players set #near so_ev 0",
-    say("@a", "El Altar del Sacrificio apareció. Tirenle encima 32 bloques de piedra o 16 troncos para bendecir la isla.", "gold"),
+    f"execute as @e[tag=so_ev_altar,limit=1] at @s run playsound minecraft:music_disc.relic record @a ~ ~ ~ 3 1",
+    say("@a", "Apareció el Altar Místico. Tiren ofrendas durante 2 minutos: piedra y troncos suman poco, minerales más, gemas mucho. 3 fases de bendición.", "gold"),
 ])
-F("event/altar/place", [
-    "execute positioned ~4 ~ ~ run function so_events:lib/altar_at",
-])
+F("event/altar/place", ["execute positioned ~4 ~ ~ run function so_events:lib/altar_at"])
 F("lib/altar_at", [
-    'execute if block ~ ~ ~ #minecraft:air if block ~ ~1 ~ #minecraft:air run summon minecraft:block_display ~ ~0.5 ~ {Tags:["so_ev_altar"],block_state:{Name:"minecraft:end_portal_frame"},brightness:{sky:15,block:0},glowing:1b}',
-    'execute if block ~ ~ ~ #minecraft:air if block ~ ~1 ~ #minecraft:air run particle minecraft:flame ~ ~1 ~ 0.2 0.3 0.2 0.02 20',
+    "# Si hay lugar (3x3 libre y 3 de alto), arma el faro; si no, solo el altar flotante.",
+    "execute if block ~-1 ~ ~-1 #minecraft:air if block ~ ~ ~-1 #minecraft:air if block ~1 ~ ~-1 #minecraft:air if block ~-1 ~ ~ #minecraft:air if block ~ ~ ~ #minecraft:air if block ~1 ~ ~ #minecraft:air if block ~-1 ~ ~1 #minecraft:air if block ~ ~ ~1 #minecraft:air if block ~1 ~ ~1 #minecraft:air if block ~ ~1 ~ #minecraft:air if block ~ ~2 ~ #minecraft:air run function so_events:event/altar/build",
+    'execute unless entity @e[tag=so_ev_beacon] if block ~ ~ ~ #minecraft:air run summon minecraft:block_display ~-0.5 ~0.5 ~-0.5 {Tags:["so_ev_altar"],block_state:{Name:"minecraft:end_portal_frame"},brightness:{sky:15,block:15},glowing:1b}',
+    "particle minecraft:flame ~ ~1 ~ 0.4 0.4 0.4 0.02 30",
+])
+F("event/altar/build", [
+    "fill ~-1 ~ ~-1 ~1 ~ ~1 minecraft:iron_block",
+    "setblock ~ ~1 ~ minecraft:beacon", "setblock ~ ~2 ~ minecraft:purple_stained_glass",
+    'summon minecraft:marker ~ ~ ~ {Tags:["so_ev_beacon"]}',
+    'summon minecraft:block_display ~-0.5 ~3 ~-0.5 {Tags:["so_ev_altar"],block_state:{Name:"minecraft:end_portal_frame",Properties:{eye:"true"}},brightness:{sky:15,block:15},glowing:1b}',
+    "playsound minecraft:block.beacon.activate master @a ~ ~ ~ 2 1",
+])
+F("event/altar/unbuild", [
+    "fill ~-1 ~ ~-1 ~1 ~ ~1 minecraft:air replace minecraft:iron_block",
+    "execute if block ~ ~1 ~ minecraft:beacon run setblock ~ ~1 ~ minecraft:air",
+    "execute if block ~ ~2 ~ #minecraft:impermeable run setblock ~ ~2 ~ minecraft:air",
+    "playsound minecraft:block.beacon.deactivate master @a ~ ~ ~ 2 1",
+    "kill @s",
+])
+F("event/altar/color", [
+    "scoreboard players operation #m so_ev = #t so_ev", "scoreboard players operation #m so_ev %= #six so_ev",
+    *[f"execute if score #m so_ev matches {i} run setblock ~ ~2 ~ minecraft:{c}_stained_glass" for i, c in enumerate(['purple', 'magenta', 'cyan', 'light_blue', 'yellow', 'white'])],
+    "playsound minecraft:block.amethyst_block.chime master @a ~ ~ ~ 1 1.2",
 ])
 F("event/altar/second", [
-    "scoreboard players add #t so_ev 1",
+    "scoreboard players add #t so_ev 1", "scoreboard players set #six so_ev 6", "scoreboard players set #ten so_ev 10",
     f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
-    f"execute as @e[tag=so_ev_altar,limit=1] at @s run particle minecraft:end_rod ~ ~1.2 ~ 0.2 0.4 0.2 0.02 8",
-    f"execute as @e[tag=so_ev_altar,limit=1] at @s run function {NS}:event/altar/take",
-    f"execute if score #t so_ev matches 45.. run title {IN} actionbar {T({'text': '¡Tributo al altar: 32 piedra o 16 troncos!', 'color': 'gold', 'bold': True})}",
-    f"execute if score #paid so_ev matches 32.. run function {NS}:event/altar/win",
-    f"execute if score #t so_ev matches 90.. run function {NS}:event/altar/fail",
+    f"execute as @e[type=minecraft:marker,tag=so_ev_beacon] at @s run function {NS}:event/altar/color",
+    f"execute as @e[tag=so_ev_altar,limit=1] at @s run particle minecraft:end_rod ~0.5 ~1 ~0.5 0.3 0.6 0.3 0.02 10",
+    f"execute as @e[tag=so_ev_altar,limit=1] at @s positioned ~0.5 ~ ~0.5 run function {NS}:event/altar/take",
+    "scoreboard players operation #m so_ev = #t so_ev", "scoreboard players operation #m so_ev %= #ten so_ev",
+    "execute if score #m so_ev matches 0 as @e[tag=so_ev_altar,limit=1] at @s run playsound minecraft:block.bell.resonate master @a ~ ~ ~ 1.5 0.8",
+    f"title {IN} actionbar {T({'text': 'Ofrendas: ', 'color': 'gold'}, {'score': {'name': '#paid', 'objective': 'so_ev'}, 'color': 'white', 'bold': True}, {'text': '  (fases: 64 / 192 / 400)', 'color': 'gray'})}",
+    f"execute if score #phase so_ev matches 0 if score #paid so_ev matches 64.. run function {NS}:event/altar/phase1",
+    f"execute if score #phase so_ev matches 1 if score #paid so_ev matches 192.. run function {NS}:event/altar/phase2",
+    f"execute if score #phase so_ev matches 2 if score #paid so_ev matches 400.. run function {NS}:event/altar/phase3",
+    f"execute if score #t so_ev matches 120.. if score #phase so_ev matches 1.. run function {NS}:event/altar/win",
+    f"execute if score #t so_ev matches 120.. if score #phase so_ev matches 0 run function {NS}:event/altar/fail",
 ])
 W(f"data/{NS}/tags/item/altar_tribute.json", {"values": [
     *[f"minecraft:{b}" for b in ("cobblestone", "stone", "deepslate", "cobbled_deepslate", "andesite", "diorite", "granite",
-                                 "tuff", "blackstone", "calcite", "mossy_cobblestone", "netherrack", "end_stone")],
+                                 "tuff", "blackstone", "calcite", "mossy_cobblestone", "netherrack", "end_stone", "dirt", "sand", "gravel")],
     "#minecraft:logs"]})
+W(f"data/{NS}/tags/item/altar_ore.json", {"values": [f"minecraft:{b}" for b in (
+    "coal", "iron_ingot", "gold_ingot", "copper_ingot", "redstone", "lapis_lazuli", "quartz", "amethyst_shard", "raw_iron", "raw_gold", "raw_copper", "bread", "wheat")]})
+W(f"data/{NS}/tags/item/altar_gem.json", {"values": [f"minecraft:{b}" for b in (
+    "diamond", "emerald", "netherite_scrap", "gold_block", "iron_block", "golden_apple", "ender_pearl", "blaze_rod")]})
 F("event/altar/take", [
-    "# 'if items' sí acepta tags de ítem (las NBT con # no funcionan).",
-    f"execute as @e[type=minecraft:item,distance=..3.5] if items entity @s contents #{NS}:altar_tribute run function {NS}:event/altar/add",
+    f"execute as @e[type=minecraft:item,distance=..4] if items entity @s contents #{NS}:altar_tribute run function {NS}:event/altar/add {{m:1}}",
+    f"execute as @e[type=minecraft:item,distance=..4] if items entity @s contents #{NS}:altar_ore run function {NS}:event/altar/add {{m:4}}",
+    f"execute as @e[type=minecraft:item,distance=..4] if items entity @s contents #{NS}:altar_gem run function {NS}:event/altar/add {{m:16}}",
 ])
 F("event/altar/add", [
-    "execute store result score #cnt so_ev run data get entity @s Item.count 1",
+    "$execute store result score #cnt so_ev run data get entity @s Item.count $(m)",
     "scoreboard players operation #paid so_ev += #cnt so_ev",
     "particle minecraft:soul_fire_flame ~ ~0.3 ~ 0.2 0.2 0.2 0.05 12",
     "playsound minecraft:block.respawn_anchor.charge master @a ~ ~ ~ 0.8 1.4",
     "kill @s",
-    f"title {IN} actionbar {T({'text': 'Tributo: ', 'color': 'gold'}, {'score': {'name': '#paid', 'objective': 'so_ev'}, 'color': 'white', 'bold': True}, {'text': ' / 32', 'color': 'gold'})}",
 ])
+def phase(n, title, effs, msg):
+    F(f"event/altar/phase{n}", [f"scoreboard players set #phase so_ev {n}",
+        f'title {IN} title {T({"text": title, "color": "gold", "bold": True})}',
+        *[f"effect give {IN} minecraft:{e} 180 {a} true" for e, a in effs],
+        f"execute as @e[tag=so_ev_altar,limit=1] at @s run particle minecraft:totem_of_undying ~0.5 ~1 ~0.5 1 1 1 0.4 80",
+        f"execute as @e[tag=so_ev_altar,limit=1] at @s run playsound minecraft:block.respawn_anchor.set_spawn master @a ~ ~ ~ 2 1",
+        "playsound minecraft:block.bell.use master @a ~ ~ ~ 1 1.5", say("@a", msg, "gold")])
+phase(1, "Fase I: Bendición", [("haste", 1)], "¡Fase I! Prisa II para la isla. Sigan ofrendando…")
+phase(2, "Fase II: Gracia", [("regeneration", 0), ("fire_resistance", 0)], "¡Fase II! Regeneración y Resistencia al Fuego. Una más…")
+phase(3, "Fase III: Ascensión", [("absorption", 2), ("luck", 0)], "¡Fase III! Absorción III. El altar está pleno.")
 F("event/altar/win", [
-    f'title {IN} title {T({"text": "¡Altar satisfecho!", "color": "gold", "bold": True})}',
-    f"execute as @a[tag=so_ev_in] at @s run summon minecraft:lightning_bolt ~ ~ ~ {{visual_only:1b}}",
-    f"execute as {IN} run effect give @s minecraft:haste 180 1 true",
-    f"execute as {IN} run effect give @s minecraft:regeneration 180 1 true",
-    say("@a", "El altar premió a la isla: Prisa II y Regeneración II por 3 minutos.", "gold"),
+    f'title {IN} title {T({"text": "¡El altar los bendice!", "color": "gold", "bold": True})}',
+    f"execute as {IN} at @s run summon minecraft:lightning_bolt ~ ~ ~ {{visual_only:1b}}",
+    f'execute if score #phase so_ev matches 1 as {IN} run loot give @s loot {NS}:altar_1',
+    f'execute if score #phase so_ev matches 2 as {IN} run loot give @s loot {NS}:altar_2',
+    f'execute if score #phase so_ev matches 3.. as {IN} run loot give @s loot {NS}:altar_3',
+    say("@a", "El altar dejó un Cofre de Recompensa junto a cada participante.", "gold"),
     "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_pos 1",
-    f"function {NS}:lib/streak_up",
-    f"function {NS}:lib/cleanup",
+    f"function {NS}:lib/streak_up", f"function {NS}:lib/cleanup",
 ])
-F("event/altar/fail", [
-    say("@a", "El altar no recibió su tributo y se apagó.", "gray"),
-    f"function {NS}:lib/cleanup",
-])
+F("event/altar/fail", [say("@a", "El altar no recibió suficientes ofrendas y se apagó.", "gray"), f"function {NS}:lib/cleanup"])
 
 # ---------------------------------------------------------------- v4: racha de eventos (multiplicador de recompensa)
 F("lib/streak_up", [
@@ -913,15 +1045,15 @@ F("event/meteor/second", ["scoreboard players add #t so_ev 1", NEAR,
     f"execute if score #m so_ev matches 0 as @a[tag=so_ev_in,limit=3] at @s run function {NS}:event/meteor/burst",
     f"execute if score #t so_ev matches 60.. run function {NS}:event/meteor/end"])
 F("event/meteor/burst", [
-    "execute store result storage so_events:tmp dx int 1 run random value -10..10",
-    "execute store result storage so_events:tmp dz int 1 run random value -10..10",
+    "execute store result storage so_events:tmp dx int 1 run random value -5..5",
+    "execute store result storage so_events:tmp dz int 1 run random value -5..5",
     f"function {NS}:event/meteor/fall with storage {NS}:tmp",
 ])
 F("event/meteor/fall", [
-    "$execute positioned ~$(dx) ~ ~$(dz) over motion_blocking_no_leaves run summon minecraft:falling_block ~ ~14 ~ {BlockState:{Name:\"minecraft:magma_block\"},Time:1,Tags:[\"so_ev_meteor\"]}",
-    "$execute positioned ~$(dx) ~ ~$(dz) over motion_blocking_no_leaves run particle minecraft:flame ~ ~2 ~ 0.3 1 0.3 0.02 30",
-    "$execute positioned ~$(dx) ~ ~$(dz) over motion_blocking_no_leaves run loot spawn ~ ~1 ~ loot so_events:meteor",
-    "$execute positioned ~$(dx) ~ ~$(dz) over motion_blocking_no_leaves run playsound minecraft:entity.generic.explode master @a ~ ~ ~ 0.7 1.2",
+    "$execute positioned ~$(dx) ~ ~$(dz) positioned over motion_blocking_no_leaves run summon minecraft:falling_block ~ ~14 ~ {BlockState:{Name:\"minecraft:magma_block\"},Time:1,Tags:[\"so_ev_meteor\"]}",
+    "$execute positioned ~$(dx) ~ ~$(dz) positioned over motion_blocking_no_leaves run particle minecraft:flame ~ ~2 ~ 0.3 1 0.3 0.02 30",
+    "$execute positioned ~$(dx) ~ ~$(dz) positioned over motion_blocking_no_leaves run loot spawn ~ ~1 ~ loot so_events:meteor",
+    "$execute positioned ~$(dx) ~ ~$(dz) positioned over motion_blocking_no_leaves run playsound minecraft:entity.generic.explode master @a ~ ~ ~ 0.7 1.2",
 ])
 F("event/meteor/end", [
     "scoreboard players add @a[tag=so_ev_in] so_ev_win 1", "scoreboard players add @a[tag=so_ev_in] so_ev_pos 1",
@@ -1078,6 +1210,7 @@ F("event/eclipse/start", [f"function {NS}:lib/begin", "scoreboard players set #a
     f"title {IN} title {T({'text': '¡ECLIPSE!', 'color': 'dark_purple', 'bold': True})}",
     f"title {IN} subtitle {T({'text': 'Sobreviví 90 segundos a la élite', 'color': 'light_purple'})}",
     f"execute as {IN} at @s run playsound minecraft:entity.wither.spawn hostile @s ~ ~ ~ 0.8 0.6",
+    f"execute as {IN} at @s run playsound minecraft:music_disc.otherside record @s ~ ~ ~ 0.6 0.8",
     say("@a", "Un eclipse cubre la isla. Jinetes y enemigos de élite cada 15 s: sobrevivan 90 segundos por un botín legendario.", "dark_purple")])
 F("event/eclipse/second", ["scoreboard players add #t so_ev 1", NEAR,
     f"execute store result bossbar {NS}:ev value run scoreboard players get #t so_ev",
@@ -1209,7 +1342,7 @@ Ayuda admin: `/function so_events:admin/help`. Jugadores: `/trigger evento`.
 
 # ---------------------------------------------------------------- zip (raiz limpia)
 os.makedirs("/mnt/documents", exist_ok=True)
-out = "/mnt/documents/so_events-v4.1.zip"
+out = "/tmp/so_events-v5.zip"
 with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
     for d, _, files in os.walk(ROOT):
         for f in files:

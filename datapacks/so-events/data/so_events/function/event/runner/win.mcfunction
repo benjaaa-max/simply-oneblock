@@ -1,4 +1,4 @@
-execute as @e[tag=so_ev_runner,limit=1] at @s run loot spawn ~ ~ ~ loot so_events:runner
+execute as @a[tag=so_ev_in] at @s run function so_events:lib/chest {t:"runner"}
 execute as @e[tag=so_ev_runner,limit=1] at @s run particle minecraft:firework ~ ~0.5 ~ 0.3 0.3 0.3 0.1 60
 title @a[tag=so_ev_in] title {"text": "¡Atraparon al fugitivo!", "color": "gold", "bold": true}
 tellraw @a [{"text": "[Evento] ", "color": "gold", "bold": true}, {"text": "¡El fugitivo cayó! Esmeraldas, botellas de XP y oro en el piso.", "color": "gold", "bold": false}]

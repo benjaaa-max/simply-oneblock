@@ -1,5 +1,5 @@
-execute as @a[tag=so_ev_in] run loot give @s loot so_events:reward_eclipse
-execute as @a[tag=so_ev_in] run loot give @s loot so_events:reward_big
+execute as @a[tag=so_ev_in] at @s run function so_events:lib/chest {t:"reward_eclipse"}
+execute as @a[tag=so_ev_in] at @s run function so_events:lib/chest {t:"reward_big"}
 scoreboard players add @a[tag=so_ev_in] so_ev_win 1
 scoreboard players add @a[tag=so_ev_in] so_ev_inv 1
 function so_events:lib/streak_up
